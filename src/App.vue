@@ -14,12 +14,6 @@ function logout() {
     remote.logoutAdmin();
 }
 
-const stages = ref<string>();
-
-remote.post("stage/index").then((res) => {
-    stages.value = JSON.stringify(res);
-}).send();
-
 </script>
 
 <template>
@@ -34,8 +28,6 @@ remote.post("stage/index").then((res) => {
     <template v-else>
         <button @click="login">login</button>
     </template>
-
-    <p>{{ stages }}</p>
 
     <RouterView></RouterView>
 

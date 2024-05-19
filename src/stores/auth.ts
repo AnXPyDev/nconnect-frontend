@@ -12,7 +12,11 @@ export const useAuth = defineStore('auth', {
         auth: AuthType.NONE,
         token: undefined,
         user: undefined
-    })
+    }),
+    getters: {
+        isAdmin: (state) => state.auth === AuthType.ADMIN,
+        isUser: (state) => state.auth === AuthType.USER
+    }
 });
 
 export type AuthStore = ReturnType<typeof useAuth>;

@@ -15,7 +15,7 @@ app.use(router)
 
 import { useAuth } from '@/stores/auth'
 import { useState } from '@/stores/state'
-import type { AuthType } from './lib/Bridge'
+import { AuthType } from './lib/Bridge'
 
 const auth = useAuth();
 const state = useState();
@@ -40,7 +40,22 @@ auth.$subscribe((mutation, state) => {
 
 import remote from './lib/ApiRemote';
 
-remote.init(auth);
+const connection_promise = remote.init(auth);
+
+router.beforeEach(async (to, from) => {
+    await connection_promise;
+});
+
+router.beforeEach((to, from) => {
+    if (
+        (to.meta.requiresAdmin === true && auth.auth !== AuthType.ADMIN) ||
+        (to.meta.requiresUser === true && auth.auth !== AuthType.USER)
+    ) {
+        return { name: "home" };
+    }
+});
+
+await connection_promise;
 await remote.restoreSession();
 
 app.mount('#app')

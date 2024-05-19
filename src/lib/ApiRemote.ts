@@ -4,7 +4,9 @@ import { AuthType, type Admin } from "./Bridge";
 
 export enum ApiCodes {
     Ok = 0,
-    NoAuth = 666
+    BadInput = 1,
+    NoAuth = 666,
+    NoPriv = 667
 };
 
 export class ApiException extends Error {
@@ -35,14 +37,16 @@ interface GenericErrorResponse {
 
 class RequestConstructor {
     callback!: Callback;
+    name?: string;
     handlers: Map<ApiCodes, Handler> = new Map();
     exceptionHandler?: Handler;
     nonzeroHandler?: Handler;
     anyHandler?: Handler;
 
 
-    constructor(callback: Callback) {
+    constructor(callback: Callback, name?: string) {
         this.callback = callback;
+        this.name = name;
     }
 
     then(handler: Handler) {
@@ -60,7 +64,7 @@ class RequestConstructor {
         return this;
     }
 
-    failMessage(message: string) {
+    failMessage(message: string = `Request ${this.name ?? "?"} failed`) {
         return this.fail((res) => {
             console.error(`${message}: ${res.code} => ${res.message}`);
         });
@@ -97,6 +101,10 @@ class RequestConstructor {
                     return this.anyHandler(res);
                 }
 
+                if (code == ApiCodes.Ok) {
+                    return;
+                }
+
                 throw new Error(`Result code ${code} not handled`);
             }
 
@@ -126,9 +134,11 @@ export class ApiRemote {
         });
     }
 
-    init(auth: AuthStore) {
+    async init(auth: AuthStore) {
         this.auth = auth;
         this.connection = this.createConnection();
+
+        await this.post("ping").send();
     }
 
     private async postInternal(endpoint: string, data: object) {
@@ -152,7 +162,7 @@ export class ApiRemote {
     post(endpoint: string, data: object = {}): RequestConstructor {
         return new RequestConstructor(() => {
             return this.postInternal(endpoint, data);
-        });
+        }, endpoint);
     }
 
     async restoreAdminSession() {
