@@ -6,7 +6,8 @@ export enum ApiCodes {
     Ok = 0,
     BadInput = 1,
     NoAuth = 666,
-    NoPriv = 667
+    NoPriv = 667,
+    Overlap = 992
 };
 
 export class ApiException extends Error {
