@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { type Speaker, type Stage } from '@/lib/Bridge';
+import { type Presentation } from '@/lib/Bridge';
 
 const props = defineProps<{
     allowDelete?: boolean
 }>();
 
-const speaker = defineModel<Speaker>("speaker", { required: true });
+const timeslot = defineModel<Presentation>("presentation", { required: true });
 
 const error = ref<string>();
 
@@ -18,11 +18,10 @@ const emit = defineEmits<{
 
 
 function confirm() {
-    if (speaker.value!!.name.length == 0) {
-        error.value = "No name";
+    if (timeslot.value.name.length == 0) {
+        error.value = "Name field empty";
         return;
     }
-
     emit("done");
 }
 
@@ -38,8 +37,9 @@ function cancel() {
 
 <template>
     <div>
-        <input v-model="speaker.name"></input>
-        <textarea v-model="speaker.description"></textarea>
+        <input v-model="presentation.name"></input>
+        <textarea v-model="presentation.description"></textarea>
+        <textarea v-model="presentation.long_description"></textarea>
         <button @click="confirm">confirm</button>
         <button v-if="allowDelete" @click="delete_">delete</button>
         <button @click="cancel">cancel</button>

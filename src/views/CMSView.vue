@@ -2,6 +2,7 @@
 
 import SpeakersManager from '@/components/cms/SpeakersManager.vue';
 import StagesManager from '@/components/cms/StagesManager.vue';
+import TestimonialsManager from '@/components/cms/TestimonialsManager.vue';
 
 </script>
 
@@ -12,5 +13,7 @@ import StagesManager from '@/components/cms/StagesManager.vue';
 
     <SpeakersManager></SpeakersManager>
     <StagesManager></StagesManager>
+
+    <TestimonialsManager></TestimonialsManager>
 
 </template>

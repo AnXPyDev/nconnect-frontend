@@ -29,6 +29,10 @@ function confirm() {
         return;
     }
 
+    if (!timeslot.value.presentation_id) {
+        timeslot.value.presentation_id = undefined; 
+    }
+
     emit("done");
 }
 
@@ -43,10 +47,13 @@ function cancel() {
 </script>
 
 <template>
-    <input v-model="timeslot.start_at"></input>
-    <input v-model="timeslot.end_at"></input>
-    <button @click="confirm">confirm</button>
-    <button v-if="allowDelete" @click="delete_">delete</button>
-    <button @click="cancel">cancel</button>
-    <div v-if="error">{{ error }}</div>
+    <div>
+        <input v-model="timeslot.start_at"></input>
+        <input v-model="timeslot.end_at"></input>
+        <input type="number" v-model="timeslot.presentation_id"></input>
+        <button @click="confirm">confirm</button>
+        <button v-if="allowDelete" @click="delete_">delete</button>
+        <button @click="cancel">cancel</button>
+        <div v-if="error">{{ error }}</div>
+    </div>
 </template>

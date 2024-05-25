@@ -37,9 +37,11 @@ function cancel() {
 </script>
 
 <template>
-    <input v-model="stage.name"></input>
-    <button @click="confirm">confirm</button>
-    <button v-if="allowDelete" @click="delete_">delete</button>
-    <button @click="cancel">cancel</button>
-    <div v-if="error">{{ error }}</div>
+    <div>
+        <input v-model="stage.name"></input>
+        <button @click="confirm">confirm</button>
+        <button v-if="allowDelete" @click="delete_">delete</button>
+        <button @click="cancel">cancel</button>
+        <div v-if="error">{{ error }}</div>
+    </div>
 </template>

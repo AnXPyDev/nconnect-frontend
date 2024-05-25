@@ -1,13 +1,16 @@
 import type { AuthStore } from "@/stores/auth";
 import axios, { Axios, AxiosError } from "axios";
 import { AuthType, type Admin } from "./Bridge";
+import router from "@/router";
 
 export enum ApiCodes {
     Ok = 0,
     BadInput = 1,
     NoAuth = 666,
     NoPriv = 667,
-    Overlap = 992
+    Overlap = 992,
+    Occupied = 993,
+    Empty = 994
 };
 
 export class ApiException extends Error {
@@ -192,6 +195,7 @@ export class ApiRemote {
             this.auth.auth = AuthType.NONE;
             this.auth.token = undefined;
             this.auth.user = undefined;
+            router.push({ name: "home" });
         }).failMessage("Failed to logout as admin").catch().send();
     }
 

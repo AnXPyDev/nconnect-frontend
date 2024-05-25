@@ -4,6 +4,7 @@ import { type Stage } from '@/lib/Bridge';
 import { ref, toRaw } from 'vue';
 
 import StageEditor from './StageEditor.vue';
+import StageHolder from './Stage.vue';
 import TimeslotsManager from './TimeslotsManager.vue';
 
 
@@ -62,10 +63,8 @@ function createConfirm() {
 
 <template>
     <h2>stages</h2>
-    <template v-for="stage in stages" :key="stage.id">
-        <div  @click="edit(stage)">{{ stage.id }} {{ stage.name }}</div>
-        <TimeslotsManager :stage_id="stage.id!!"></TimeslotsManager>
-    </template>
+
+    <StageHolder v-for="stage in stages" :stage="stage" :key="stage.id" @edit="edit(stage)"></StageHolder>
     <button @click="create">create</button>
     <StageEditor v-if="toEdit" v-model:stage="toEdit" allow-delete @done="editConfirm" @delete="editDelete" @cancel="editCancel"></StageEditor>
     <StageEditor v-if="toCreate" v-model:stage="toCreate" @done="createConfirm" @cancel="createCancel"></StageEditor>

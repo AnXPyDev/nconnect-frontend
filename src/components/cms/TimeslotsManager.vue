@@ -5,6 +5,7 @@ import { ref, toRaw } from 'vue';
 import { exportDateTime, prettyDateTime } from '@/lib/Date';
 
 import TimeslotEditor from './TimeslotEditor.vue';
+import TimeslotHolder from './Timeslot.vue';
 
 
 const props = defineProps<{
@@ -26,7 +27,8 @@ function create() {
     toCreate.value = {
         stage_id: props.stage_id,
         start_at: "",
-        end_at: ""
+        end_at: "",
+        presentation_id: NaN
     };
 }
 
@@ -47,9 +49,17 @@ function editConfirm() {
     const ts = toRaw(toEdit.value)!!;
     cancel();
     remote.post("timeslot/edit", ts).then((res: { timeslot: Timeslot }) => {
-        Object.assign(timeslots.value[timeslots.value.findIndex((v) => v.id == res.timeslot.id)],
-            res.timeslot
-        );
+        const timeslot = timeslots.value[timeslots.value.findIndex((v) => v.id == res.timeslot.id)];
+        Object.assign(timeslot, res.timeslot);
+
+
+        if (ts.presentation_id != res.timeslot.presentation_id) {
+            remote.post("timeslot/setpresentation", { id: res.timeslot.id, presentation_id: ts.presentation_id }).then((res) => {
+                timeslot.presentation_id = ts.presentation_id;
+            }).code(ApiCodes.Occupied, (res) => {
+                console.error("OCCUPIED");
+            }).send();
+        }
     }).code(ApiCodes.Overlap, (res) => {
         console.error("OVERLAP", res);
     }).send();
@@ -59,7 +69,18 @@ function createConfirm() {
     const ts = toRaw(toCreate.value)!!;
     cancel();
     remote.post("timeslot/create", ts).then((res: { timeslot: Timeslot }) => {
-        timeslots.value.push(res.timeslot);
+        const timeslot = res.timeslot;
+        timeslots.value.push(timeslot);
+
+        
+        if (ts.presentation_id) {
+            remote.post("timeslot/setpresentation", { id: res.timeslot.id, presentation_id: ts.presentation_id }).then((res) => {
+                timeslot.presentation_id = ts.presentation_id;
+            }).code(ApiCodes.Occupied, (res) => {
+                console.error("OCCUPIED");
+            }).send();
+        }
+
     }).code(ApiCodes.Overlap, (res) => {
         console.error("OVERLAP", res);
     }).send();
@@ -74,7 +95,8 @@ remote.post("stage/timeslots", { id: props.stage_id }).then((res: { timeslots: T
 
 
 <template>
-    <div v-for="timeslot in timeslots" :key="timeslot.id" @click="edit(timeslot)">[{{ timeslot.id }}] {{ prettyDateTime(timeslot.start_at) }} - {{ prettyDateTime(timeslot.end_at) }}</div>
+    <h3>timeslots</h3>
+    <TimeslotHolder v-for="timeslot in timeslots" :key="timeslot.id" :timeslot="timeslot" @edit="edit(timeslot)"/>
     <button @click="create">create</button>
     <TimeslotEditor v-if="toEdit" v-model:timeslot="toEdit" allow-delete @done="editConfirm" @delete="editDelete" @cancel="cancel" />
     <TimeslotEditor v-if="toCreate" v-model:timeslot="toCreate" @done="createConfirm" @cancel="cancel" />

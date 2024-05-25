@@ -28,3 +28,17 @@ export interface Timeslot {
     start_at: string
     end_at: string
 }
+
+export interface Presentation {
+    id?: number
+    speaker_id: number
+    name: string
+    description?: string
+    long_description?: string
+}
+
+export interface Testimonial {
+    id?: number
+    author: string
+    description: string
+}
