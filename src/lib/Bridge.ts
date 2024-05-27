@@ -42,3 +42,10 @@ export interface Testimonial {
     author: string
     description: string
 }
+
+export interface Resource {
+    id?: number
+    name: string
+    type: string
+    size?: number
+}

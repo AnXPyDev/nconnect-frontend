@@ -2,6 +2,7 @@ import type { AuthStore } from "@/stores/auth";
 import axios, { Axios, AxiosError } from "axios";
 import { AuthType, type Admin } from "./Bridge";
 import router from "@/router";
+import { remoteURL } from "@/config";
 
 export enum ApiCodes {
     Ok = 0,
@@ -84,7 +85,7 @@ class RequestConstructor {
         return this;
     }
 
-    async send() {
+    async send(): Promise<any> {
         try {
             const res = await this.callback();
             const code = res.code ?? 0;
@@ -145,13 +146,20 @@ export class ApiRemote {
         await this.post("ping").send();
     }
 
+    tokenHeader() {
+        return {
+            Authorization: this.auth.token && `Bearer ${this.auth.token}`
+        }
+    }
+
     private async postInternal(endpoint: string, data: object) {
         const headers = {
             Accept: "application/json",
-            Authorization: this.auth.token && `Bearer ${this.auth.token}`
+            ...this.tokenHeader()
         }
         return (await this.connection.post(endpoint, data, { headers })).data;
     }
+
 
     async postExcept(endpoint: string, data: object = {}): Promise<any> {
         const res = await this.postInternal(endpoint, data);
@@ -163,10 +171,24 @@ export class ApiRemote {
         return res;
     }
 
+    private async putInternal(endpoint: string, query: string, data: unknown): Promise<any> {
+        const headers = {
+            Accept: "application/json",
+            ...this.tokenHeader()
+        }
+        return (await this.connection.put(`${endpoint}?${query}`, data, { headers })).data;
+    }
+
     post(endpoint: string, data: object = {}): RequestConstructor {
         return new RequestConstructor(() => {
             return this.postInternal(endpoint, data);
         }, endpoint);
+    }
+
+    put(endpoint: string, query: object = {}, data: unknown): RequestConstructor {
+        return new RequestConstructor(() => {
+            return this.putInternal(endpoint, new URLSearchParams(query as any).toString(), data);
+        })
     }
 
     async restoreAdminSession() {
@@ -211,6 +233,6 @@ export class ApiRemote {
     }
 }
 
-const remote = new ApiRemote("http://127.0.0.1:8000/api");
+const remote = new ApiRemote(remoteURL);
 
 export default remote;

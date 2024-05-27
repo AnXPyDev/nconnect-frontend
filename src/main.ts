@@ -42,8 +42,15 @@ import remote from './lib/ApiRemote';
 
 const connection_promise = remote.init(auth);
 
+const init_promise = new Promise(async (resolve, reject) => {
+    await remote.init(auth);
+    await remote.restoreSession();
+    resolve(true);
+});
+
+
 router.beforeEach(async (to, from) => {
-    await connection_promise;
+    await init_promise;
 });
 
 router.beforeEach((to, from) => {
@@ -55,7 +62,5 @@ router.beforeEach((to, from) => {
     }
 });
 
-await connection_promise;
-await remote.restoreSession();
 
 app.mount('#app')
