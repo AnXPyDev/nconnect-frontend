@@ -49,3 +49,10 @@ export interface Resource {
     type: string
     size?: number
 }
+
+export interface Gallery {
+    id?: number
+    thumbnail_id?: number
+    name: string
+    description?: string
+}
