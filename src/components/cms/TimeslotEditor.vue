@@ -2,14 +2,15 @@
 import { ref } from 'vue';
 import { type Speaker, type Stage, type Timeslot } from '@/lib/Bridge';
 import { isDateValid, parseDateTime } from '@/lib/Date';
+import Input from '../Input.vue';
+import Editor from './Editor.vue';
+import PresentationSelector from './PresentationSelector.vue';
 
 const props = defineProps<{
     allowDelete?: boolean
 }>();
 
 const timeslot = defineModel<Timeslot>("timeslot", { required: true });
-
-const error = ref<string>();
 
 const emit = defineEmits<{
     done: [],
@@ -18,42 +19,34 @@ const emit = defineEmits<{
 }>();
 
 
-function confirm() {
+function validate() {
     if (!isDateValid(timeslot.value.start_at)) {
-        error.value = "Start Date invalid";
-        return;
+        return "Start Date invalid";
     }
     
     if (!isDateValid(timeslot.value.end_at)) {
-        error.value = "End Date invalid";
-        return;
+        return "End Date invalid";
     }
 
     if (!timeslot.value.presentation_id) {
         timeslot.value.presentation_id = undefined; 
     }
 
-    emit("done");
-}
-
-function delete_() {
-    emit("delete");
-}
-
-function cancel() {
-    emit("cancel");
+    return true;
 }
 
 </script>
 
 <template>
-    <div>
-        <input v-model="timeslot.start_at"></input>
-        <input v-model="timeslot.end_at"></input>
-        <input type="number" v-model="timeslot.presentation_id"></input>
-        <button @click="confirm">confirm</button>
-        <button v-if="allowDelete" @click="delete_">delete</button>
-        <button @click="cancel">cancel</button>
-        <div v-if="error">{{ error }}</div>
-    </div>
+    <Editor @cancel="emit('cancel')" @done="emit('done')" @delete="emit('delete')" :validate="validate" :allow-delete="allowDelete">
+        <template v-slot:title>
+            <slot></slot>
+        </template>
+
+        <template v-slot:items>
+            <Input v-model="timeslot.start_at">Start</Input>
+            <Input v-model="timeslot.end_at">End</Input>
+            <PresentationSelector :key="timeslot.id" :timeslot_id="timeslot.id" v-model="timeslot.presentation_id"></PresentationSelector>
+        </template>
+    </Editor>
 </template>

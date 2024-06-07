@@ -1,0 +1,43 @@
+@use 'lib/colors';
+@import 'lib/fonts.scss';
+
+:root {
+    @include colors.theme(colors.$clr-light);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body, #app {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    background-color: var(--clr-bg);
+    color: var(--clr-fg);
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+}
+
+a {
+    text-decoration: none;
+    &:active, &:hover, &:visited {
+        color: inherit;
+    }
+}
+
+.content-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    > .content {
+        width: 100%;
+        max-width: 1200px;
+    }
+}

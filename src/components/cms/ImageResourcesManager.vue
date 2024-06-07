@@ -65,7 +65,6 @@ function editDelete() {
 </script>
 
 <template>
-    <h2>image resources</h2>
     <ImageResource v-for="image in images" :resource="image"></ImageResource>
 
     <button @click="create">create</button>

@@ -5,6 +5,7 @@ import { type Gallery } from '@/lib/Bridge';
 import { ref, toRaw } from 'vue';
 import GalleryEditor from './GalleryEditor.vue';
 import GalleryHolder from './Gallery.vue';
+import Button from '../Button.vue';
 
 const galleries = ref<Gallery[]>([]);
 
@@ -61,9 +62,25 @@ function createConfirm() {
 </script>
 
 <template>
-    <h2>galleries</h2>
-    <GalleryHolder v-for="g in galleries" :gallery="g" :key="g.id" @edit="edit(g)"/>
-    <button @click="create">create</button>
-    <GalleryEditor v-if="toEdit" v-model:gallery="toEdit" allow-delete @done="editConfirm" @delete="editDelete" @cancel="cancel" />
-    <GalleryEditor v-if="toCreate" v-model:gallery="toCreate" allow-delete @done="createConfirm" @cancel="cancel" />
+    <div class="manager">
+        <div class="items">
+            <GalleryHolder v-for="g in galleries" :gallery="g" :key="g.id" @edit="edit(g)"/>
+        </div>
+        <Button @click="create"><i class="fa-solid fa-plus"></i>&nbsp; NEW GALLERY</Button>
+        <GalleryEditor v-if="toEdit" v-model:gallery="toEdit" allow-delete @done="editConfirm" @delete="editDelete" @cancel="cancel">
+            Edit Gallery [{{ toEdit.id }}]
+        </GalleryEditor>
+        <GalleryEditor v-if="toCreate" v-model:gallery="toCreate" allow-delete @done="createConfirm" @cancel="cancel">
+            Create Gallery
+        </GalleryEditor>
+    </div>
 </template>
+
+<style scoped lang="scss">
+@use '@/styles/lib/mixins';
+
+.manager {
+    @include mixins.cmsmanager;
+}
+
+</style>

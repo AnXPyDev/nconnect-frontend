@@ -13,7 +13,21 @@ defineEmits<{
 </script>
 
 <template>
+    <div class="presentation">
+        <div class="header">
+            <span class="id">[{{ presentation.id }}]</span>
+            <span class="name">{{ presentation.name }}</span>
 
-    <div @click="$emit('edit')">[{{ presentation.id }}] {{ presentation.name }} {{  presentation.description }}</div>
-
+            <i @click="$emit('edit')" class="icon-button fa-solid fa-pen"></i>
+        </div>
+    </div>
 </template>
+
+<style scoped lang="scss">
+@use '@/styles/lib/mixins';
+
+.presentation {
+    @include mixins.cmspanel;
+    @include mixins.cmsitem;
+}
+</style>

@@ -5,6 +5,7 @@ import { type Presentation } from '@/lib/Bridge';
 import { ref, toRaw } from 'vue';
 import PresentationHolder from './Presentation.vue';
 import PresentationEditor from './PresentationEditor.vue';
+import Button from '../Button.vue';
 
 const props = defineProps<{
     speaker_id: number
@@ -70,10 +71,27 @@ function editDelete() {
 </script>
 
 <template>
-    <h3>presentations</h3>
-    <PresentationHolder v-for="p in presentations" :key="p.id" :presentation="p" @edit="edit(p)"/>
-    <button @click="create">create</button>
+    <div class="manager">
+        <div class="items">
+            <PresentationHolder v-for="p in presentations" :key="p.id" :presentation="p" @edit="edit(p)"/>
+        </div>
+        <Button @click="create"><i class="fa-solid fa-plus"></i>&nbsp; NEW PRESENTATION</Button>
+        <PresentationEditor v-if="toCreate" v-model:presentation="toCreate" @done="createConfirm" @cancel="cancel">
+            Create Presentation
+        </PresentationEditor>
+        <PresentationEditor v-if="toEdit" v-model:presentation="toEdit" allow-delete @done="editConfirm" @cancel="cancel" @delete="editDelete">
+            Edit Presentation [{{ toEdit.id }}]
+        </PresentationEditor>
+    </div>
 
-    <PresentationEditor v-if="toCreate" v-model:presentation="toCreate" @done="createConfirm" @cancel="cancel"/>
-    <PresentationEditor v-if="toEdit" v-model:presentation="toEdit" allow-delete @done="editConfirm" @cancel="cancel" @delete="editDelete"/>
+
 </template>
+
+<style lang="scss" scoped>
+@use '@/styles/lib/mixins';
+
+.manager {
+    @include mixins.cmsmanager;
+}
+
+</style>

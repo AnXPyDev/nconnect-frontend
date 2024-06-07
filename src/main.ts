@@ -1,4 +1,4 @@
-import '@/assets/styles/main.scss'
+import '@/styles/main.scss'
 
 import { createApp } from 'vue'
 import { createPinia, type Store } from 'pinia'
@@ -39,6 +39,7 @@ auth.$subscribe((mutation, state) => {
 });
 
 import remote from './lib/ApiRemote';
+import { appName } from './config'
 
 const connection_promise = remote.init(auth);
 
@@ -49,8 +50,9 @@ const init_promise = new Promise(async (resolve, reject) => {
 });
 
 
-router.beforeEach(async (to, from) => {
+const remove_init_guard = router.beforeEach(async (to, from) => {
     await init_promise;
+    remove_init_guard();
 });
 
 router.beforeEach((to, from) => {
@@ -60,6 +62,11 @@ router.beforeEach((to, from) => {
     ) {
         return { name: "home" };
     }
+});
+
+router.afterEach((to, from) => {
+    const title = to.meta.title ?? to.name?.toString();
+    document.title = `${appName} | ${title}`;
 });
 
 

@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { type Presentation } from '@/lib/Bridge';
+import Editor from './Editor.vue';
+import Input from '../Input.vue';
+import TextArea from '../TextArea.vue';
 
 const props = defineProps<{
     allowDelete?: boolean
@@ -8,7 +11,6 @@ const props = defineProps<{
 
 const presentation = defineModel<Presentation>("presentation", { required: true });
 
-const error = ref<string>();
 
 const emit = defineEmits<{
     done: [],
@@ -17,32 +19,26 @@ const emit = defineEmits<{
 }>();
 
 
-function confirm() {
+function validate() {
     if (presentation.value.name.length == 0) {
-        error.value = "Name field empty";
-        return;
+        return "Name empty";
     }
-    emit("done");
-}
 
-function delete_() {
-    emit("delete");
-}
-
-function cancel() {
-    emit("cancel");
+    return true;
 }
 
 </script>
 
 <template>
-    <div>
-        <input v-model="presentation.name"></input>
-        <textarea v-model="presentation.description"></textarea>
-        <textarea v-model="presentation.long_description"></textarea>
-        <button @click="confirm">confirm</button>
-        <button v-if="allowDelete" @click="delete_">delete</button>
-        <button @click="cancel">cancel</button>
-        <div v-if="error">{{ error }}</div>
-    </div>
+    <Editor :allow-delete="allowDelete" :validate="validate" @done="emit('done')" @cancel="emit('cancel')" @delete="emit('delete')">
+        <template v-slot:title>
+            <slot></slot>
+        </template>
+
+        <template v-slot:items>
+            <Input v-model="presentation.name">Name</Input>
+            <TextArea v-model="presentation.description">Short Description</TextArea>
+            <TextArea v-model="presentation.long_description">Long Description</TextArea>
+        </template>
+    </Editor>
 </template>

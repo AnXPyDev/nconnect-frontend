@@ -21,7 +21,8 @@ remote.post("gallery/images", { id: props.gallery.id }).then((res: { images: Res
     images.value = res.images;
 }).send();
 
-const imagesShown = ref<boolean>(false);
+const showImages = ref<boolean>(false);
+const showThumbnail = ref<boolean>(false);
 
 const toAddResourceID = ref<number>();
 
@@ -44,14 +45,27 @@ function removeImage(image: Resource) {
 </script>
 
 <template>
-    <div>
-        <div @click="emit('edit')">{{ gallery.name }}</div>
-        <div v-if="gallery.description">{{ gallery.description }}</div>
-        <img v-if="gallery.thumbnail_id" :src="getResourceURL(gallery.thumbnail_id)"/>
-        
-        <button @click="imagesShown = !imagesShown">{{ imagesShown ? "hide images" : "show images" }}</button>
+    <div class="gallery">
+        <div class="header">
+            <span class="id">[{{ gallery.id }}]</span>
+            <span class="name">[{{ gallery.name }}]</span>
+            <i @click="$emit('edit')" class="icon-button fa-solid fa-pen"></i>
+            <i v-if="gallery.thumbnail_id" @click="showThumbnail = !showThumbnail" class="icon-button fa-solid fa-image"></i>
+            
+            <i @click="showImages = !showImages" class="icon-button fa-solid fa-images"></i>
 
-        <div v-if="imagesShown">
+        </div>
+
+        <div class="details">
+            <div class="image" v-if="showThumbnail && gallery.thumbnail_id">
+                <img :src="getResourceURL(gallery.thumbnail_id)"/>
+            </div>
+            <div v-if="gallery.description" class="description">
+                {{ gallery.description }}
+            </div>
+        </div>
+
+        <div class="images" v-if="showImages">
             <GalleryImage v-for="i in images" :resource="i" @remove="removeImage(i)" />
             <div>
                 select image
@@ -59,14 +73,16 @@ function removeImage(image: Resource) {
                 <button v-if="toAddResourceID" @click="addImage">add image</button>
             </div>
         </div>
-
     </div>
 </template>
 
 <style scoped lang="scss">
 
-img {
-    width: 200px;
+@use '@/styles/lib/mixins';
+
+.gallery {
+    @include mixins.cmsitem;
+    @include mixins.cmspanel;
 }
 
 </style>

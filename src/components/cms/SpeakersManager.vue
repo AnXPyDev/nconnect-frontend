@@ -6,6 +6,7 @@ import { ref, toRaw } from 'vue';
 import SpeakerEditor from './SpeakerEditor.vue';
 import StagesManager from './StagesManager.vue';
 import SpeakerHolder from './Speaker.vue';
+import Button from '../Button.vue';
 
 const speakers = ref<Speaker[]>([]);
 
@@ -63,9 +64,27 @@ function createConfirm() {
 </script>
 
 <template>
-    <h2>speakers</h2>
-    <SpeakerHolder v-for="speaker in speakers" :speaker="speaker" :key="speaker.id" @edit="edit(speaker)"/>
-    <button @click="create">create</button>
-    <SpeakerEditor v-if="toEdit" v-model:speaker="toEdit" allow-delete @done="editConfirm" @delete="editDelete" @cancel="cancel"></SpeakerEditor>
-    <SpeakerEditor v-if="toCreate" v-model:speaker="toCreate" allow-delete @done="createConfirm" @cancel="cancel"></SpeakerEditor>
+    <div class="manager">
+        <div class="items">
+            <SpeakerHolder v-for="speaker in speakers" :speaker="speaker" :key="speaker.id" @edit="edit(speaker)"/>
+        </div>
+
+        <Button @click="create"><i class="fa-solid fa-plus"></i>&nbsp; NEW SPEAKER</Button>
+
+        <SpeakerEditor v-if="toEdit" v-model:speaker="toEdit" allow-delete @done="editConfirm" @delete="editDelete" @cancel="cancel">
+            Edit Speaker [{{ toEdit.id }}]
+        </SpeakerEditor>
+        <SpeakerEditor v-if="toCreate" v-model:speaker="toCreate" @done="createConfirm" @cancel="cancel">
+            Create Speaker
+        </SpeakerEditor>
+    </div>
 </template>
+
+<style scoped lang="scss">
+@use '@/styles/lib/mixins';
+
+.manager {
+    @include mixins.cmsmanager;
+}
+
+</style>

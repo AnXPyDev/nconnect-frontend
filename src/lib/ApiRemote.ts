@@ -3,6 +3,7 @@ import axios, { Axios, AxiosError } from "axios";
 import { AuthType, type Admin } from "./Bridge";
 import router from "@/router";
 import { remoteURL } from "@/config";
+import Deffered from "./Deffered";
 
 export enum ApiCodes {
     Ok = 0,
@@ -128,9 +129,12 @@ export class ApiRemote {
     baseURL: string;
     connection!: Axios;
     auth!: AuthStore;
+    initPromise: Deffered<void>;
 
     constructor(baseURL: string) {
+        this.initPromise = new Deffered<void>();
         this.baseURL = baseURL;
+        console.log("ApiRemote constructor");
     }
 
     createConnection() {
@@ -143,6 +147,8 @@ export class ApiRemote {
         this.auth = auth;
         this.connection = this.createConnection();
 
+        console.log("ApiRemote init");
+        this.initPromise.resolve();
         await this.post("ping").send();
     }
 
@@ -153,6 +159,7 @@ export class ApiRemote {
     }
 
     private async postInternal(endpoint: string, data: object) {
+        await this.initPromise.promise;
         const headers = {
             Accept: "application/json",
             ...this.tokenHeader()

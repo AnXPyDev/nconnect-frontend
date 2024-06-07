@@ -3,6 +3,7 @@ import remote, { ApiCodes } from '@/lib/ApiRemote';
 import type { Timeslot } from '@/lib/Bridge';
 import { ref, toRaw } from 'vue';
 import { exportDateTime, prettyDateTime } from '@/lib/Date';
+import Button from '../Button.vue';
 
 import TimeslotEditor from './TimeslotEditor.vue';
 import TimeslotHolder from './Timeslot.vue';
@@ -95,9 +96,43 @@ remote.post("stage/timeslots", { id: props.stage_id }).then((res: { timeslots: T
 
 
 <template>
-    <h3>timeslots</h3>
-    <TimeslotHolder v-for="timeslot in timeslots" :key="timeslot.id" :timeslot="timeslot" @edit="edit(timeslot)"/>
-    <button @click="create">create</button>
-    <TimeslotEditor v-if="toEdit" v-model:timeslot="toEdit" allow-delete @done="editConfirm" @delete="editDelete" @cancel="cancel" />
-    <TimeslotEditor v-if="toCreate" v-model:timeslot="toCreate" @done="createConfirm" @cancel="cancel" />
+    <div class="manager">
+        <div class="timeslots">
+            <TimeslotHolder v-for="timeslot in timeslots" :key="timeslot.id" :timeslot="timeslot" @edit="edit(timeslot)"/>
+        </div>
+        <Button @click="create"><i class="fa-solid fa-plus"></i>&nbsp; NEW TIMESLOT</Button>
+        <TimeslotEditor v-if="toEdit" v-model:timeslot="toEdit" allow-delete @done="editConfirm" @delete="editDelete" @cancel="cancel">
+            Edit timeslot [{{ toEdit.id }}]
+        </TimeslotEditor>
+        <TimeslotEditor v-if="toCreate" v-model:timeslot="toCreate" @done="createConfirm" @cancel="cancel">
+            Create timeslot
+        </TimeslotEditor>
+    </div>
 </template>
+
+<style scoped lang="scss">
+
+    .manager {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5em;
+        align-items: start;
+
+        > .timeslots, > .editor {
+            width: 100%;
+        }
+
+        > .timeslots {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5em;
+
+            > * {
+                width: 100%;
+            }
+        }
+    }
+
+</style>
+

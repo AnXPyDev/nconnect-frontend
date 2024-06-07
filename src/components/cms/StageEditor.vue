@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { type Stage } from '@/lib/Bridge';
+import Button from '../Button.vue';
+import Input from '../Input.vue';
+import Editor from './Editor.vue';
 
 const props = defineProps<{
     allowDelete?: boolean
@@ -16,32 +19,24 @@ const emit = defineEmits<{
     cancel: []
 }>();
 
-
-function confirm() {
+function validate() {
     if (stage.value?.name.length == 0) {
-        error.value = "No name";
-        return;
+        return "Empty name";
     }
 
-    emit("done");
-}
-
-function delete_() {
-    emit("delete");
-}
-
-function cancel() {
-    emit("cancel");
+    return true;
 }
 
 </script>
 
 <template>
-    <div>
-        <input v-model="stage.name"></input>
-        <button @click="confirm">confirm</button>
-        <button v-if="allowDelete" @click="delete_">delete</button>
-        <button @click="cancel">cancel</button>
-        <div v-if="error">{{ error }}</div>
-    </div>
+
+    <Editor @done="emit('done')" @cancel="emit('cancel')" @delete="emit('delete')"  :allow-delete="allowDelete" :validate="validate">
+        <template v-slot:title>
+            <slot></slot>
+        </template>
+        <template v-slot:items>
+            <Input v-model="stage.name">Name</Input>
+        </template>
+    </Editor>
 </template>

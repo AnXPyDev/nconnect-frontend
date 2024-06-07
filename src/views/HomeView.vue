@@ -6,7 +6,9 @@ const auth = useAuth();
 </script>
 
 <template>
-    <h1>Home</h1>
-
-    <RouterLink to="/cms" v-if="auth.isAdmin">CMS</RouterLink>
+    <div class="content-container">
+        <div class="content">
+            <h1>Home</h1>
+        </div>
+    </div>
 </template>

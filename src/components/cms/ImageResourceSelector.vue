@@ -16,6 +16,7 @@ const image_id = defineModel<number | undefined>();
 
 <template>
     <select v-model="image_id">
+        <option :value="null">none</option>
         <option v-for="i in images" :value="i.id">[{{ i.id }}] {{ i.name }}</option>
     </select>
 </template>

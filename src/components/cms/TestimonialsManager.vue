@@ -5,6 +5,7 @@ import TestimonialHolder from './Testimonial.vue';
 import TestimonialEditor from './TestimonialEditor.vue';
 import type { Testimonial } from '@/lib/Bridge';
 import remote from '@/lib/ApiRemote';
+import Button from '../Button.vue';
 
 const testimonials = ref<Testimonial[]>([]);
 
@@ -60,12 +61,27 @@ function editDelete() {
 </script>
 
 <template>
+    <div class="manager">
+        <div class="items">
+            <TestimonialHolder v-for="t in testimonials" :testimonial="t" @edit="edit(t)"/>
+        </div>
 
-    <h2>testimonials</h2>
+        <Button @click="create"><i class="fa-solid fa-plus"></i>&nbsp; NEW TESTIMONIAL</Button>
 
-    <TestimonialHolder v-for="t in testimonials" :testimonial="t" @edit="edit(t)"/>
-    <button @click="create">create</button>
+        <TestimonialEditor v-if="toCreate" v-model:testimonial="toCreate" @done="createConfirm" @cancel="cancel">
+            Create Testimonial
+        </TestimonialEditor>
+        <TestimonialEditor v-if="toEdit" v-model:testimonial="toEdit" allow-delete @done="editConfirm" @cancel="cancel" @delete="editDelete">
+            Edit Testimonial [{{ toEdit.id }}]
+        </TestimonialEditor>
+    </div>
 
-    <TestimonialEditor v-if="toCreate" v-model:testimonial="toCreate" @done="createConfirm" @cancel="cancel"></TestimonialEditor>
-    <TestimonialEditor v-if="toEdit" v-model:testimonial="toEdit" allow-delete @done="editConfirm" @cancel="cancel" @delete="editDelete"></TestimonialEditor>
 </template>
+
+<style scoped lang="scss">
+@use '@/styles/lib/mixins';
+
+.manager {
+    @include mixins.cmsmanager;
+}
+</style>

@@ -10,7 +10,7 @@ const props = defineProps<{
     timeslot: Timeslot
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
     edit: []
 }>();
 
@@ -42,6 +42,49 @@ getPresentation();
 </script>
 
 <template>
-    <div @click="$emit('edit')">[{{ timeslot.id }}] {{ prettyDateTime(timeslot.start_at) }} - {{ prettyDateTime(timeslot.end_at) }}</div>
-    <PresentationHolder v-if="presentation" :presentation="presentation"/>
+    <div class="timeslot">
+        <div class="header">
+            <div class="id">[{{ timeslot.id }}]</div>
+            <div class="start"><i class="fa-solid fa-hourglass-start"></i>&nbsp; {{ prettyDateTime(timeslot.start_at) }}</div>
+            <i class="fa-solid fa-arrow-right"></i>
+            <div class="end"><i class="fa-solid fa-hourglass-end"></i>&nbsp; {{ prettyDateTime(timeslot.end_at) }}</div>
+            <div v-if="presentation"><i class="fa-solid fa-presentation"></i>&nbsp; <span class="id">[{{ presentation.id }}]</span> {{ presentation.name }}</div>
+            <div class="nopresentation" v-else><i class="fa-solid fa-presentation"></i>&nbsp; No presentation assigned</div>
+            <i @click="emit('edit')" class="icon-button fa-solid fa-pen"></i>
+        </div> 
+    </div>
 </template>
+
+<style lang="scss" scoped>
+
+.timeslot {
+    display: flex;
+    flex-direction: column;
+
+    border: solid 1.5px var(--clr-bg-2);
+    padding: 0.5em;
+    gap: 0.5em;
+
+    > .header {
+        display: flex;
+        gap: 0.5em;
+
+        .id {
+            font-size: 0.75em;
+            opacity: 75%;
+        }
+
+        > .nopresentation {
+            opacity: 75%;
+        }
+
+        > .icon-button {
+            cursor: pointer;
+            &:hover {
+                color: var(--clr-primary);
+            }
+        }
+    }
+}
+
+</style>

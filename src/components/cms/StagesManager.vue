@@ -7,6 +7,8 @@ import StageEditor from './StageEditor.vue';
 import StageHolder from './Stage.vue';
 import TimeslotsManager from './TimeslotsManager.vue';
 
+import Button from '@/components/Button.vue';
+
 
 const stages = ref<Stage[]>([]);
 
@@ -62,10 +64,43 @@ function createConfirm() {
 </script>
 
 <template>
-    <h2>stages</h2>
 
-    <StageHolder v-for="stage in stages" :stage="stage" :key="stage.id" @edit="edit(stage)"></StageHolder>
-    <button @click="create">create</button>
-    <StageEditor v-if="toEdit" v-model:stage="toEdit" allow-delete @done="editConfirm" @delete="editDelete" @cancel="editCancel"></StageEditor>
-    <StageEditor v-if="toCreate" v-model:stage="toCreate" @done="createConfirm" @cancel="createCancel"></StageEditor>
+    <div class="StagesManager">
+        <div class="stages">
+            <StageHolder v-for="stage in stages" :stage="stage" :key="stage.id" @edit="edit(stage)"></StageHolder>
+        </div>
+
+        <Button @click="create" :active="!!toCreate" :enabled="!toCreate"><i class="fa-solid fa-plus"></i>&nbsp; NEW STAGE</Button>
+
+        <StageEditor class="editor" v-if="toEdit" v-model:stage="toEdit" allow-delete @done="editConfirm" @delete="editDelete" @cancel="editCancel">
+            Edit Stage [{{ toEdit.id }}]
+        </StageEditor>
+        <StageEditor class="editor" v-if="toCreate" v-model:stage="toCreate" @done="createConfirm" @cancel="createCancel">
+            Create Stage
+        </StageEditor>
+    </div>
 </template>
+
+<style lang="scss" scoped>
+    .StagesManager {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+        align-items: start;
+
+        > .stages, > .editor {
+            width: 100%;
+        }
+
+        > .stages {
+            display: flex;
+            flex-direction: column;
+            gap: 1em;
+
+            > * {
+                width: 100%;
+            }
+        }
+    }
+</style>

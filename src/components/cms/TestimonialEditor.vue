@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import type { Testimonial } from '@/lib/Bridge';
 import { ref } from 'vue';
+import Editor from './Editor.vue';
+import Input from '../Input.vue';
+import TextArea from '../TextArea.vue';
+import ImageResourceSelector from './ImageResourceSelector.vue';
 
 
 const props = defineProps<{
@@ -9,8 +13,6 @@ const props = defineProps<{
 
 const testimonial = defineModel<Testimonial>("testimonial", { required: true });
 
-const error = ref<string>();
-
 const emit = defineEmits<{
     done: [],
     delete: [],
@@ -18,37 +20,30 @@ const emit = defineEmits<{
 }>();
 
 
-function confirm() {
+function validate() {
     if (testimonial.value.author.length == 0) {
-        error.value = "Empty author field";
-        return;
+        return "Empty author field";
     }
 
     if (testimonial.value.description.length == 0) {
-        error.value = "Empty description field";
-        return;
+        return "Empty description field";
     }
 
-    emit("done");
-}
-
-function delete_() {
-    emit("delete");
-}
-
-function cancel() {
-    emit("cancel");
+    return true;
 }
 
 </script>
 
 <template>
-    <div>
-        <input v-model="testimonial.author"></input>
-        <textarea v-model="testimonial.description"></textarea>
-        <button @click="confirm">confirm</button>
-        <button v-if="allowDelete" @click="delete_">delete</button>
-        <button @click="cancel">cancel</button>
-        <div v-if="error">{{ error }}</div>
-    </div>
+    <Editor :validate="validate" :allow-delete="allowDelete" @done="emit('done')" @cancel="emit('cancel')" @delete="emit('delete')">
+        <template v-slot:title>
+            <slot></slot>
+        </template>
+
+        <template v-slot:items>
+            <Input v-model="testimonial.author">Author</Input>
+            <TextArea v-model="testimonial.description">Quote</TextArea>
+            <ImageResourceSelector v-model="testimonial.image_id"></ImageResourceSelector>
+        </template>
+    </Editor>
 </template>

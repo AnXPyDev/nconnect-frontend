@@ -1,0 +1,32 @@
+$shadow-opacity: 0.25;
+$floating-opacity: 0.15;
+
+$clr-light: (
+    bg: #FFFFFF,
+    bg-1: #EEEEEE,
+    bg-2: #CCCCCC,
+
+    bg-inv: #000000,
+    bg-inv-1: #141414,
+
+    bg-alt: #f0f3f5,
+    
+
+    primary: #004953,
+    primary-1: #283238,
+
+    error: #EF3E36,
+
+    fg: #777777,
+    fg-1: #999999,
+    fg-inv: #FFFFFF,
+    fg-on-primary: #FFFFFF,
+    fg-on-error: #000000,
+);
+
+
+@mixin theme($theme) {
+    @each $name, $value in $theme {
+        --clr-#{$name}: #{$value};
+    }
+}
