@@ -32,6 +32,11 @@ function click() {
     .button {
         --clr-active: var(--clr-primary); 
         --clr-fg-active: var(--clr-fg-on-primary);
+        --padding: 0.5em;
+
+        --border: none;
+        --active-border: var(--border);
+
 
         display: flex;
         justify-content: center;
@@ -39,7 +44,9 @@ function click() {
 
         transition: all 0.5s ease;
 
-        padding: 0.5em;
+        padding: var(--padding);
+        
+        border: var(--border);
 
         &.enabled {
             cursor: pointer;
@@ -52,6 +59,7 @@ function click() {
         &:hover, &.active {
             background-color: var(--clr-active);
             color: var(--clr-fg-active);
+            border: var(--active-border);
         }
     }
 </style>

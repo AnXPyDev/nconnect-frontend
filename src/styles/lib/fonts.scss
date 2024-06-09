@@ -1,6 +1,12 @@
 @import '@/styles/lib/fa6.all.min.css';
 
 @font-face {
+	font-family: "Font Awesome 6 Brands";
+	src: url("@/assets/webfonts/fa-brands-400.woff2") format("woff2");
+	font-weight: 400;
+}
+
+@font-face {
 	font-family: "Font Awesome 6 Pro";
 	src: url("@/assets/webfonts/fa-regular-400.woff2") format("woff2");
 	font-weight: 400;
