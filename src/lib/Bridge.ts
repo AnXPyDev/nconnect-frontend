@@ -23,6 +23,14 @@ export interface Stage {
     name: string
 }
 
+export interface Headliner {
+    id?: number;
+    stage_id: number;
+    speaker_id: number;
+    stage?: Stage;
+    speaker?: Speaker;
+}
+
 export interface Timeslot {
     id?: number
     presentation_id?: number
@@ -33,7 +41,7 @@ export interface Timeslot {
 
 export interface Presentation {
     id?: number
-    speaker_id: number
+    speaker_id?: number
     name: string
     description?: string
     long_description?: string
@@ -59,4 +67,5 @@ export interface Gallery {
     thumbnail_id?: number
     name: string
     description?: string
+    public: boolean
 }

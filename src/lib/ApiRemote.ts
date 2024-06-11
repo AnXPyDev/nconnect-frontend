@@ -33,7 +33,7 @@ export class ApiException extends Error {
     }
 }
 
-type Handler = (data: any) => void;
+type Handler = (data: any) => Promise<any> | void;
 type Callback = () => Promise<any>;
 
 interface GenericErrorResponse {
@@ -86,6 +86,11 @@ class RequestConstructor {
         return this;
     }
 
+    unwrap() {
+        this.then((res) => res);
+        return this;
+    }
+
     async send(): Promise<any> {
         try {
             const res = await this.callback();
@@ -100,11 +105,11 @@ class RequestConstructor {
 
             if (!handler) {
                 if (code != ApiCodes.Ok && this.nonzeroHandler) {
-                    return this.nonzeroHandler(res);
+                    return await this.nonzeroHandler(res);
                 }
 
                 if (this.anyHandler) {
-                    return this.anyHandler(res);
+                    return await this.anyHandler(res);
                 }
 
                 if (code == ApiCodes.Ok) {
@@ -114,10 +119,10 @@ class RequestConstructor {
                 throw new Error(`Result code ${code} not handled`);
             }
 
-            return handler(res);
+            return await handler(res);
         } catch (e) {
             if (this.exceptionHandler) {
-                return this.exceptionHandler(e);
+                return await this.exceptionHandler(e);
             }
 
             throw e;
@@ -241,5 +246,8 @@ export class ApiRemote {
 }
 
 const remote = new ApiRemote(remoteURL);
+
+// @ts-expect-error
+window.APIREMOTE = remote;
 
 export default remote;

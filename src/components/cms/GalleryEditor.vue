@@ -5,6 +5,7 @@ import ImageResourceSelector from './ImageResourceSelector.vue';
 import Editor from './Editor.vue';
 import TextArea from '../TextArea.vue';
 import Input from '../Input.vue';
+import Toggle from '../Toggle.vue';
 
 const props = defineProps<{
     allowDelete?: boolean
@@ -36,6 +37,7 @@ function validate() {
         </template>
         <template v-slot:items>
             <Input v-model="gallery.name">Name</Input>
+            <Toggle v-model="gallery.public">Public</Toggle>
             <TextArea v-model="gallery.description">Description</TextArea>
             <ImageResourceSelector v-model="gallery.thumbnail_id"></ImageResourceSelector>
         </template>

@@ -46,24 +46,30 @@ function editDelete() {
     }).send();
 }
 
-function editConfirm() {
+async function editConfirm(): Promise<boolean | string> {
     const ts = toRaw(toEdit.value)!!;
-    cancel();
-    remote.post("timeslot/edit", ts).then((res: { timeslot: Timeslot }) => {
+
+    let result: boolean | string = true;
+
+    await remote.post("timeslot/edit", ts).then(async (res: { timeslot: Timeslot }) => {
         const timeslot = timeslots.value[timeslots.value.findIndex((v) => v.id == res.timeslot.id)];
         Object.assign(timeslot, res.timeslot);
 
 
         if (ts.presentation_id != res.timeslot.presentation_id) {
-            remote.post("timeslot/setpresentation", { id: res.timeslot.id, presentation_id: ts.presentation_id }).then((res) => {
+            await remote.post("timeslot/setpresentation", { id: res.timeslot.id, presentation_id: ts.presentation_id }).then((res) => {
                 timeslot.presentation_id = ts.presentation_id;
             }).code(ApiCodes.Occupied, (res) => {
                 console.error("OCCUPIED");
+                result = "OCCUPIED";
             }).send();
         }
     }).code(ApiCodes.Overlap, (res) => {
         console.error("OVERLAP", res);
+        result = "OVERLAP";
     }).send();
+
+    return result;
 }
 
 function createConfirm() {
@@ -101,7 +107,7 @@ remote.post("stage/timeslots", { id: props.stage_id }).then((res: { timeslots: T
             <TimeslotHolder v-for="timeslot in timeslots" :key="timeslot.id" :timeslot="timeslot" @edit="edit(timeslot)"/>
         </div>
         <Button @click="create"><i class="fa-solid fa-plus"></i>&nbsp; NEW TIMESLOT</Button>
-        <TimeslotEditor v-if="toEdit" v-model:timeslot="toEdit" allow-delete @done="editConfirm" @delete="editDelete" @cancel="cancel">
+        <TimeslotEditor v-if="toEdit" v-model:timeslot="toEdit" :confirm="editConfirm" allow-delete @done="cancel" @delete="editDelete" @cancel="cancel">
             Edit timeslot [{{ toEdit.id }}]
         </TimeslotEditor>
         <TimeslotEditor v-if="toCreate" v-model:timeslot="toCreate" @done="createConfirm" @cancel="cancel">

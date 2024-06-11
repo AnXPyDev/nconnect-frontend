@@ -6,6 +6,9 @@ import { AuthType } from '@/lib/Bridge';
 import { useAuth } from '@/stores/auth';
 import Testimonials from '@/components/Testimonials.vue';
 import Schedule from '@/components/Schedule.vue'; 
+import TestService from '@/components/services/TestService.vue';
+import TestClient from '@/components/services/TestClient.vue';
+import ImagePickerOverlay from '@/components/cms/ImagePickerOverlay.vue';
 
 const auth = useAuth();
 </script>
@@ -15,6 +18,8 @@ const auth = useAuth();
     <div class="content-container">
         <div class="content">
             <h1>Home</h1>
+
+            <ImagePickerOverlay></ImagePickerOverlay>
 
             <Schedule></Schedule>
         </div>

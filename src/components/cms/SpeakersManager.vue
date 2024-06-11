@@ -7,11 +7,15 @@ import SpeakerEditor from './SpeakerEditor.vue';
 import StagesManager from './StagesManager.vue';
 import SpeakerHolder from './Speaker.vue';
 import Button from '../Button.vue';
+import Spinner from '../util/Spinner.vue';
 
 const speakers = ref<Speaker[]>([]);
 
+const loading = ref<boolean>(true);
+
 remote.post("speaker/index").then((response: { speakers: Speaker[] }) => {
     speakers.value = response.speakers;
+    loading.value = false;
 }).send();
 
 const toCreate = ref<Speaker>();
@@ -65,18 +69,24 @@ function createConfirm() {
 
 <template>
     <div class="manager">
-        <div class="items">
-            <SpeakerHolder v-for="speaker in speakers" :speaker="speaker" :key="speaker.id" @edit="edit(speaker)"/>
-        </div>
+        <template v-if="loading">
+            <Spinner></Spinner>
+        </template>
 
-        <Button @click="create"><i class="fa-solid fa-plus"></i>&nbsp; NEW SPEAKER</Button>
+        <template v-else>
+            <div class="items">
+                <SpeakerHolder v-for="speaker in speakers" :speaker="speaker" :key="speaker.id" @edit="edit(speaker)"/>
+            </div>
 
-        <SpeakerEditor v-if="toEdit" v-model:speaker="toEdit" allow-delete @done="editConfirm" @delete="editDelete" @cancel="cancel">
-            Edit Speaker [{{ toEdit.id }}]
-        </SpeakerEditor>
-        <SpeakerEditor v-if="toCreate" v-model:speaker="toCreate" @done="createConfirm" @cancel="cancel">
-            Create Speaker
-        </SpeakerEditor>
+            <Button @click="create"><i class="fa-solid fa-plus"></i>&nbsp; NEW SPEAKER</Button>
+
+            <SpeakerEditor v-if="toEdit" v-model:speaker="toEdit" allow-delete @done="editConfirm" @delete="editDelete" @cancel="cancel">
+                Edit Speaker [{{ toEdit.id }}]
+            </SpeakerEditor>
+            <SpeakerEditor v-if="toCreate" v-model:speaker="toCreate" @done="createConfirm" @cancel="cancel">
+                Create Speaker
+            </SpeakerEditor>
+        </template>
     </div>
 </template>
 

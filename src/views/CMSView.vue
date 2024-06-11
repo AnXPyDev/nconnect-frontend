@@ -6,6 +6,8 @@ import Section from '@/components/cms/Section.vue';
 import SpeakersManager from '@/components/cms/SpeakersManager.vue';
 import StagesManager from '@/components/cms/StagesManager.vue';
 import TestimonialsManager from '@/components/cms/TestimonialsManager.vue';
+import HeadlinersManager from '@/components/cms/HeadlinersManager.vue';
+import ImageBrowser from '@/components/cms/ImageBrowser.vue';
 
 </script>
 
@@ -13,13 +15,13 @@ import TestimonialsManager from '@/components/cms/TestimonialsManager.vue';
     <div class="sections-container">
         <div class="section content-container">
             <Section class="content">
-                <template v-slot:title>Images</template>
-                <ImageResourcesManager/>
+                <template v-slot:title>Image Picker</template>
+                <ImageBrowser/>
             </Section>
         </div>
         <div class="section content-container">
             <Section class="content">
-                <template v-slot:title>Galleries</template>
+                <template v-slot:title>Galleries / Images</template>
                 <GalleriesManager />
             </Section>
         </div>
@@ -27,6 +29,12 @@ import TestimonialsManager from '@/components/cms/TestimonialsManager.vue';
             <Section class="content">
                 <template v-slot:title>Speakers / Presentations</template>
                 <SpeakersManager />
+            </Section>
+        </div>
+        <div class="section content-container">
+            <Section class="content">
+                <template v-slot:title>Headliners</template>
+                <HeadlinersManager />
             </Section>
         </div>
         <div class="section content-container">

@@ -25,7 +25,8 @@ function create() {
     cancel();
     toCreate.value = { 
         name: "",
-        description: ""
+        description: "",
+        public: false
     };
 }
 
@@ -64,7 +65,7 @@ function createConfirm() {
 <template>
     <div class="manager">
         <div class="items">
-            <GalleryHolder v-for="g in galleries" :gallery="g" :key="g.id" @edit="edit(g)"/>
+            <GalleryHolder v-for="g in galleries" mutable :gallery="g" :key="g.id" @edit="edit(g)"/>
         </div>
         <Button @click="create"><i class="fa-solid fa-plus"></i>&nbsp; NEW GALLERY</Button>
         <GalleryEditor v-if="toEdit" v-model:gallery="toEdit" allow-delete @done="editConfirm" @delete="editDelete" @cancel="cancel">

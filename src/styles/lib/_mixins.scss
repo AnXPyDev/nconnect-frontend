@@ -54,13 +54,17 @@
         }
     }
 
-    > .details:not(:empty) {
+    > .details {
         display: flex;
         flex-direction: column;
         gap: 0.5em;
 
         > .image > img {
             max-width: min(200px, 100%);
+        }
+
+        &:empty {
+            display: none;
         }
     }
 }

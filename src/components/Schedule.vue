@@ -1,3 +1,9 @@
+<script setup lang="ts">
+import { ref } from 'vue';
+
+</script>
+
+
 <template>
 
 <div class="schedule">
@@ -26,13 +32,24 @@
             </div>
         </div>
         <div class="timeslots">
-            <div class="timeslot">
-                <div class="time col2">08:30 - 09:00</div>
-                <div class="title col3">registrácia</div>
-            </div>
-            <div class="timeslot">
-                <div class="time col2">09:00 - 09:15</div>
-                <div class="title col3">otvorenie</div>
+            <div v-for="i in [0,1,2]" ref="timeslotRefs" class="timeslot active">
+                <div class="header">
+                    <div class="time col2">08:30 - 09:00</div>
+                    <div class="title col3">registrácia</div>
+                </div>
+                <div class="details">
+                    <div class="inner">
+                        <div class="col2">
+
+                        </div>
+                        <div class="col3">
+                            <p>
+                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rerum eius repellendus repudiandae omnis esse sapiente, ipsa unde, ab alias cumque voluptate assumenda consequatur perspiciatis. Ab perspiciatis quos dolore fugiat mollitia!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -103,24 +120,55 @@
             > .timeslot {
                 width: 100%;
                 display: flex;
-                padding-block: 1.2em;
+                flex-direction: column;
                 font-weight: 900;
 
-                > .time {
-                    padding-inline: 2em;
+                > .header {
+                    cursor: pointer;
+                    display: flex;
+                    padding-block: 1.2em;
+
+                    > .time {
+                        padding-inline: 2em;
+                    }
+
+                    > .title {
+                        padding-inline: 2em;
+                        text-transform: uppercase;
+                    }
+
+
+                    &:hover, &.active {
+                        background-color: var(--clr-bg);
+                    }
                 }
 
-                > .title {
-                    padding-inline: 2em;
-                    text-transform: uppercase;
+                > .details {
+                    transition: 0.5s all ease;
+                    width: 100%;
+                    overflow: hidden;
+
+                    display: grid;
+                    grid-template-rows: 1fr;
+
+                    > .inner {
+                        overflow: hidden;
+                        display: flex;
+
+                        > div {
+                            padding-block: 1em;
+                            padding-inline: 2em;
+                        }
+                    }
+
+                    &.hidden {
+                        grid-template-rows: 0fr;
+                    }
                 }
 
                 border-bottom: 1px solid var(--clr-bg-2);
                 transition: 0.5s all ease;
 
-                &:hover, &.active {
-                    background-color: var(--clr-bg);
-                }
             }
 
         }
