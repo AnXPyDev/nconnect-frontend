@@ -1,4 +1,4 @@
-import { AuthType, type Admin, type User } from "@/lib/Bridge";
+import { AuthType, type Admin, type User } from "@/lib/remote/Models";
 import { defineStore } from "pinia";
 
 interface State {

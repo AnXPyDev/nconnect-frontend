@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import services, { type DefferedServiceRequest, type ServiceFeeder } from '@/lib/Service';
+import services, { type DefferedServiceRequest, type ServiceFeeder } from '@/lib/service/Service';
 import { ref } from 'vue';
 
 const working = ref<boolean>(false);

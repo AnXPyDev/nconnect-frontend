@@ -1,24 +1,16 @@
 <script setup lang="ts">
 
-import GalleriesManager from '@/components/cms/GalleriesManager.vue';
-import ImageResourcesManager from '@/components/cms/ImageResourcesManager.vue';
-import Section from '@/components/cms/Section.vue';
-import SpeakersManager from '@/components/cms/SpeakersManager.vue';
-import StagesManager from '@/components/cms/StagesManager.vue';
-import TestimonialsManager from '@/components/cms/TestimonialsManager.vue';
-import HeadlinersManager from '@/components/cms/HeadlinersManager.vue';
-import ImageBrowser from '@/components/cms/ImageBrowser.vue';
+import Section from '@/components/cms/util/Section.vue';
+import GalleriesManager from '@/components/cms/gallery/GalleriesManager.vue';
+import SpeakersManager from '@/components/cms/speaker/SpeakersManager.vue';
+import StagesManager from '@/components/cms/stage/StagesManager.vue';
+import TestimonialsManager from '@/components/cms/testimonial/TestimonialsManager.vue';
+import HeadlinersManager from '@/components/cms/headliner/HeadlinersManager.vue';
 
 </script>
 
 <template>
     <div class="sections-container">
-        <div class="section content-container">
-            <Section class="content">
-                <template v-slot:title>Image Picker</template>
-                <ImageBrowser/>
-            </Section>
-        </div>
         <div class="section content-container">
             <Section class="content">
                 <template v-slot:title>Galleries / Images</template>
@@ -33,14 +25,14 @@ import ImageBrowser from '@/components/cms/ImageBrowser.vue';
         </div>
         <div class="section content-container">
             <Section class="content">
-                <template v-slot:title>Headliners</template>
-                <HeadlinersManager />
+                <template v-slot:title>Stages / Timeslots</template>
+                <StagesManager />
             </Section>
         </div>
         <div class="section content-container">
             <Section class="content">
-                <template v-slot:title>Stages / Timeslots</template>
-                <StagesManager />
+                <template v-slot:title>Headliners</template>
+                <HeadlinersManager />
             </Section>
         </div>
         <div class="section content-container">

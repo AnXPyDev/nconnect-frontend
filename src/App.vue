@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router';
-import remote from './lib/ApiRemote';
+import remote from './lib/remote/Remote';
 import { useAuth } from './stores/auth';
 import { ref } from 'vue';
-import InfoBar from './components/InfoBar.vue';
-import Header from './components/Header.vue';
-import Footer from './components/Footer.vue';
+import InfoBar from '@/components/ui/InfoBar.vue';
+import Header from '@/components/ui/Header.vue';
+import Footer from '@/components/ui/Footer.vue';
 
 const auth = useAuth();
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import services from '@/lib/Service';
+import services from '@/lib/service/Service';
 import { ref } from 'vue';
 
 

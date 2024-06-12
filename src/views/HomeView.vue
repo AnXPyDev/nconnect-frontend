@@ -1,14 +1,6 @@
 <script setup lang="ts">
-import SpeakerCard from '@/components/SpeakerCard.vue';
-import HeadlinerCard from '@/components/HeadlinerCard.vue';
-import WelcomePresentation from '@/components/WelcomePresentation.vue';
-import { AuthType } from '@/lib/Bridge';
 import { useAuth } from '@/stores/auth';
-import Testimonials from '@/components/Testimonials.vue';
-import Schedule from '@/components/Schedule.vue'; 
-import TestService from '@/components/services/TestService.vue';
-import TestClient from '@/components/services/TestClient.vue';
-import ImagePickerOverlay from '@/components/cms/ImagePickerOverlay.vue';
+import Schedule from '@/components/client/Schedule.vue'; 
 
 const auth = useAuth();
 </script>
@@ -19,7 +11,6 @@ const auth = useAuth();
         <div class="content">
             <h1>Home</h1>
 
-            <ImagePickerOverlay></ImagePickerOverlay>
 
             <Schedule></Schedule>
         </div>

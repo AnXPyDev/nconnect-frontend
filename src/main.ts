@@ -6,7 +6,7 @@ import { createPinia, type Store } from 'pinia'
 import App from './App.vue'
 import router from './router'
 
-import LocalStorage from './lib/LocalStorage'
+import LocalStorage from '@/lib/util/LocalStorage'
 
 const app = createApp(App)
 
@@ -15,7 +15,7 @@ app.use(router)
 
 import { useAuth } from '@/stores/auth'
 import { useState } from '@/stores/state'
-import { AuthType } from './lib/Bridge'
+import { AuthType } from '@/lib/remote/Models'
 
 const auth = useAuth();
 const state = useState();
@@ -38,8 +38,8 @@ auth.$subscribe((mutation, state) => {
     } as StoredAuth);
 });
 
-import remote from './lib/ApiRemote';
-import { appName } from './config'
+import remote from '@/lib/remote/Remote';
+import { appName } from '@/config'
 
 const connection_promise = remote.init(auth);
 
