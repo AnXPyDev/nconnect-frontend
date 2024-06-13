@@ -6,7 +6,7 @@ import Button from '@/components/util/Button.vue';
 <template>
     <Page>
         <template v-slot:background>
-            <img class="bgimage" src="https://nconnect.sk/images/bg/header-2.jpg"/>
+            <img class="bgimage" src="@/assets/images/location.jpg"/>
         </template>
         <template v-slot:content>
             <div class="content">
@@ -24,13 +24,10 @@ import Button from '@/components/util/Button.vue';
 
 <style scoped lang="scss">
 @use '@/styles/lib/mixins';
+@use '@/styles/lib/media';
 
 .bgimage {
     @include mixins.pagebgimg;
-}
-
-h2 {
-    color: var(--clr-bg);
 }
 
 .content {
@@ -41,6 +38,7 @@ h2 {
     color: var(--clr-fg-inv);
     align-items: center;
     gap: 1em;
+    text-align: center;
 
     > span {
         text-transform: uppercase;
@@ -49,21 +47,25 @@ h2 {
     > .date {
         font-size: 1.5em;
         font-weight: 300;
+        @include media.phone { font-size: 1em; }
     }
 
     > .desc {
         font-size: 3em;
         font-weight: 300;
+        @include media.phone { font-size: 2em; }
     }
 
     > .title {
         font-size: 6em;
         font-weight: 900;
+        @include media.phone { font-size: 4em; }
     }
 
     > .buttons {
         display: flex;
         gap: 1em;
+        flex-wrap: wrap;
 
         > .button {
             --padding: 1em;

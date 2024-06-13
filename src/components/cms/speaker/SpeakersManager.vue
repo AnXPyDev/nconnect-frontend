@@ -31,7 +31,8 @@ function create() {
     reset();
     toCreate.value = { 
         name: "",
-        description: ""
+        description: "",
+        contact: {}
     };
 }
 

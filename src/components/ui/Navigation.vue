@@ -1,40 +1,34 @@
 <script setup lang="ts">
 import { useAuth } from '@/stores/auth';
+import NavigationButton from './NavigationButton.vue';
 
 const auth = useAuth();
 </script>
 
 <template>
-    <div class="nav">
-        <RouterLink class="router-link" to="/">DOMOV</RouterLink>
-        <RouterLink class="router-link" to="/cms" v-if="auth.isAdmin">CMS</RouterLink>
+    <div class="navigation">
+        <NavigationButton class="button" to="/">DOMOV</NavigationButton>
+        <NavigationButton class="button" to="/speakers">SPEAKERS</NavigationButton>
+        <NavigationButton class="button" to="/schedule">PROGRAM</NavigationButton>
+        <NavigationButton class="button" to="/sponsors">PARTNERI</NavigationButton>
+        <NavigationButton class="button" to="/contact">KONTAKT</NavigationButton>
+        <NavigationButton class="button" to="/cms" v-if="auth.isAdmin">CMS</NavigationButton>
     </div>
 </template>
 
 <style lang="scss" scoped>
 
-.nav {
+@use '@/styles/lib/media';
+
+.navigation {
     display: flex;
     align-items: center;
 
-    > .router-link {
-        @mixin active {
-            color: var(--clr-fg-on-primary);
-            background-color: var(--clr-primary);
-        }
+    @include media.phone {
+        flex-direction: column;
 
-        display: block;
-        padding-inline: 1em;
-        padding-block: 0.75em;
-
-        transition: all 0.5s ease;
-
-        &:hover {
-            @include active();
-        }
-
-        &.router-link-active {
-            @include active();
+        > .button {
+            width: 100%;
         }
     }
 }

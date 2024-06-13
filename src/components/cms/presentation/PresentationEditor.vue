@@ -3,6 +3,7 @@ import { type Presentation } from '@/lib/remote/Models';
 import Editor from '@/components/cms/util/Editor.vue';
 import Input from '@/components/util/input/Input.vue';
 import TextArea from '@/components/util/input/TextArea.vue';
+import SpeakerSelector from '../speaker/SpeakerSelector.vue';
 
 const props = defineProps<{
     confirm: ConfirmationCallback
@@ -37,6 +38,7 @@ function validate() {
             <Input v-model="presentation.name">Name</Input>
             <TextArea v-model="presentation.description">Short Description</TextArea>
             <TextArea v-model="presentation.long_description">Long Description</TextArea>
+            <SpeakerSelector v-model="presentation.speaker_id">Speaker</SpeakerSelector>
         </template>
     </Editor>
 </template>

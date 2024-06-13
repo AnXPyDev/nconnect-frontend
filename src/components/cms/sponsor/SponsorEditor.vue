@@ -40,7 +40,7 @@ function validate() {
             <Input v-model="speaker.name">Name</Input>
             <TextArea v-model="speaker.description">Description</TextArea>
             <ImageResourceSelector v-model="speaker.image_id">Image</ImageResourceSelector>
-            <ContactEditor v-model="speaker.metadata">Metadata</ContactEditor>
+            <ContactEditor v-model="speaker.contact">Contact</ContactEditor>
         </template>
     </Editor>
 </template>

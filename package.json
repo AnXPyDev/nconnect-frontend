@@ -15,6 +15,7 @@
     "date-fns": "^3.6.0",
     "pinia": "^2.1.7",
     "vue": "^3.4.21",
+    "vue-inline-svg": "^3.1.2",
     "vue-router": "^4.3.0"
   },
   "devDependencies": {

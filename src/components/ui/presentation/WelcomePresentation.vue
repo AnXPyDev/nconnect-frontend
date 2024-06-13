@@ -4,9 +4,9 @@ import Page1 from './Page1.vue';
 import Page2 from './Page2.vue';
 
 
-const pageComponents = ref<any[]>([
+const pageComponents = [
     Page1, Page2
-]);
+];
 
 const pageRefs = ref([]);
 

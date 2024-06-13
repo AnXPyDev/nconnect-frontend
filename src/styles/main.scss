@@ -3,6 +3,9 @@
 
 :root {
     @include colors.theme(colors.$clr-light);
+    font-size: 14px;
+    font-family: 'Lato', sans-serif;
+    color: var(--clr-fg);
 }
 
 * {
@@ -18,9 +21,6 @@ html, body, #app {
 
 body {
     background-color: var(--clr-bg);
-    color: var(--clr-fg);
-    font-family: 'Lato', sans-serif;
-    font-size: 14px;
 }
 
 a {
@@ -35,6 +35,7 @@ a {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-inline: 1em;
 
     > .content {
         width: 100%;

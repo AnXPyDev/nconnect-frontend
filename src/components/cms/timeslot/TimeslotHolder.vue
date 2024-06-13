@@ -16,31 +16,6 @@ const emit = defineEmits<{
     edit: []
 }>();
 
-const presentation = ref<Presentation>();
-
-let last_presentation_id: number | undefined;
-function getPresentation() {
-    const id = props.timeslot.presentation_id;
-    if (last_presentation_id === id) {
-        return;
-    }
-
-    last_presentation_id = id;
-
-    if (id == undefined) {
-        presentation.value = undefined;
-        return;
-    }
-
-    remote.post("timeslot/presentation", { id: props.timeslot.id }).then((res: Response<{ presentation: Presentation }>) => {
-        presentation.value = res.presentation;
-    }).send();
-
-}
-
-watch(props.timeslot, getPresentation);
-getPresentation();
-
 </script>
 
 <template>
@@ -50,7 +25,7 @@ getPresentation();
             <div class="start"><i class="fa-solid fa-hourglass-start"></i>&nbsp; {{ format(timeslot.start_at, dt_fmt) }}</div>
             <i class="fa-solid fa-arrow-right"></i>
             <div class="end"><i class="fa-solid fa-hourglass-end"></i>&nbsp; {{ format(timeslot.end_at, dt_fmt) }}</div>
-            <div v-if="presentation"><i class="fa-solid fa-presentation"></i>&nbsp; <span class="id">[{{ presentation.id }}]</span> {{ presentation.name }}</div>
+            <div v-if="timeslot.presentation"><i class="fa-solid fa-presentation"></i>&nbsp; <span class="id">[{{ timeslot.presentation.id }}]</span> {{ timeslot.presentation.name }}</div>
             <div class="nopresentation" v-else><i class="fa-solid fa-presentation"></i>&nbsp; No presentation assigned</div>
             <i @click="emit('edit')" class="icon-button fa-solid fa-pen"></i>
         </div> 

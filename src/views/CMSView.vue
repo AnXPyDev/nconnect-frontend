@@ -6,6 +6,8 @@ import SpeakersManager from '@/components/cms/speaker/SpeakersManager.vue';
 import StagesManager from '@/components/cms/stage/StagesManager.vue';
 import TestimonialsManager from '@/components/cms/testimonial/TestimonialsManager.vue';
 import HeadlinersManager from '@/components/cms/headliner/HeadlinersManager.vue';
+import SponsorsManager from '@/components/cms/sponsor/SponsorsManager.vue';
+import PresentationsManager from '@/components/cms/presentation/PresentationsManager.vue';
 
 </script>
 
@@ -15,6 +17,12 @@ import HeadlinersManager from '@/components/cms/headliner/HeadlinersManager.vue'
             <Section class="content">
                 <template v-slot:title>Galleries / Images</template>
                 <GalleriesManager />
+            </Section>
+        </div>
+        <div class="section content-container">
+            <Section class="content">
+                <template v-slot:title>Events</template>
+                <PresentationsManager />
             </Section>
         </div>
         <div class="section content-container">
@@ -44,7 +52,7 @@ import HeadlinersManager from '@/components/cms/headliner/HeadlinersManager.vue'
         <div class="section content-container">
             <Section class="content">
                 <template v-slot:title>Sponsors</template>
-                <h2>sponsors</h2>
+                <SponsorsManager />
             </Section>
         </div>
         <div class="section content-container">

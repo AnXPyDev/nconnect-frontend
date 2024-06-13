@@ -11,14 +11,21 @@ import type { Response } from '@/lib/remote/RequestBuilder';
 import Spinner from '@/components/util/Spinner.vue';
 
 const props = defineProps<{
-    speaker_id: number
+    speaker_id?: number
 }>();
 
 
 const presentations = ref<Presentation[]>([]);
 const loading = ref<boolean>(true);
 
-remote.post('speaker/presentations', { id: props.speaker_id }).then((res: Response<{ presentations: Presentation[] }>) => {
+let endpoint = 'speaker/presentations';
+if (!props.speaker_id) {
+    endpoint = 'presentation/events';
+}
+
+
+
+remote.post(endpoint, { id: props.speaker_id }).then((res: Response<{ presentations: Presentation[] }>) => {
     presentations.value = res.presentations;
     loading.value = false;
 }).send();
@@ -53,7 +60,11 @@ async function createConfirm() {
 
 async function editConfirm() {
     const { presentation }: { presentation: Presentation } = await remote.post("presentation/edit", toRaw(toEdit.value)!!).unwrap().send();
-    Object.assign(presentations.value.find(predicateByID(presentation.id!!))!!, presentation);
+    if (presentation.speaker_id != props.speaker_id) {
+        presentations.value.splice(presentations.value.findIndex(predicateByID(presentation.id!!))!!, 1);
+    } else {
+        Object.assign(presentations.value.find(predicateByID(presentation.id!!))!!, presentation);
+    }
 }
 
 async function editDelete() {

@@ -1,5 +1,6 @@
 import '@/styles/main.scss'
 
+
 import { createApp } from 'vue'
 import { createPinia, type Store } from 'pinia'
 
@@ -8,8 +9,11 @@ import router from './router'
 
 import LocalStorage from '@/lib/util/LocalStorage'
 
+import InlineSvg from 'vue-inline-svg';
+
 const app = createApp(App)
 
+app.component('inline-svg', InlineSvg);
 app.use(createPinia())
 app.use(router)
 

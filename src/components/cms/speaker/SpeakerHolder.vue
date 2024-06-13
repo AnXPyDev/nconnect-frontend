@@ -5,6 +5,7 @@ import { type Speaker } from '@/lib/remote/Models';
 import { getResourceURL } from '@/lib/remote/Util';
 
 import PresentationsManager from '@/components/cms/presentation/PresentationsManager.vue';
+import ContactHolder from '@/components/cms/contact/ContactHolder.vue';
 
 const props = defineProps<{
     speaker: Speaker
@@ -37,9 +38,10 @@ const showImage = ref<boolean>(false);
             <div v-if="showImage && speaker.image_id" class="image">
                 <img :src="getResourceURL(speaker.image_id)"/>
             </div>
-            <div class="description">
+            <div v-if="speaker.description" class="description">
                 {{ speaker.description }}
             </div>
+            <ContactHolder v-if="speaker.contact" :contact="speaker.contact"></ContactHolder>
         </div>
 
         <PresentationsManager v-if="showPresentations && speaker.id" :speaker_id="speaker.id"/>
@@ -54,45 +56,7 @@ const showImage = ref<boolean>(false);
 
 .speaker {
     @include mixins.cmspanel;
-
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    gap: 0.5em;
-
-    > .header {
-        display: flex;
-        gap: 0.5em;
-        align-items: center;
-
-        font-size: 1.2em;
-
-        > .id {
-            opacity: 75%;
-            font-size: 0.75em;
-        }
-
-        > .icon-button {
-            cursor: pointer;
-
-            &:hover {
-                color: var(--clr-primary);
-            }
-        }
-
-
-    }
-
-    > .details {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5em;
-
-        > .image > img {
-            max-width: min(200px, 100%);
-
-        }
-    }
+    @include mixins.cmsitem;
 }
 
 </style>

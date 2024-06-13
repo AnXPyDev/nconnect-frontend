@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import WelcomePresentation from '@/components/ui/presentation/WelcomePresentation.vue';
-
 </script>
 
 <template>
 
-    <WelcomePresentation></WelcomePresentation>
     <div class="content-container">
         <div class="content">
+            <h1>Partneri</h1>
         </div>
     </div>
 
