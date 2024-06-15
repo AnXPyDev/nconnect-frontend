@@ -1,13 +1,11 @@
 <script setup lang="ts">
+import PageHeader from '@/components/ui/PageHeader.vue';
+
 </script>
 
 <template>
 
-    <div class="content-container">
-        <div class="content">
-            <h1>Partneri</h1>
-        </div>
-    </div>
+    <PageHeader location="PARTNERI"></PageHeader>
 
 </template>
 

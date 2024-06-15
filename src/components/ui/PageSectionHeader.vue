@@ -10,24 +10,21 @@
 
 <style scoped lang="scss">
 .page-section-header {
-    --color: var(--clr-primary);
-
     display: flex;
     gap: 0.4em;
     padding-block: 1em;
     align-items: center;
-
-    color: var(--color);
     
     font-size: 1.5em;
 
     > .bar {
         height: 0.75em;
         width: 2px;
-        background-color: var(--color);
+        background-color: currentColor;
     }
 
     > .title {
+        text-transform: uppercase;
         font-weight: 900;
     }
 }

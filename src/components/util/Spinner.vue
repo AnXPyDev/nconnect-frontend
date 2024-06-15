@@ -8,6 +8,8 @@
   box-sizing: border-box;
 }
 .lds-ellipsis {
+  align-self: center;
+  justify-self: center;
   display: inline-block;
   position: relative;
   width: 80px;

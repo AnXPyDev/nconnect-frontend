@@ -1,0 +1,9 @@
+$align: 2rem;
+$time-col-width: 15rem;
+
+@mixin time-col {
+    max-width: $time-col-width;
+    min-width: $time-col-width;
+}
+
+$row-height: 4rem;

@@ -12,7 +12,7 @@ import PageSectionHeader from '@/components/ui/PageSectionHeader.vue';
     <div class="content-container">
         <div class="content">
 
-            <PageSectionHeader>KONTAKT</PageSectionHeader>
+            <PageSectionHeader class="section-header">KONTAKT</PageSectionHeader>
         </div>
 
     </div>
@@ -21,4 +21,9 @@ import PageSectionHeader from '@/components/ui/PageSectionHeader.vue';
 </template>
 
 <style scoped lang="scss">
+
+.section-header {
+    color: var(--clr-primary);
+}
+
 </style>

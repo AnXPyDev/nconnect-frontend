@@ -1,40 +1,38 @@
 <script setup lang="ts">
 
 import type { Testimonial } from '@/lib/remote/Models';
-import { getResourceURL } from '@/lib/remote/Util';
+import { getResourceURL, getThumbnailURL } from '@/lib/remote/Util';
 import { ref } from 'vue';
 
 import TestimonialHolder from './Testimonial.vue';
+import PageSectionHeader from '../ui/PageSectionHeader.vue';
+import remote from '@/lib/remote/Remote';
+import type { Response } from '@/lib/remote/RequestBuilder';
+import Spinner from '../util/Spinner.vue';
 
-const drlik = {
-    author: "Martin Drlík - prodekan FPVaI UKF",
-    description: "Táto konferencia predstavuje vynikajúcu príležitosť pre našich študentov, aby sa nielen zoznámili s najnovšími trendmi v oblasti informatiky, ale aj naviazali cenné kontakty s profesionálmi z praxe.",
-    image_id: 2
-};
 
-const testimonials = ref<Testimonial[]>([drlik, drlik, drlik, drlik]);
+const loading = ref<boolean>(true);
+const testimonials = ref<Testimonial[]>([]);
+let selectedTestimonials = ref<Testimonial[]>([]);
 
-let selectedTestimonials = ref<Testimonial[]>([testimonials.value[0], testimonials.value[1]]);
+remote.post("testimonial/index").then((res: Response<{ testimonials: Testimonial[] }>) => {
+    testimonials.value = res.testimonials;
+    selectedTestimonials.value = [
+        testimonials.value[0],
+        testimonials.value[0]
+    ];
+    loading.value = false;
+}).send();
 
-const holder1 = ref<any>();
-const holder2 = ref<any>();
-
-const holders = [holder1, holder2];
+const holderClasses = ref<string[]>(["", "away"]);
 let index = 0;
 
 function selectTestimonial(t: Testimonial) {
     const ni = (index + 1) % 2;
 
     selectedTestimonials.value[ni] = t;
-
-
-    const current: HTMLElement = holders[index].value.$el;
-    const next: HTMLElement = holders[ni].value.$el;
-
-    console.log(current, next);
-
-    current.classList.add("away");
-    next.classList.remove("away");
+    holderClasses.value[ni] = "";
+    holderClasses.value[index] = "away";
 
     index = ni;
 }
@@ -49,19 +47,18 @@ function selectTestimonial(t: Testimonial) {
     </div>
 
     <div class="content">
-        <div class="top">
-            <span class="title">Povedali o nás</span>
-        </div>
+        <PageSectionHeader class="section-header">Povedali o nás</PageSectionHeader>
         <div class="bottom">
             <div class="selector">
                 <div v-for="t in testimonials" class="button">
-                    <img @click="selectTestimonial(t)" :src="getResourceURL(t.image_id!!)"/>
+                    <img @click="selectTestimonial(t)" :src="getThumbnailURL(t.image_id)"/>
                 </div>
             </div>
 
-            <div class="items">
-                <TestimonialHolder :testimonial="selectedTestimonials[0]" ref="holder1"/>
-                <TestimonialHolder class="away" :testimonial="selectedTestimonials[1]" ref="holder2"/>
+            <Spinner v-if="loading"></Spinner>
+            <div v-else class="items">
+                <TestimonialHolder :class="holderClasses[0]" :testimonial="selectedTestimonials[0]"/>
+                <TestimonialHolder :class="holderClasses[1]" :testimonial="selectedTestimonials[1]"/>
             </div>
         </div>
     </div>
@@ -69,8 +66,12 @@ function selectTestimonial(t: Testimonial) {
 </template>
 
 <style scoped lang="scss">
+
+@use '@/styles/lib/media';
+
 .testimonials {
     position: relative;
+
     > .background {
         position: absolute;
         width: 100%;
@@ -90,23 +91,26 @@ function selectTestimonial(t: Testimonial) {
         display: flex;
         flex-direction: column;
         justify-content: center;
-        height: 100%;
         color: var(--clr-fg-inv);
         gap: 1em;
 
-        > .top {
-            > .title {
-                text-transform: uppercase;
-                font-size: 1.5em;
-                font-weight: 900;
-            }
+        height: 50vh;
+
+        @include media.phone {
+            height: auto;
         }
 
         > .bottom {
             display: flex;
             flex-direction: row;
-            height: 75%;
+            flex-grow: 1;
+
             gap: 3em;
+            
+            @include media.phone {
+                flex-direction: column;
+                height: 100vh;
+            }
 
 
 
@@ -164,7 +168,5 @@ function selectTestimonial(t: Testimonial) {
             }
         }
     }
-
-    height: 75vh;
 }
 </style>

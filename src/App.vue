@@ -6,6 +6,7 @@ import { ref } from 'vue';
 import InfoBar from '@/components/ui/InfoBar.vue';
 import Header from '@/components/ui/Header.vue';
 import Footer from '@/components/ui/Footer.vue';
+import FooterBar from './components/ui/FooterBar.vue';
 
 const auth = useAuth();
 
@@ -38,6 +39,7 @@ function logout() {
     <RouterView></RouterView>
 
     <Footer />
+    <FooterBar />
 
     <!-- services -->
 </template>

@@ -1,3 +1,8 @@
+<script setup lang="ts">
+import MailLink from './misc/MailLink.vue';
+import PhoneLink from './misc/PhoneLink.vue';
+</script>
+
 <template>
     <div class="info-bar content-container">
         <div class="content">
@@ -6,9 +11,9 @@
             </div>
 
             <div class="right">
-                <span><i class="fa-solid fa-phone"></i>&nbsp; +421 902 170 744</span>
+                <PhoneLink/>
                 &nbsp;&nbsp;
-                <span><i class="fa-solid fa-envelope"></i>&nbsp; info@nconnect.sk</span>
+                <MailLink/>
             </div>
         </div>
     </div>

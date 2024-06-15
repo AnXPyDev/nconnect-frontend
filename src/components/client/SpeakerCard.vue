@@ -1,33 +1,38 @@
+<script setup lang="ts">
+import type { Speaker } from '@/lib/remote/Models';
+import { getResourceURL, getThumbnailURL } from '@/lib/remote/Util';
+import ContactIcons from './ContactIcons.vue';
+
+
+const props = defineProps<{
+    speaker: Speaker
+}>();
+
+</script>
+
 <template>
     <div class="speaker-card">
         <div class="top">
             <div class="image">
-                <img src="https://nconnect.sk/images/speakers/Gymbeam.jpg"/>
+                <img :src="getThumbnailURL(speaker.image_id)"/>
             </div>
             <div class="overlay">
                 <div class="description">
-                    <div class="text">
-Zakladateľ a CEO GymBeam, od roku 2014 transformoval trh so športovou výživou na e-commerce platformu pôsobiacu v 16 krajinách s ročnými tržbami presahujúcimi 100 miliónov Eur.
-
-Ako nositeľ ocenení Forbes "30 pod 30" a YT Podnikateľ roka 2024, Dalibor presadzuje význam dátovo riadeného prístupu, inovačnej kultúry a tímovej spolupráce pri budovaní značky.
-                    </div>
+                    <div class="text">{{ speaker.description }}</div>
                     <div class="controls">
                         <span class="about-link">Viac o mne</span>
                     </div>
                 </div>
 
                 <div class="tag">
-                    <a>GymBeam</a>
+                    <a>{{ speaker.metadata.company }}</a>
                 </div>
 
-                <div class="links">
-                    <i class="icon-button fa-brands fa-instagram"></i>
-                    <i class="icon-button fa-brands fa-facebook"></i>
-                </div>
+                <ContactIcons class="links" :metadata="speaker.metadata" />
             </div>
         </div>
         <div class="bottom">
-            <span>DALIBOR CICMAN</span>
+            <span class="name">{{ speaker.name }}</span>
         </div>
     </div>
 </template>
@@ -35,21 +40,24 @@ Ako nositeľ ocenení Forbes "30 pod 30" a YT Podnikateľ roka 2024, Dalibor pre
 <style scoped lang="scss">
     .speaker-card {
         $pad: 0.5rem;
+        $align: calc(4 * $pad);
         $sidew: 2rem;
 
         aspect-ratio: 3/4;
-
-        border: solid 1px black;
 
         display: flex;
         flex-direction: column;
 
         > .bottom {
             flex-grow: 1;
-            padding: 0.5em;
             color: var(--clr-primary);
             font-weight: 900;
             padding: 1.5em;
+            padding-left: $align;
+
+            > .name {
+                text-transform: uppercase;
+            }
         }
 
         > .top {
@@ -91,7 +99,7 @@ Ako nositeľ ocenení Forbes "30 pod 30" a YT Podnikateľ roka 2024, Dalibor pre
 
                 > .description {
                     position: absolute;
-                    padding: 1.5em;
+                    padding: calc($align - $pad);
                     top: calc(-2 * $pad);
                     left: calc(-2 * $pad);
                     width: calc(100% - 3 * $pad - $sidew);
@@ -129,7 +137,8 @@ Ako nositeľ ocenení Forbes "30 pod 30" a YT Podnikateľ roka 2024, Dalibor pre
                     position: absolute;
                     display: flex;
                     align-items: center;
-                    left: $pad;
+                    font-weight: 900;
+                    left: $align;
                     bottom: calc(-1 * $sidew - $pad);
                     height: $sidew;
                     opacity: 0%;
@@ -147,16 +156,6 @@ Ako nositeľ ocenení Forbes "30 pod 30" a YT Podnikateľ roka 2024, Dalibor pre
                     width: $sidew;
                     font-size: 1.2em;
                     opacity: 0%;
-
-                    > .icon-button {
-                        opacity: 80%;
-                        transition: 0.25s all ease;
-
-                        &:hover {
-                            cursor: pointer;
-                            opacity: 100%;
-                        }
-                    }
                 }
 
                 > .tag, > .links {

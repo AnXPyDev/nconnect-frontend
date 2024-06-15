@@ -8,8 +8,6 @@ export interface Admin {
 export interface User {
 }
 
-export type Contact = { [key: string]: object | string };
-
 export interface Resource {
     id?: number
     name: string
@@ -32,8 +30,12 @@ export interface Stage {
 }
 
 export interface SpeakerMetadata {
-    company?: string
-    contact?: Contact
+    company?: {
+        name: string
+        link?: string
+    }
+    contact?: { [key: string]: string }
+    subtitle?: string
 }
 
 export interface Speaker {

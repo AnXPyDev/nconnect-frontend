@@ -75,3 +75,7 @@
     opacity: 50%;
     object-fit: cover; 
 }
+
+@mixin card-shadow {
+    box-shadow: 0 1px 2px rgba(43, 59, 93, 0.29);
+}

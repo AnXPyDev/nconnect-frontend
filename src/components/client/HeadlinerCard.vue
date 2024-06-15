@@ -1,23 +1,32 @@
+<script setup lang="ts">
+import type { Headliner } from '@/lib/remote/Models';
+import { getResourceURL, getThumbnailURL } from '@/lib/remote/Util';
+import ContactIcons from './ContactIcons.vue';
+
+
+const props = defineProps<{
+    headliner: Headliner
+}>();
+
+</script>
+
 <template>
 
-<div class="headliner-card">
+<div v-if="headliner.speaker && headliner.stage" class="headliner-card">
 
     <div class="left">
-        <img src="https://nconnect.sk/images/speakers/Gymbeam.jpg"/>
+        <img :src="getThumbnailURL(headliner.speaker.image_id)"/>
         <div class="overlay">
-            <div class="links">
-                <i class="icon-button fa-brands fa-instagram"></i>
-                <i class="icon-button fa-brands fa-facebook"></i>
-            </div>
+            <ContactIcons :metadata="headliner.speaker.metadata" class="links"></ContactIcons>
         </div>
 
     </div>
 
     <div class="right">
-        <div class="stage">AI&DATA STAGE</div>
-        <div class="name">DALIBOR CICMAN</div>
+        <div class="stage">{{ headliner.stage.name }}</div>
+        <div class="name">{{ headliner.speaker.name }}</div>
         <div class="description">
-Zakladateľ a CEO GymBeam, od roku 2014 transformoval trh so športovou výživou na e-commerce platformu pôsobiacu v 16 krajinách s ročnými tržbami presahujúcimi 100 miliónov Eur.
+            {{ headliner.speaker.description }}
         </div>
         <span class="about-link">Viac o mne</span>
     </div>
@@ -38,15 +47,15 @@ Zakladateľ a CEO GymBeam, od roku 2014 transformoval trh so športovou výživo
     }
 
     > .right {
+        height: 100%;
         display: flex;
         flex-direction: column;
+        justify-content: start;
         align-items: start;
+        max-height: 100%;
+        gap: 0.5em;
 
         padding: 2em;
-
-        > div {
-            margin-bottom: 0.5em;
-        }
 
         > .name {
             font-size: 1.5em;
@@ -56,6 +65,8 @@ Zakladateľ a CEO GymBeam, od roku 2014 transformoval trh so športovou výživo
 
         > .description {
             line-height: 1.75em;
+            flex-grow: -1;
+            overflow: hidden;
         }
 
         > .about-link {
@@ -100,16 +111,6 @@ Zakladateľ a CEO GymBeam, od roku 2014 transformoval trh so športovou výživo
                 gap: 1em;
                 align-items: center;
                 font-size: 1.2em;
-
-                > .icon-button {
-                    opacity: 80%;
-                    transition: 0.25s all ease;
-
-                    &:hover {
-                        cursor: pointer;
-                        opacity: 100%;
-                    }
-                }
             }
         }
 
