@@ -2,6 +2,8 @@
 import type { Speaker } from '@/lib/remote/Models';
 import { getResourceURL, getThumbnailURL } from '@/lib/remote/Util';
 import ContactIcons from './ContactIcons.vue';
+import Link from '@/components/ui/misc/Link.vue';
+import CompanyLink from './CompanyLink.vue';
 
 
 const props = defineProps<{
@@ -25,10 +27,10 @@ const props = defineProps<{
                 </div>
 
                 <div class="tag">
-                    <a>{{ speaker.metadata.company }}</a>
+                    <CompanyLink :company="speaker.metadata.company"/>
                 </div>
 
-                <ContactIcons class="links" :metadata="speaker.metadata" />
+                <ContactIcons class="links" :contact="speaker.metadata.contact" />
             </div>
         </div>
         <div class="bottom">

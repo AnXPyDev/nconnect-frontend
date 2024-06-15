@@ -5,10 +5,10 @@ import { getResourceURL, getThumbnailURL } from '@/lib/remote/Util';
 import { ref } from 'vue';
 
 import TestimonialHolder from './Testimonial.vue';
-import PageSectionHeader from '../ui/PageSectionHeader.vue';
+import PageSectionHeader from '@/components/ui/PageSectionHeader.vue';
 import remote from '@/lib/remote/Remote';
 import type { Response } from '@/lib/remote/RequestBuilder';
-import Spinner from '../util/Spinner.vue';
+import Spinner from '@/components/util/Spinner.vue';
 
 
 const loading = ref<boolean>(true);

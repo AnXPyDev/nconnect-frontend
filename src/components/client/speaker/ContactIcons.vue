@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import type { SpeakerMetadata } from '@/lib/remote/Models';
+import type { Contact } from '@/lib/remote/Models';
 
 
 const props = defineProps<{
-    metadata: SpeakerMetadata
+    contact?: Contact
 }>();
 
 const map: { [key: string]: string } = {
     "facebook": "fa-brands fa-facebook",
     "instagram": "fa-brands fa-instagram",
-    "twitter": "fa-brands fa-x-twitter"
+    "twitter": "fa-brands fa-x-twitter",
+    "linkedin": "fa-brands fa-linkedin"
 }
 
 function getIcon(name: string) {
@@ -19,8 +20,8 @@ function getIcon(name: string) {
 </script>
 
 <template>
-    <div v-if="metadata.contact">
-        <a v-for="link, name in metadata.contact" target="_blank" class="contact-icon" :href="link">
+    <div v-if="contact">
+        <a v-for="link, name in contact" target="_blank" class="contact-icon" :href="link">
             <i :class="getIcon(name as string)"></i>
         </a>
     </div>

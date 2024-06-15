@@ -17,7 +17,7 @@ const props = defineProps<{
     <div class="left">
         <img :src="getThumbnailURL(headliner.speaker.image_id)"/>
         <div class="overlay">
-            <ContactIcons :metadata="headliner.speaker.metadata" class="links"></ContactIcons>
+            <ContactIcons :contact="headliner.speaker.metadata.contact" class="links"></ContactIcons>
         </div>
 
     </div>

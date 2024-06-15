@@ -3,6 +3,7 @@ export enum AuthType {
 }
 
 export interface Admin {
+    username: string
 }
 
 export interface User {
@@ -29,12 +30,15 @@ export interface Stage {
     name: string
 }
 
+export type Contact = { [key: string]: string };
+export interface Company {
+    name: string,
+    link?: string
+}
+
 export interface SpeakerMetadata {
-    company?: {
-        name: string
-        link?: string
-    }
-    contact?: { [key: string]: string }
+    company?: Company
+    contact?: Contact
     subtitle?: string
 }
 

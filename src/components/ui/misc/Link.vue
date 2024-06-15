@@ -1,18 +1,18 @@
 <script setup lang="ts">
 
 const props = defineProps<{
-    href: string
+    href?: string
 }>();
 
 </script>
 
 <template>
-    <a class="link" :href="href"><slot></slot></a>
+    <a class="link" target="_blank" :href="href"><slot></slot></a>
 </template>
 
 <style scoped lang="scss">
 .link {
-    &:hover {
+    &[href]:hover {
         text-decoration: underline;
     }
 }

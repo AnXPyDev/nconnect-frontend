@@ -3,6 +3,7 @@ import type { Timeslot } from '@/lib/remote/Models';
 import { getThumbnailURL } from '@/lib/remote/Util';
 import { format, parseISO } from 'date-fns';
 import { computed } from 'vue';
+import CompanyLink from '@/components/client/speaker/CompanyLink.vue';
 
 const props = defineProps<{
     timeslot: Timeslot
@@ -43,18 +44,20 @@ const imageURL = computed(() => {
         <div v-if="timeslot.presentation" class="presentation">
             <div class="inner">
                 <div class="left">
-                    <img :src="imageURL"/>
+                    <img :src="imageURL" />
                 </div>
                 <div class="right">
                     <div class="description">
-                        {{ timeslot.presentation.description }} 
+                        {{ timeslot.presentation.description }}
                     </div>
                     <div class="bottom" v-if="timeslot.presentation.speaker">
                         <div class="name">
                             <span class="strong">SPEAKER:</span>&nbsp; {{ timeslot.presentation.speaker.name }}
                         </div>
                         <div class="company">
-                            <span class="strong">{{ timeslot.presentation.speaker.metadata.company }}</span>
+                            <span class="strong">
+                                <CompanyLink :company="timeslot.presentation.speaker.metadata.company"/>
+                            </span>
                         </div>
                     </div>
                 </div>

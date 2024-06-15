@@ -8,48 +8,33 @@ import Header from '@/components/ui/Header.vue';
 import Footer from '@/components/ui/Footer.vue';
 import FooterBar from './components/ui/FooterBar.vue';
 
-const auth = useAuth();
-
-function login() {
-    remote.loginAdmin(); 
-}
-
-function logout() {
-    remote.logoutAdmin();
-}
-
 </script>
 
 <template>
-    <div class="debug-bar content-container">
-        <div class="content">
-            <template v-if="auth.auth">
-                auth {{ auth.auth }} token {{ auth.token }}
-                <button @click="logout">logout</button>
-            </template>
-            <template v-else>
-                <button @click="login">login</button>
-            </template>
+    <div class="fullscreen">
+        <div class="top">
+            <InfoBar />
+            <Header />
+
+            <RouterView></RouterView>
+        </div>
+        <div class="bottom">
+            <Footer />
+            <FooterBar />
         </div>
     </div>
 
-    <InfoBar />
-    <Header />
-
-    <RouterView></RouterView>
-
-    <Footer />
-    <FooterBar />
 
     <!-- services -->
 </template>
 
 <style lang="scss" scoped>
 
-.debug-bar {
-    background-color: lightcoral;
-    color: black;
-    padding-block: 1em;
+.fullscreen {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    justify-content: space-between;
 }
 
 </style>

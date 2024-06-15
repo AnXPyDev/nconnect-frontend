@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Schedule from '@/components/client/schedule/ScheduleTable.vue';
-import SpeakersList from '@/components/client/SpeakersList.vue';
-import Testimonials from '@/components/client/Testimonials.vue';
+import SpeakersList from '@/components/client/speaker/SpeakersList.vue';
+import TestimonialsList from '@/components/client/testimonials/TestimonialsList.vue';
 import AboutSection from '@/components/ui/AboutSection.vue';
 import PageSectionHeader from '@/components/ui/PageSectionHeader.vue';
 import WelcomePresentation from '@/components/ui/presentation/WelcomePresentation.vue';
@@ -45,7 +45,7 @@ remote.post("speaker/index").then((res: Response<{ speakers: Speaker[] }>) => {
             </div>
         </div>
     </div>
-    <Testimonials></Testimonials>
+    <TestimonialsList/>
 
 
 </template>
