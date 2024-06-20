@@ -1,6 +1,16 @@
 <script setup lang="ts">
 import MailLink from './misc/MailLink.vue';
 import PhoneLink from './misc/PhoneLink.vue';
+import Link from './misc/Link.vue';
+import { useState } from '@/stores/state';
+import type { Contact } from '@/lib/remote/Models';
+import ContactIcons from '../client/util/ContactIcons.vue';
+import { defaultContact, defaultLocationFull, defaultSubtitle } from '@/lib/fallbackData';
+import LocationLink from './misc/LocationLink.vue';
+
+const state = useState();
+
+
 </script>
 
 <template>
@@ -8,21 +18,17 @@ import PhoneLink from './misc/PhoneLink.vue';
         <div class="content">
             <div class="section">
                 <RouterLink to="/"><img class="logo" src="@/assets/images/nconnect-text-white.svg"/></RouterLink>
-                <span>Spájame IT komunity</span>
-                <div class="links">
-                    <a class="icon-button" target="_blank" href="https://www.facebook.com/nconnectsk/"><i class="fa-brands fa-facebook"></i></a>
-                    <a class="icon-button" target="_blank" href="https://www.instagram.com/nconnect_sk/"><i class="fa-brands fa-instagram"></i></a>
-                    <a class="icon-button" target="_blank" href="https://www.linkedin.com/company/nconnectsk/"><i class="fa-brands fa-linkedin"></i></a>
-                </div>
+                <span>{{ state.conference?.subtitle ?? defaultSubtitle }}</span>
+                <ContactIcons class="links" :ignore="['phone', 'email']" :contact="state.conference?.contact ?? defaultContact"></ContactIcons>
             </div>
             <div class="section">
-                <span><i class="fa-solid fa-location-dot"></i>&nbsp; Študentské centrum UKF Dražovská 2, Nitra</span>
+                <LocationLink/>
                 <MailLink/>
                 <PhoneLink/>
             </div>
             <div class="section">
-                <a class="link"><i class="fa-solid fa-graduation-cap"></i>&nbsp; Fakulta prírodných vied a informatiky UKF v Nitre</a>
-                <RouterLink to="/" class="link"><i class="fa-solid fa-user-lock"></i>&nbsp; Ochrana osobných údajov</RouterLink>
+                <Link href="https://www.fpvai.ukf.sk/sk/"><i class="fa-solid fa-graduation-cap"></i>&nbsp; Fakulta prírodných vied a informatiky UKF v Nitre</Link>
+                <RouterLink to="/page/privacy" class="link"><i class="fa-solid fa-user-lock"></i>&nbsp; Ochrana osobných údajov</RouterLink>
             </div>
         </div>
     </div>
@@ -61,16 +67,6 @@ import PhoneLink from './misc/PhoneLink.vue';
                 display: flex;
                 font-size: 1.2em;
                 gap: 0.75em;
-
-                > .icon-button {
-                    opacity: 75%;
-                    transition: 0.5s all ease;
-
-                    &:hover {
-                        opacity: 100%;
-                    }
-                }
-
             }
 
             > .link {

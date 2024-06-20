@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import type { Headliner } from '@/lib/remote/Models';
 import { getResourceURL, getThumbnailURL } from '@/lib/remote/Util';
-import ContactIcons from './ContactIcons.vue';
+import ContactIcons from '../util/ContactIcons.vue';
+import SpeakerShowcase from './SpeakerShowcase.vue';
+import { ref } from 'vue';
 
 
 const props = defineProps<{
     headliner: Headliner
 }>();
+
+const showcase = ref(false);
 
 </script>
 
@@ -17,7 +21,7 @@ const props = defineProps<{
     <div class="left">
         <img :src="getThumbnailURL(headliner.speaker.image_id)"/>
         <div class="overlay">
-            <ContactIcons :contact="headliner.speaker.metadata.contact" class="links"></ContactIcons>
+            <ContactIcons :contact="headliner.speaker.contact" class="links"></ContactIcons>
         </div>
 
     </div>
@@ -28,9 +32,10 @@ const props = defineProps<{
         <div class="description">
             {{ headliner.speaker.description }}
         </div>
-        <span class="about-link">Viac o mne</span>
+        <span @click="showcase=true" class="about-link">Viac o mne</span>
     </div>
 
+    <SpeakerShowcase class="showcase" v-if="showcase" @close="showcase=false" :speaker="headliner.speaker" />
 </div>
 
 </template>
@@ -41,7 +46,7 @@ const props = defineProps<{
 
     height: 400px;
 
-    > div {
+    > div:not(.showcase) {
         width: 50%;
         height: 100%;
     }
@@ -110,7 +115,7 @@ const props = defineProps<{
                 display: flex;
                 gap: 1em;
                 align-items: center;
-                font-size: 1.2em;
+                font-size: 1.5em;
             }
         }
 

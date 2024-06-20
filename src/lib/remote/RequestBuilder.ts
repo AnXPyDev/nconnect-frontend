@@ -43,9 +43,9 @@ export class ResponseHandler {
 
         if (!handler) {
             if (code != ApiCodes.Ok && this.nonzeroHandler) {
-                handler = this.nonzeroHandler(response);
+                handler = this.nonzeroHandler;
             } else if (this.anyHandler) {
-                handler = this.anyHandler(response);
+                handler = this.anyHandler;
             } else if (code == ApiCodes.Ok) {
                 return response;
             } else {

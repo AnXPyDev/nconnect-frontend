@@ -12,7 +12,6 @@
 .page-section-header {
     display: flex;
     gap: 0.4em;
-    padding-block: 1em;
     align-items: center;
     
     font-size: 1.5em;

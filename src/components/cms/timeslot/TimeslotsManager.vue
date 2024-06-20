@@ -10,6 +10,7 @@ import { predicateByID } from '@/lib/util/Snippets';
 import { RequestFailedError, ResponseHandler, type FailResponse, type Response } from '@/lib/remote/RequestBuilder';
 import ApiCodes from '@/lib/remote/Codes';
 import Spinner from '@/components/util/Spinner.vue';
+import { formatISO } from 'date-fns';
 
 
 const props = defineProps<{
@@ -37,9 +38,9 @@ function create() {
     reset();
     toCreate.value = {
         stage_id: props.stage_id,
-        start_at: "",
-        end_at: "",
-        presentation_id: NaN
+        start_at: formatISO(Date.now()),
+        end_at: formatISO(Date.now()),
+        presentation_id: undefined
     };
 }
 

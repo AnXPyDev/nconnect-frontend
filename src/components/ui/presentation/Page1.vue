@@ -1,6 +1,12 @@
 <script setup lang="ts">
+import { useState } from '@/stores/state';
 import Page from './Page.vue';
 import Button from '@/components/util/Button.vue';
+import { computed } from 'vue';
+import { presentationDateFormat } from '@/lib/formats';
+
+const state = useState();
+
 </script>
 
 <template>
@@ -10,9 +16,9 @@ import Button from '@/components/util/Button.vue';
         </template>
         <template v-slot:content>
             <div class="content">
-                <span class="date">14 MAREC 2024, NITRA</span>
-                <span class="desc">TECH KONFERENCIA PRE ŠTUDENTOV V NITRE</span>
-                <span class="title">nCONNECT24</span>
+                <span class="date">{{ presentationDateFormat(state.conference!!.date) }} , {{ state.conference!!.location_city }}</span>
+                <span class="desc">{{ state.conference!!.presentation_subtitle }}</span>
+                <span class="title">{{ state.conference!!.presentation_title }}</span>
                 <div class="buttons">
                     <Button>PROGRAM KONFERENCIE</Button> 
                     <Button>SPEAKERS</Button> 
@@ -40,6 +46,10 @@ import Button from '@/components/util/Button.vue';
     align-items: start;
     gap: 1em;
 
+    > span {
+        text-transform: uppercase;
+    }
+
     > .date {
         font-size: 1.5em;
         font-weight: 300;
@@ -57,6 +67,7 @@ import Button from '@/components/util/Button.vue';
     > .title {
         font-size: 6em;
         font-weight: 900;
+        text-transform: none;
 
         @include media.phone { font-size: 4em; }
     }

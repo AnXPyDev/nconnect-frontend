@@ -15,10 +15,6 @@ class Remote {
         console.log("ApiRemote constructor");
     }
 
-    init() {
-        return this.post("ping").send();
-    }
-
     private async postInternal(endpoint: string, data: object, headers_: object = tokenHeader()) {
         const headers = {
             Accept: "application/json",

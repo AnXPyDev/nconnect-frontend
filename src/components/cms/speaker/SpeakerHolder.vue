@@ -17,6 +17,7 @@ defineEmits<{
 
 const showPresentations = ref<boolean>(false);
 const showImage = ref<boolean>(false);
+const showMetadata = ref<boolean>(false);
 
 </script>
 
@@ -30,6 +31,7 @@ const showImage = ref<boolean>(false);
             <i @click="$emit('edit')" class="icon-button fa-solid fa-pen"></i>
 
             <i @click="showPresentations = !showPresentations" class="icon-button fa-solid fa-presentation"></i>
+            <i @click="showMetadata = !showMetadata" class="icon-button fa-solid fa-circle-info"></i>
 
             <i v-if="speaker.image_id" @click="showImage = !showImage" class="icon-button fa-solid fa-image"></i>
         </div>
@@ -41,7 +43,13 @@ const showImage = ref<boolean>(false);
             <div v-if="speaker.description" class="description">
                 {{ speaker.description }}
             </div>
-            <ContactHolder v-if="speaker.contact" :contact="speaker.contact"></ContactHolder>
+
+            <template v-if="showMetadata">
+                <span class="company" v-if="speaker.company">Company: {{ speaker.company.name }} {{ speaker.company.link }}</span>
+                <span class="subtitle" v-if="speaker.subtitle">Subtitle: {{ speaker.subtitle }}</span>
+                <ContactHolder v-if="speaker.contact" :contact="speaker.contact"></ContactHolder>
+            </template>
+
         </div>
 
         <PresentationsManager v-if="showPresentations && speaker.id" :speaker_id="speaker.id"/>

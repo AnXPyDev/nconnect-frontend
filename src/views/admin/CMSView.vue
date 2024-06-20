@@ -8,6 +8,9 @@ import TestimonialsManager from '@/components/cms/testimonial/TestimonialsManage
 import HeadlinersManager from '@/components/cms/headliner/HeadlinersManager.vue';
 import SponsorsManager from '@/components/cms/sponsor/SponsorsManager.vue';
 import PresentationsManager from '@/components/cms/presentation/PresentationsManager.vue';
+import OrganizersManager from '@/components/cms/organizer/OrganizersManager.vue';
+import QnasManager from '@/components/cms/qna/QnasManager.vue';
+import ConferenceManager from '@/components/cms/conference/ConferenceManager.vue';
 
 </script>
 
@@ -17,6 +20,18 @@ import PresentationsManager from '@/components/cms/presentation/PresentationsMan
             <Section class="content">
                 <template v-slot:title>Galleries / Images</template>
                 <GalleriesManager />
+            </Section>
+        </div>
+        <div class="section content-container">
+            <Section class="content">
+                <template v-slot:title>Conference</template>
+                <ConferenceManager />
+            </Section>
+        </div>
+        <div class="section content-container">
+            <Section class="content">
+                <template v-slot:title>QnA</template>
+                <QnasManager />
             </Section>
         </div>
         <div class="section content-container">
@@ -57,6 +72,12 @@ import PresentationsManager from '@/components/cms/presentation/PresentationsMan
         </div>
         <div class="section content-container">
             <Section class="content">
+                <template v-slot:title>Organizers</template>
+                <OrganizersManager />
+            </Section>
+        </div>
+        <div class="section content-container">
+            <Section class="content">
                 <template v-slot:title>Pages</template>
                 <h2>pages</h2>
             </Section>
@@ -72,13 +93,6 @@ import PresentationsManager from '@/components/cms/presentation/PresentationsMan
             }
 
             padding-block: 1em;
-
-            > .content {
-
-                > .title {
-                }
-
-            }
         }
     }
 </style>

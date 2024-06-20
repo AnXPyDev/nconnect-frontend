@@ -1,23 +1,34 @@
+<script setup lang="ts">
+import remote from '@/lib/remote/Remote';
+import { type Qna } from '@/lib/remote/Models';
+import { ref } from 'vue';
+import type { Response } from '@/lib/remote/RequestBuilder';
+import { useState } from '@/stores/state';
+
+const state = useState();
+
+const loading = ref<boolean>(true);
+const qnas = ref<Qna[]>([]);
+
+remote.post("qna/index").then((res: Response<{ qnas: Qna[] }>) => {
+    qnas.value = res.qnas;
+    loading.value = false;
+}).send();
+
+</script>
+
 <template>
     <div class="about">
         <div class="left">
             <img src="@/assets/images/about-logo.jpg"/>
         </div>
         <div class="right">
-            <div class="title">
-                Pár slov o konferencii nConnect
-            </div>
-            <div class="about">
-                Po mnohých rokoch premýšľania a plánovania sme vytvorili nConnect, jedinečnú udalosť v Nitre, ktorá spája študentov IT a popredné firmy z tohto dynamického odvetvia. Konferencia nConnect nadväzuje na dlhoročnú tradíciu formátu "IT v praxi" Fakulty prírodných vied a informatiky UKF v Nitre. Táto iniciatíva je mostom medzi novou generáciou talentov a skúsenými profesionálmi, ktorý poskytuje fórum pre vzájomnú výmenu myšlienok a inšpirácií. Naše poslanie bolo jasné: vyplniť medzeru v regionálnej komunikácii a spolupráci v IT a nConnect je hrdým výsledkom tejto vízie.
-            </div>
+            <div class="title">{{ state.conference!!.about_title }}</div>
+            <div class="about">{{ state.conference!!.about_text }}</div>
             <div class="qnas">
-                <div class="qna">
-                    <div class="title">Kto sme ?</div> 
-                    <div class="answer">Sme skupina nadšencov pre IT z akademického a súkromného sektora.</div>
-                </div>
-                <div class="qna">
-                    <div class="title">Čo chceme dosiahnuť ?</div> 
-                    <div class="answer">Vytvoriť udalosť, ktorá bude na pravidelnej báze spájať IT komunitu v Nitre.</div>
+                <div v-for="qna in qnas" class="qna">
+                    <div class="title">{{ qna.question }}</div> 
+                    <div class="answer">{{ qna.answer }}</div>
                 </div>
             </div>
         </div>

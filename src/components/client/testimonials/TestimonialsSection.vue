@@ -4,7 +4,7 @@ import type { Testimonial } from '@/lib/remote/Models';
 import { getResourceURL, getThumbnailURL } from '@/lib/remote/Util';
 import { ref } from 'vue';
 
-import TestimonialHolder from './Testimonial.vue';
+import TestimonialHolder from './TestimonialHolder.vue';
 import PageSectionHeader from '@/components/ui/PageSectionHeader.vue';
 import remote from '@/lib/remote/Remote';
 import type { Response } from '@/lib/remote/RequestBuilder';
@@ -95,6 +95,10 @@ function selectTestimonial(t: Testimonial) {
         gap: 1em;
 
         height: 50vh;
+
+        > .section-header {
+            padding-block: 1em;
+        }
 
         @include media.phone {
             height: auto;

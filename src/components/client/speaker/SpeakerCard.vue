@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import type { Speaker } from '@/lib/remote/Models';
 import { getResourceURL, getThumbnailURL } from '@/lib/remote/Util';
-import ContactIcons from './ContactIcons.vue';
-import Link from '@/components/ui/misc/Link.vue';
+import ContactIcons from '@/components/client/util/ContactIcons.vue';
 import CompanyLink from './CompanyLink.vue';
+import SpeakerShowcase from './SpeakerShowcase.vue';
+import { ref } from 'vue';
 
 
 const props = defineProps<{
     speaker: Speaker
 }>();
+
+const showcase = ref(false);
 
 </script>
 
@@ -22,20 +25,22 @@ const props = defineProps<{
                 <div class="description">
                     <div class="text">{{ speaker.description }}</div>
                     <div class="controls">
-                        <span class="about-link">Viac o mne</span>
+                        <span @click="showcase=true" class="about-link">Viac o mne</span>
                     </div>
                 </div>
 
                 <div class="tag">
-                    <CompanyLink :company="speaker.metadata.company"/>
+                    <CompanyLink :company="speaker.company"/>
                 </div>
 
-                <ContactIcons class="links" :contact="speaker.metadata.contact" />
+                <ContactIcons class="links" :contact="speaker.contact" />
             </div>
         </div>
         <div class="bottom">
             <span class="name">{{ speaker.name }}</span>
         </div>
+
+        <SpeakerShowcase v-if="showcase" @close="showcase=false" :speaker="speaker"></SpeakerShowcase>
     </div>
 </template>
 

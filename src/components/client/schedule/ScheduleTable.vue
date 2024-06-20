@@ -30,11 +30,16 @@ const selectedStage = ref<number>();
 <style scoped lang="scss">
 
 @use '@/styles/schedule-table';
+@use '@/styles/lib/media';
 
 .schedule-table {
     display: flex;
     background-color: var(--clr-primary);
     color: var(--clr-fg-on-primary);
+
+    @include media.phone {
+        flex-direction: column;
+    }
 
     > .section {
         display: flex;

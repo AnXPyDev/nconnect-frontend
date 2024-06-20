@@ -1,1 +1,11 @@
 $content-width: 1200px;
+$section-padding: 4rem;
+
+@function spread-percentage($per, $gap: 0) {
+    @return calc((100% - ($per - 1) * $gap) / $per)
+};
+
+@mixin min-max($property, $minsize, $maxsize: $minsize) {
+    min-#{$property}: $minsize;
+    max-#{$property}: $maxsize;
+};

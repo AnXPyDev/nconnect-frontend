@@ -1,14 +1,11 @@
 <script setup lang="ts">
 import PageSectionHeader from '@/components/ui/PageSectionHeader.vue';
 import PageHeader from '@/components/ui/PageHeader.vue';
-import HeadlinerCard from '@/components/client/speaker/HeadlinerCard.vue';
-import SpeakerCard from '@/components/client/speaker/SpeakerCard.vue';
 import { ref } from 'vue';
 import remote from '@/lib/remote/Remote';
 import type { Headliner, Speaker } from '@/lib/remote/Models';
 import type { Response } from '@/lib/remote/RequestBuilder';
 import Spinner from '@/components/util/Spinner.vue';
-import { predicateByID } from '@/lib/util/Snippets';
 import HeadlinersList from '@/components/client/speaker/HeadlinersList.vue';
 import SpeakersList from '@/components/client/speaker/SpeakersList.vue';
 
@@ -57,6 +54,7 @@ remote.post("speaker/index").then(async (res: Response<{ speakers: Speaker[] }>)
 .section-header {
     color: var(--clr-primary);
     margin-top: 3em;
+    padding-block: 1em;
     @include media.phone {
         margin-top: 0;
     }

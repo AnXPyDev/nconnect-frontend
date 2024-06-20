@@ -1,6 +1,11 @@
 <script setup lang="ts">
+import { useState } from '@/stores/state';
 import Page from './Page.vue';
 import Button from '@/components/util/Button.vue';
+import { presentationDateFormat } from '@/lib/formats';
+
+const state = useState();
+
 </script>
 
 <template>
@@ -10,8 +15,8 @@ import Button from '@/components/util/Button.vue';
         </template>
         <template v-slot:content>
             <div class="content">
-                <span class="date">14 MAREC 2024, NITRA</span>
-                <span class="desc">ŠTUDENTSKÉ CENTRUM UKF</span>
+                <span class="date">{{ presentationDateFormat(state.conference!!.date) }} , {{ state.conference!!.location_city }}</span>
+                <span class="desc">{{ state.conference!!.location_name }}</span>
                 <span class="title">Vidíme sa tam</span>
                 <div class="buttons">
                     <Button>SPONZORI</Button> 

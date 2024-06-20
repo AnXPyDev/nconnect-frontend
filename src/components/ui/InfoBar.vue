@@ -1,18 +1,23 @@
 <script setup lang="ts">
+import { useState } from '@/stores/state';
 import MailLink from './misc/MailLink.vue';
 import PhoneLink from './misc/PhoneLink.vue';
+import { defaultLocationFull } from '@/lib/fallbackData';
+import LocationLink from './misc/LocationLink.vue';
+
+const state = useState();
+
 </script>
 
 <template>
     <div class="info-bar content-container">
         <div class="content">
             <div class="left">
-                <span><i class="fa-solid fa-location-dot"></i>&nbsp; Študentské centrum UKF, Dražovská 2, Nitra</span>
+                <LocationLink/>
             </div>
 
             <div class="right">
                 <PhoneLink/>
-                &nbsp;&nbsp;
                 <MailLink/>
             </div>
         </div>
@@ -20,14 +25,32 @@ import PhoneLink from './misc/PhoneLink.vue';
 </template>
 
 <style lang="scss" scoped>
-    .info-bar {
-        background-color: var(--clr-primary);
-        color: var(--clr-fg-on-primary);
-        padding-block: 0.5em;
 
-        > .content {
+@use '@/styles/lib/media';
+
+.info-bar {
+    background-color: var(--clr-primary);
+    color: var(--clr-fg-on-primary);
+    padding-block: 0.75em;
+
+    > .content {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.5em;
+
+        > .right {
             display: flex;
-            justify-content: space-between;
+            gap: 0.5em; 
         }
+
+        @include media.phone {
+            flex-direction: column;
+
+            > .right {
+                flex-direction: column;
+            }
+        }
+
     }
+}
 </style>

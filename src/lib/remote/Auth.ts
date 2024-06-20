@@ -1,9 +1,14 @@
-import { AuthType, type Admin } from "./Models";
+import { type Admin, AdminPriv } from "./Models";
 import remote from "./Remote";
-import { useAuth } from "@/stores/auth";
+import { useAuth, type AuthState } from "@/stores/auth";
 import type { FailResponse, Response } from "./RequestBuilder";
 import ApiCodes from "./Codes";
-import router from "@/router";
+import router from "@/Router";
+
+export enum AuthType {
+    NONE, USER, ADMIN
+}
+
 
 export interface StoredAuth {
     auth: AuthType
@@ -12,7 +17,8 @@ export interface StoredAuth {
 
 export function tokenHeader(token?: string) {
     if (!token) {
-        token = useAuth().token;
+        const auth = useAuth();
+        token = auth.token;
     }
     return {
         Authorization: token && `Bearer ${token}`
@@ -24,7 +30,7 @@ function restoreAdminSession(token: string) {
         const auth = useAuth();
         auth.auth = AuthType.ADMIN;
         auth.token = token;
-        auth.user = res.data;
+        auth.data = res.data;
     }).code(ApiCodes.NoAuth, (res: FailResponse) => {
         console.warn(`Failed to restore admin session "${res.message}"`);
     }).send();
@@ -57,15 +63,15 @@ export async function loginAdmin(credentials: AdminCredentials) {
         const auth = useAuth();
         auth.auth = AuthType.ADMIN;
         auth.token = res.token;
-        auth.user = res.data;
-    }).failMessage("Failed to login as admin").send();
+        auth.data = res.data;
+    }).send();
 }
 
 function logout() {
     const auth = useAuth();
     auth.auth = AuthType.NONE;
     auth.token = undefined;
-    auth.user = undefined;
+    auth.data = undefined;
 }
 
 export function logoutAdmin() {
@@ -73,4 +79,25 @@ export function logoutAdmin() {
         logout();
         router.go(0);
     }).send();
+}
+
+export function isAdmin(state: AuthState, priv?: AdminPriv): boolean {
+    if (state.auth != AuthType.ADMIN) {
+        return false;
+    }
+
+    if (priv !== undefined) {
+        const admin = state.data!! as Admin;
+        return admin.priv >= priv;
+    }
+
+    return true;
+}
+
+export function isUser(state: AuthState): boolean {
+    if (state.auth != AuthType.USER) {
+        return false;
+    }
+
+    return true;
 }

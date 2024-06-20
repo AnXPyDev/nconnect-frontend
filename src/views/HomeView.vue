@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import Schedule from '@/components/client/schedule/ScheduleTable.vue';
 import SpeakersList from '@/components/client/speaker/SpeakersList.vue';
-import TestimonialsList from '@/components/client/testimonials/TestimonialsList.vue';
+import SponsorsList from '@/components/client/sponsor/SponsorsList.vue';
+import TestimonialsSection from '@/components/client/testimonials/TestimonialsSection.vue';
 import AboutSection from '@/components/ui/AboutSection.vue';
 import PageSectionHeader from '@/components/ui/PageSectionHeader.vue';
 import WelcomePresentation from '@/components/ui/presentation/WelcomePresentation.vue';
 import Spinner from '@/components/util/Spinner.vue';
-import type { Speaker } from '@/lib/remote/Models';
+import type { Speaker, Sponsor } from '@/lib/remote/Models';
 import remote from '@/lib/remote/Remote';
 import type { Response } from '@/lib/remote/RequestBuilder';
+import { useState } from '@/stores/state';
 import { ref } from 'vue';
 
 const speakers = ref<Speaker[]>([]);
@@ -18,6 +20,15 @@ remote.post("speaker/index").then((res: Response<{ speakers: Speaker[] }>) => {
     res.speakers.splice(4);
     speakers.value = res.speakers;
     loadingSpeakers.value = false;
+}).send();
+
+const sponsors = ref<Sponsor[]>([]);
+const loadingSponsors = ref<boolean>(false);
+
+remote.post("sponsor/index").then((res: Response<{ sponsors: Sponsor[] }>) => {
+    res.sponsors.splice(4);
+    sponsors.value = res.sponsors;
+    loadingSponsors.value = false;
 }).send();
 
 </script>
@@ -44,18 +55,27 @@ remote.post("speaker/index").then((res: Response<{ speakers: Speaker[] }>) => {
                 <Schedule></Schedule>
             </div>
         </div>
+        <div class="section content-container">
+            <div class="content">
+                <PageSectionHeader class="section-header">NAŠI PARTNERI</PageSectionHeader>
+                <Spinner v-if="loadingSponsors"></Spinner>
+                <SponsorsList :sponsors="sponsors"></SponsorsList>
+            </div>
+        </div>
     </div>
-    <TestimonialsList/>
+    <TestimonialsSection/>
 
 
 </template>
 
 <style scoped lang="scss">
 @use '@/styles/lib/media';
+@use '@/styles/lib/dimens';
 
 .section {
 
     .section-header {
+        padding-block: 1em;
         color: var(--clr-primary);
     }
 
@@ -63,7 +83,7 @@ remote.post("speaker/index").then((res: Response<{ speakers: Speaker[] }>) => {
         background-color: var(--clr-bg-1);
     }
 
-    padding-block: 4em;
+    padding-block: dimens.$section-padding;
 
     @include media.phone {
         padding-block: 1em;

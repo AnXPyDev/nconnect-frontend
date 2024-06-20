@@ -38,7 +38,7 @@ function create() {
 
 function edit(speaker: Speaker) {
     reset();
-    toEdit.value = Object.assign({}, speaker);
+    toEdit.value = structuredClone(toRaw(speaker));
 }
 
 async function editConfirm() {

@@ -7,12 +7,12 @@ const auth = useAuth();
 
 <template>
     <div class="navigation">
-        <NavigationButton class="button" to="/">DOMOV</NavigationButton>
-        <NavigationButton class="button" to="/speakers">SPEAKERS</NavigationButton>
-        <NavigationButton class="button" to="/schedule">PROGRAM</NavigationButton>
-        <NavigationButton class="button" to="/sponsors">PARTNERI</NavigationButton>
-        <NavigationButton class="button" to="/contact">KONTAKT</NavigationButton>
-        <NavigationButton class="button" to="/admin" v-if="auth.isAdmin">ADMIN</NavigationButton>
+        <NavigationButton class="button" :to="{ name: 'home' }">DOMOV</NavigationButton>
+        <NavigationButton class="button" :to="{ name: 'speakers' }">SPEAKERS</NavigationButton>
+        <NavigationButton class="button" :to="{ name: 'schedule' }">PROGRAM</NavigationButton>
+        <NavigationButton class="button" :to="{ name: 'sponsors' }">PARTNERI</NavigationButton>
+        <NavigationButton class="button" :to="{ name: 'contact' }">KONTAKT</NavigationButton>
+        <NavigationButton class="button" :to="{ name: 'admin' }" v-if="auth.isAdmin()">ADMIN</NavigationButton>
     </div>
 </template>
 

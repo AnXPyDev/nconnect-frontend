@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import Button from '@/components/util/Button.vue';
-import Spinner from '../util/Spinner.vue';
+import Spinner from '@/components/util/Spinner.vue';
+import Error from '@/components/util/Error.vue';
 
 type Output<T> = (username: string, password: string) => T;
 
@@ -62,7 +63,8 @@ async function confirm() {
             <input type="password" v-model="password">
         </div>
 
-        <Button @click="confirm">LOGIN</Button>
+        <Button @click="confirm" :enabled="!loading"><i class="fa-solid fa-check"></i>&nbsp; LOGIN</Button>
+        <Error :error="error"></Error>
         <Spinner v-if="loading"></Spinner>
     </div>
 </template>

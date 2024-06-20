@@ -4,6 +4,7 @@ import Editor from '@/components/cms/util/Editor.vue';
 import Input from '@/components/util/input/Input.vue';
 import TextArea from '@/components/util/input/TextArea.vue';
 import SpeakerSelector from '../speaker/SpeakerSelector.vue';
+import ImageResourceSelector from '../gallery/ImageResourceSelector.vue';
 
 const props = defineProps<{
     confirm: ConfirmationCallback
@@ -36,8 +37,10 @@ function validate() {
 
         <template v-slot:items>
             <Input v-model="presentation.name">Name</Input>
+            <Input v-model.number="presentation.capacity">Capacity</Input>
             <TextArea v-model="presentation.description">Short Description</TextArea>
             <TextArea v-model="presentation.long_description">Long Description</TextArea>
+            <ImageResourceSelector allow-none v-model="presentation.image_id">Thumbnail</ImageResourceSelector>
             <SpeakerSelector v-model="presentation.speaker_id">Speaker</SpeakerSelector>
         </template>
     </Editor>

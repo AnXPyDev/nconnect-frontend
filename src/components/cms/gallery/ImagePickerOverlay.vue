@@ -38,11 +38,12 @@ function cancel() {
             </div>
             <div class="bar">
                 <div v-if="image" class="info">
+                    <i class="fa-solid fa-image"></i>
                     <span class="id">[{{ image.id }}]</span>
                     <span class="name">{{ image.name }}</span>
                 </div>
                 <div v-else>
-                    select an image
+                    SELECT AN IMAGE
                 </div>
                 <div class="controls">
                     <template v-if="image">

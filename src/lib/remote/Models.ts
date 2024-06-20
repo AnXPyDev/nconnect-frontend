@@ -1,21 +1,54 @@
-export enum AuthType {
-    NONE, USER, ADMIN
-}
+export enum AdminPriv {
+    VIEW, EDIT, SUPER
+};
 
 export interface Admin {
+    id?: number
     username: string
+    priv: AdminPriv
+    password?: string
 }
 
 export interface User {
 }
 
-export interface Resource {
+export enum ConferenceState {
+    PREPARING, ONGOING
+}
+
+export type Contact = Record<string, string>;
+
+export interface Conference {
+    date: string,
+    state: ConferenceState,
+
+    subtitle: string,
+
+    about_title: string,
+    about_text: string,
+
+    presentation_title: string,
+    presentation_subtitle: string,
+
+    location_name: string,
+    location_city: string,
+    location_full: string,
+    location_link: string,
+    location_map_embed: string,
+
+    contact: Contact
+}
+
+export interface Resource<M = object> {
     id?: number
     name: string
     type: string
-    metadata?: object
+    metadata?: M
     size?: number
 }
+
+export interface ImageMetadata {};
+export type Image = Resource<ImageMetadata>;
 
 export interface Gallery {
     id?: number
@@ -30,24 +63,20 @@ export interface Stage {
     name: string
 }
 
-export type Contact = { [key: string]: string };
+
 export interface Company {
     name: string,
     link?: string
-}
-
-export interface SpeakerMetadata {
-    company?: Company
-    contact?: Contact
-    subtitle?: string
 }
 
 export interface Speaker {
     id?: number
     name: string
     description?: string
+    subtitle?: string
+    company?: Company
+    contact: Contact
     image_id?: number
-    metadata: SpeakerMetadata
 }
 
 export interface Headliner {
@@ -66,6 +95,7 @@ export interface Presentation {
     description?: string
     long_description?: string
     image_id?: number
+    capacity?: number
 }
 
 export interface Timeslot {
@@ -92,3 +122,21 @@ export interface Sponsor {
     contact: Contact
     image_id?: number
 }
+
+export interface Organizer {
+    id?: number
+    name: string
+    role: string
+    contact: Contact
+    image_id?: number
+}
+
+export interface Qna {
+    id?: number
+    question: string
+    answer: string
+};
+
+export interface PageMetadata {}
+
+export type Page = Resource<PageMetadata>;

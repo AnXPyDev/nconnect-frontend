@@ -20,6 +20,8 @@ const props = defineProps<{
 
 @use '@/styles/lib/mixins';
 @use '@/styles/lib/media';
+@use '@/styles/lib/dimens';
+
 .speakers {
     $gap: 2em;
     display: flex;
@@ -33,7 +35,7 @@ const props = defineProps<{
 
     > .speaker-card {
         @include mixins.card-shadow;
-        width: calc((100% - (var(--per-row) - 1) * $gap) / var(--per-row));
+        width: dimens.spread-percentage(var(--per-row), $gap);
     }
 }
 </style>

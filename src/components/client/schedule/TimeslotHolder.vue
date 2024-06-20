@@ -2,8 +2,9 @@
 import type { Timeslot } from '@/lib/remote/Models';
 import { getThumbnailURL } from '@/lib/remote/Util';
 import { format, parseISO } from 'date-fns';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import CompanyLink from '@/components/client/speaker/CompanyLink.vue';
+import SpeakerShowcase from '../speaker/SpeakerShowcase.vue';
 
 const props = defineProps<{
     timeslot: Timeslot
@@ -28,6 +29,8 @@ const imageURL = computed(() => {
     return getThumbnailURL(presentation.image_id ?? presentation.speaker?.image_id);
 });
 
+const showcase = ref(false);
+
 </script>
 
 <template>
@@ -51,18 +54,20 @@ const imageURL = computed(() => {
                         {{ timeslot.presentation.description }}
                     </div>
                     <div class="bottom" v-if="timeslot.presentation.speaker">
-                        <div class="name">
+                        <div @click="showcase=true" class="name">
                             <span class="strong">SPEAKER:</span>&nbsp; {{ timeslot.presentation.speaker.name }}
                         </div>
                         <div class="company">
                             <span class="strong">
-                                <CompanyLink :company="timeslot.presentation.speaker.metadata.company"/>
+                                <CompanyLink :company="timeslot.presentation.speaker.company"/>
                             </span>
                         </div>
                     </div>
                 </div>
             </div>
+            <SpeakerShowcase v-if="timeslot.presentation.speaker && showcase" @close="showcase=false" :speaker="timeslot.presentation.speaker"></SpeakerShowcase>
         </div>
+
     </div>
 
 </template>
@@ -137,6 +142,11 @@ const imageURL = computed(() => {
 
                     > .name {
                         text-transform: uppercase;
+                        cursor: pointer;
+
+                        &:hover {
+                            text-decoration: underline;
+                        }
                     }
                 }
 

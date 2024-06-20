@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useAuth } from '@/stores/auth';
 import Button from '@/components/util/Button.vue';
-import router from '@/router';
+import router from '@/Router';
 import { logoutAdmin } from '@/lib/remote/Auth';
 import type { Admin } from '@/lib/remote/Models';
 
@@ -20,10 +20,10 @@ function logout() {
 
 <template>
     <div class="admin-auth">
-        <template v-if="auth.isAdmin">
+        <template v-if="auth.isAdmin()">
             <div>
                 <i class="fa-solid fa-user-tie"></i>&nbsp;
-                {{ (auth.user as Admin).username }}
+                {{ auth.admin!!.username }}
             </div>
             <Button @click="logout"><i class="fa-solid fa-right-from-bracket"></i>&nbsp; LOGOUT</Button>
         </template>

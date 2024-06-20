@@ -53,7 +53,7 @@ function click() {
         }
 
         &.disabled {
-            color: var(--clr-fg-1);
+            opacity: 50%;
         }
 
         &:hover, &.active {

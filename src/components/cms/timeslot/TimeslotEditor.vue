@@ -29,6 +29,7 @@ const endTime = ref<string>("");
 function updateInputs() {
     const start = parseISO(timeslot.value.start_at);
     const end = parseISO(timeslot.value.end_at);
+    
     startDate.value = format(start, dateFmt);
     startTime.value = format(start, timeFmt);
     endDate.value = format(end, dateFmt);

@@ -1,21 +1,34 @@
-import { AuthType, type Admin, type User } from "@/lib/remote/Models";
+import { AuthType, isAdmin, isUser } from "@/lib/remote/Auth";
+import { AdminPriv, type Admin, type User } from "@/lib/remote/Models";
 import { defineStore } from "pinia";
 
-interface State {
+export interface AuthState {
     auth: AuthType
     token?: string
-    user?: User | Admin
+    data?: User | Admin
 }
 
 export const useAuth = defineStore('auth', {
-    state: (): State => ({
+    state: (): AuthState => ({
         auth: AuthType.NONE,
         token: undefined,
-        user: undefined
+        data: undefined
     }),
     getters: {
-        isAdmin: (state) => state.auth === AuthType.ADMIN,
-        isUser: (state) => state.auth === AuthType.USER
+        isAdmin: (state) => (priv?: AdminPriv) => isAdmin(state, priv),
+        isUser: (state) => () => isUser(state),
+        user: (state) => {
+            if (state.auth != AuthType.USER) {
+                return undefined;
+            }
+            return state.data!! as User;
+        },
+        admin: (state) => {
+            if (state.auth != AuthType.ADMIN) {
+                return undefined;
+            }
+            return state.data!! as Admin;
+        }
     }
 });
 

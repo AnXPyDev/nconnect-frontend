@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import Button from '@/components/util/Button.vue';
 import Spinner from '@/components/util/Spinner.vue';
+import Error from '@/components/util/Error.vue';
 
 const props = withDefaults(defineProps<{
     validate?: ValidationCallback
@@ -75,11 +76,11 @@ function cancel() {
             <slot name="items"></slot>
         </div>
         <div class="controls">
-            <Button @click="confirm"><i class="fa-solid fa-check"></i>&nbsp; CONFIRM</Button>
-            <Button @click="cancel"><i class="fa-solid fa-xmark"></i>&nbsp; CANCEL</Button>
-            <Button class="delete" v-if="props.delete_" @click="delete_"><i class="fa-solid fa-trash"></i>&nbsp; DELETE</Button>
+            <Button :enabled="!loading" @click="confirm"><i class="fa-solid fa-check"></i>&nbsp; CONFIRM</Button>
+            <Button :enabled="!loading" @click="cancel"><i class="fa-solid fa-xmark"></i>&nbsp; CANCEL</Button>
+            <Button :enabled="!loading" class="delete" v-if="props.delete_" @click="delete_"><i class="fa-solid fa-trash"></i>&nbsp; DELETE</Button>
         </div>
-        <div class="error" v-if="error"><i class="fa-solid fa-circle-exclamation"></i>&nbsp; {{ error }}</div>
+        <Error :error="error"></Error>
         <Spinner v-if="loading"></Spinner>
     </div>
 </template>
@@ -110,11 +111,6 @@ function cancel() {
         flex-direction: column;
         align-items: start;
         gap: 0.5em;
-    }
-
-    > .error {
-        font-size: 1.2em;
-        color: var(--clr-error);
     }
 }
 </style>

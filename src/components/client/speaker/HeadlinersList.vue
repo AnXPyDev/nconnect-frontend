@@ -18,7 +18,9 @@ const props = defineProps<{
 <style scoped lang="scss">
 
 @use '@/styles/lib/mixins';
+@use '@/styles/lib/dimens';
 @use '@/styles/lib/media';
+
 .headliners {
     $gap: 2em;
     display: flex;
@@ -32,7 +34,7 @@ const props = defineProps<{
 
     > .headliner-card {
         @include mixins.card-shadow;
-        width: calc((100% - (var(--per-row) - 1) * $gap) / var(--per-row));
+        width: dimens.spread-percentage(var(--per-row), $gap);
 
     }
 }

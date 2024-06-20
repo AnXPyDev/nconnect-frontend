@@ -39,7 +39,7 @@ function validate() {
         <template v-slot:items>
             <Input v-model="testimonial.author">Author</Input>
             <TextArea v-model="testimonial.description">Quote</TextArea>
-            <ImageResourceSelector v-model="testimonial.image_id"></ImageResourceSelector>
+            <ImageResourceSelector allow-none v-model="testimonial.image_id"></ImageResourceSelector>
         </template>
     </Editor>
 </template>

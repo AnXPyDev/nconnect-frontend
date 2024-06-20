@@ -4,30 +4,11 @@ import Page1 from './Page1.vue';
 import Page2 from './Page2.vue';
 
 
-const pageComponents = [
+const pages = [
     Page1, Page2
 ];
 
-const pageRefs = ref([]);
-
-const currentPage = ref<number>();
-
-watch(currentPage, (current, previous) => {
-    if (previous !== undefined) {
-        const el: HTMLElement = (pageRefs.value[previous] as any).$el;
-        el.classList.remove("current");
-    }
-
-    const el: HTMLElement = (pageRefs.value[current!!] as any).$el;
-
-    console.log(el);
-    el.classList.add("current")
-
-});
-
-onMounted(() => {
-    currentPage.value = 0;
-})
+const currentPage = ref<number>(0);
 
 function selectPage(index: number) {
     currentPage.value = index;
@@ -38,12 +19,11 @@ function selectPage(index: number) {
 
 <template>
 
-
 <div class="welcome-presentation">
-    <component v-for="page in pageComponents" :is="page" ref="pageRefs"></component>
+    <component v-for="page, index in pages" :is="page" :class="{ current: index == currentPage }"></component>
 
     <div class="controls">
-        <div class="page-button" :class="i == currentPage ? 'active' : 'inactive'" v-for="r, i in pageRefs" @click="selectPage(i)"></div>
+        <div class="page-button" :class="{ active: i == currentPage }" v-for="r, i in pages" @click="selectPage(i)"></div>
     </div>
 </div>
 
@@ -73,7 +53,7 @@ function selectPage(index: number) {
 
     > .controls {
         position: absolute;
-        z-index: 50;
+        z-index: 4;
         width: 100%;
         bottom: 2.5em;
         display: flex;

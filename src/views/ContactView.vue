@@ -1,29 +1,21 @@
 <script setup lang="ts">
 
 import PageHeader from '@/components/ui/PageHeader.vue';
-import PageSectionHeader from '@/components/ui/PageSectionHeader.vue';
+import ContactSection from '@/components/ui/ContactSection.vue';
 
 </script>
 
 <template>
 
     <PageHeader location="KONTAKT"></PageHeader>
-
-    <div class="content-container">
-        <div class="content">
-
-            <PageSectionHeader class="section-header">KONTAKT</PageSectionHeader>
-        </div>
-
-    </div>
-
+    <ContactSection class="contact-section"></ContactSection>
 
 </template>
 
 <style scoped lang="scss">
 
-.section-header {
-    color: var(--clr-primary);
+.contact-section {
+    background-color: var(--clr-bg-1);
 }
 
 </style>

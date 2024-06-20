@@ -5,7 +5,7 @@ import { createApp } from 'vue'
 import { createPinia, type Store } from 'pinia'
 
 import App from './App.vue'
-import router from './router'
+import router, { setupRouterGuards } from './Router'
 
 import LocalStorage from '@/lib/util/LocalStorage'
 
@@ -16,7 +16,6 @@ app.use(router)
 
 import { useAuth } from '@/stores/auth'
 import { useState } from '@/stores/state'
-import { AuthType } from '@/lib/remote/Models'
 
 const auth = useAuth();
 const state = useState();
@@ -33,9 +32,13 @@ auth.$subscribe((mutation, state) => {
 import remote from '@/lib/remote/Remote';
 import { appName } from '@/config'
 import { restoreSession, type StoredAuth } from './lib/remote/Auth'
+import type { Response } from './lib/remote/RequestBuilder'
+import type { Conference } from './lib/remote/Models'
 
 const init_promise = new Promise(async (resolve, reject) => {
-    await remote.init();
+    await remote.post('conference/get').then((res: Response<{ conference: Conference }>) => {
+        state.conference = res.conference;
+    }).send();
     await restoreSession(storedAuth);
     resolve(true);
 });
@@ -45,19 +48,6 @@ const removeInitGuard = router.beforeEach(async (to, from) => {
     removeInitGuard();
 });
 
-router.beforeEach((to, from) => {
-    if (to.meta.requiresAdmin && auth.auth !== AuthType.ADMIN) {
-        return { name: "admin/login" };
-    }
-    if (to.meta.requiresUser && auth.auth !== AuthType.USER) {
-        return { name: "home" };
-    }
-});
-
-router.afterEach((to, from) => {
-    const title = to.meta.title ?? to.name?.toString();
-    document.title = `${appName} | ${title}`;
-});
-
+setupRouterGuards();
 
 app.mount('#app')
