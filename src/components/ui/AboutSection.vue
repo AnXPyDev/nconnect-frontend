@@ -4,6 +4,7 @@ import { type Qna } from '@/lib/remote/Models';
 import { ref } from 'vue';
 import type { Response } from '@/lib/remote/RequestBuilder';
 import { useState } from '@/stores/state';
+import Spinner from '../util/Spinner.vue';
 
 const state = useState();
 
@@ -26,7 +27,8 @@ remote.post("qna/index").then((res: Response<{ qnas: Qna[] }>) => {
             <div class="title">{{ state.conference!!.about_title }}</div>
             <div class="about">{{ state.conference!!.about_text }}</div>
             <div class="qnas">
-                <div v-for="qna in qnas" class="qna">
+                <Spinner v-if="loading"></Spinner>
+                <div v-else v-for="qna in qnas" class="qna">
                     <div class="title">{{ qna.question }}</div> 
                     <div class="answer">{{ qna.answer }}</div>
                 </div>

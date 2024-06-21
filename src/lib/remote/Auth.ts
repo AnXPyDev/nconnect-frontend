@@ -2,7 +2,7 @@ import { type Admin, AdminPriv } from "./Models";
 import remote from "./Remote";
 import { useAuth, type AuthState } from "@/stores/auth";
 import type { FailResponse, Response } from "./RequestBuilder";
-import ApiCodes from "./Codes";
+import { ApiCodes } from "./Codes";
 import router from "@/Router";
 
 export enum AuthType {
@@ -77,7 +77,7 @@ function logout() {
 export function logoutAdmin() {
     return remote.post("auth/admin/logout").then((res) => {
         logout();
-        router.go(0);
+        router.push({ name: "admin/login" });
     }).send();
 }
 

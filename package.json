@@ -19,10 +19,12 @@
     "@ckeditor/ckeditor5-paragraph": "^41.4.2",
     "@ckeditor/ckeditor5-typing": "^41.4.2",
     "@ckeditor/ckeditor5-vue": "^5.1.0",
+    "@types/sanitize-html": "^2.11.0",
     "axios": "^1.6.8",
     "date-fns": "^3.6.0",
     "pinia": "^2.1.7",
     "quill": "^2.0.2",
+    "sanitize-html": "^2.13.0",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"
   },

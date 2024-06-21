@@ -1,4 +1,5 @@
-import ApiCodes from "./Codes";
+import { AxiosError } from "axios";
+import { ApiCodes } from "./Codes";
 
 type Callback = () => Promise<any>;
 

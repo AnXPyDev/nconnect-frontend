@@ -4,14 +4,10 @@ import CKEditor from '@ckeditor/ckeditor5-vue';
 import DocumentEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 import { ref } from 'vue';
 
-const text = ref<string>("");
+const content = defineModel<string>({ required: true });
 
 const config = ref({
 });
-
-function test() {
-    console.log(text.value);
-}
 
 function onEditorReady(editor: any) {
     editor.ui.getEditableElement().parentElement.insertBefore(
@@ -23,13 +19,19 @@ function onEditorReady(editor: any) {
 </script>
 
 <template>
-    <div class="content-container">
-        <div class="content">
-            <CKEditor.component v-model="text" :editor="DocumentEditor" @ready="onEditorReady"></CKEditor.component>
-            <button @click="test">test</button>
-        </div>
+    <div class="root">
+        <CKEditor.component class="editor" v-model="content" :editor="DocumentEditor" @ready="onEditorReady"></CKEditor.component>
     </div>
 </template>
 
-<style>
+<style scoped lang="scss">
+
+.root {
+    background-color: var(--clr-bg);
+    > .editor {
+        width: 100%;
+        min-height: 100%;
+    }
+}
+
 </style>

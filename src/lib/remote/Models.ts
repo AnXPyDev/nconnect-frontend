@@ -43,11 +43,11 @@ export interface Resource<M = object> {
     id?: number
     name: string
     type: string
-    metadata?: M
+    metadata: M
     size?: number
 }
 
-export interface ImageMetadata {};
+export type ImageMetadata = undefined;
 export type Image = Resource<ImageMetadata>;
 
 export interface Gallery {
@@ -137,6 +137,9 @@ export interface Qna {
     answer: string
 };
 
-export interface PageMetadata {}
+export interface PageMetadata {
+    slug: string,
+    showHeader: boolean
+}
 
 export type Page = Resource<PageMetadata>;

@@ -10,7 +10,7 @@ const props = defineProps<{
     <div class="error" v-if="error"><i class="fa-solid fa-circle-exclamation"></i>&nbsp; {{ error }}</div>
 </template>
 
-<style setup lang="scss">
+<style scoped lang="scss">
 .error {
     font-size: 1.2em;
     color: var(--clr-error);

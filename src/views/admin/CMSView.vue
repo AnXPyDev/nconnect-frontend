@@ -11,6 +11,7 @@ import PresentationsManager from '@/components/cms/presentation/PresentationsMan
 import OrganizersManager from '@/components/cms/organizer/OrganizersManager.vue';
 import QnasManager from '@/components/cms/qna/QnasManager.vue';
 import ConferenceManager from '@/components/cms/conference/ConferenceManager.vue';
+import PagesManager from '@/components/cms/page/PagesManager.vue';
 
 </script>
 
@@ -79,7 +80,7 @@ import ConferenceManager from '@/components/cms/conference/ConferenceManager.vue
         <div class="section content-container">
             <Section class="content">
                 <template v-slot:title>Pages</template>
-                <h2>pages</h2>
+                <PagesManager />
             </Section>
         </div>
     </div>

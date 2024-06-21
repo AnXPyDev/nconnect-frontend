@@ -4,7 +4,7 @@ import Login from '@/components/ui/Login.vue';
 import PageSectionHeader from '@/components/ui/PageSectionHeader.vue';
 import Button from '@/components/util/Button.vue';
 import { loginAdmin } from '@/lib/remote/Auth';
-import ApiCodes from '@/lib/remote/Codes';
+import { ApiCodes } from '@/lib/remote/Codes';
 import { RequestFailedError, ResponseHandler } from '@/lib/remote/RequestBuilder';
 import router from '@/Router';
 

@@ -8,7 +8,7 @@ import type { Admin } from '@/lib/remote/Models';
 const auth = useAuth();
 
 function login() {
-    router.push({ path: "/admin/login" });
+    router.push({ name: "admin/login" });
 }
 
 function logout() {

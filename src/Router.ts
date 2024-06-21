@@ -14,12 +14,14 @@ import { appName } from '@/config'
 import { AdminPriv } from './lib/remote/Models'
 import { useState } from './stores/state'
 import AccountView from './views/admin/AccountView.vue'
+import PageView from './views/PageView.vue'
+import PageEditorView from './views/admin/PageEditorView.vue'
 
 declare module 'vue-router' {
     interface RouteMeta {
         requiresUser?: boolean
         requiresAdmin?: AdminPriv | boolean
-        title?: string | (() => string)
+        title?: string | (() => string | undefined)
     }
 }
 
@@ -37,13 +39,15 @@ const router = createRouter({
             path: '/admin', name: "admin", component: AdminDashboardView, redirect: { name: "admin/cms" },
             meta: { title: "Admin Dashboard" },
             children: [
-                { path: 'cms', name: 'admin/cms', component: CMSView, meta: { requiresAdmin: true, title: "CMS" } },
-                { path: 'users', name: 'admin/users', component: UsersView, meta: { requiresAdmin: true, title: "Používatelia" } },
-                { path: 'stats', name: 'admin/stats', component: StatsView, meta: { requiresAdmin: true, title: "Štatistiky" } },
-                { path: 'login', name: 'admin/login', component: AdminLoginView, meta: { title: "Prihlásenie" } },
-                { path: 'account', name: 'admin/account', component: AccountView, meta: { title: "Účet" } }
+                { path: 'cms', name: 'admin/cms', component: CMSView, meta: { requiresAdmin: AdminPriv.EDIT, title: "CMS" } },
+                { path: 'users', name: 'admin/users', component: UsersView, meta: { requiresAdmin: AdminPriv.VIEW, title: "Používatelia" } },
+                { path: 'stats', name: 'admin/stats', component: StatsView, meta: { requiresAdmin: AdminPriv.VIEW, title: "Štatistiky" } },
+                { path: 'account', name: 'admin/account', component: AccountView, meta: { requiresAdmin: true, title: "Účet" } },
+                { path: 'login', name: 'admin/login', component: AdminLoginView, meta: { title: "Prihlásenie" } }
             ]
-        }
+        },
+        { path: '/page/:slug', name: 'page', props: true, component: PageView },
+        { path: '/admin/cms/page/:slug', name: 'admin/cms/page', props: true, component: PageEditorView, meta: { requiresAdmin: AdminPriv.EDIT } }
     ],
     history: createWebHistory(import.meta.env.BASE_URL)
 })
@@ -54,6 +58,10 @@ function getHomeTitle() {
 }
 
 export default router;
+
+export function setDocumentTitle(title?: string) {
+    document.title = title ? `${appName} | ${title}` : appName;
+}
 
 export function setupRouterGuards() {
     const auth = useAuth();
@@ -79,10 +87,10 @@ export function setupRouterGuards() {
     });
 
     router.afterEach((to, from) => {
-        let title = to.meta.title ?? to.name?.toString();
+        let title = to.meta.title;
         if (typeof title === "function") {
             title = title();
         }
-        document.title = `${appName} | ${title}`;
+        setDocumentTitle(title);
     });
 }

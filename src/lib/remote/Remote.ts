@@ -31,6 +31,10 @@ class Remote {
         return (await this.connection.put(`${endpoint}?${query}`, data, { headers })).data;
     }
 
+    private async getInternal(endpoint: string, query: string, headers_: object = tokenHeader()): Promise<any> {
+        return await this.connection.get(`${endpoint}?${query}`, { headers: headers_ });
+    }
+
     post(endpoint: string, data: object = {}, headers?: object): RequestBuilder {
         return new RequestBuilder(() => {
             return this.postInternal(endpoint, data, headers);
@@ -39,8 +43,14 @@ class Remote {
 
     put(endpoint: string, query: object = {}, data: unknown, headers?: object): RequestBuilder {
         return new RequestBuilder(() => {
-            return this.putInternal(endpoint, new URLSearchParams(query as any).toString(), data);
-        })
+            return this.putInternal(endpoint, new URLSearchParams(query as any).toString(), data, headers);
+        });
+    }
+
+    get(endpoint: string, query: object = {}, headers?: object) {
+        return new RequestBuilder(() => {
+            return this.getInternal(endpoint, new URLSearchParams(query as any).toString(), headers);
+        });
     }
 }
 
