@@ -11,7 +11,7 @@ const auth = useAuth();
 
 <template>
     <div class="users-view">
-        <div v-if="auth.isAdmin(AdminPriv.SUPER)" class="content-container">
+        <div v-if="auth.checkPriv(AdminPriv.SUPER)" class="content-container">
             <div class="content">
                 <Section>
                     <template #title>Admins</template>

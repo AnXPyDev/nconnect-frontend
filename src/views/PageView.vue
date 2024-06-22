@@ -59,7 +59,7 @@ loading.value = false;
 </script>
 
 <template>
-<PageHeader v-if="page?.metadata.showHeader" section="STRÁNKY" :location="page.name"></PageHeader>
+<PageHeader v-if="page?.metadata.showHeader" section="STRÁNKY" :origin="{ name: 'pages' }" :location="page.name"></PageHeader>
 <div class="page-view content-container">
     <div class="content">
         <Spinner v-if="loading" />

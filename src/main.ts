@@ -20,7 +20,7 @@ import { useState } from '@/stores/state'
 const auth = useAuth();
 const state = useState();
 
-const storedAuth: StoredAuth | undefined = LocalStorage.get("auth");
+let storedAuth: StoredAuth | undefined = LocalStorage.get("auth");
 
 auth.$subscribe((mutation, state) => {
     LocalStorage.set("auth", {
@@ -29,9 +29,19 @@ auth.$subscribe((mutation, state) => {
     } as StoredAuth);
 });
 
+if (document.location.pathname == "/login") {
+    const params = new URLSearchParams(document.location.search);
+    const token = params.get("token");
+    if (token) {
+        storedAuth = {
+            token, auth: AuthType.USER
+        };
+    }
+}
+
 import remote from '@/lib/remote/Remote';
 import { appName } from '@/config'
-import { restoreSession, type StoredAuth } from './lib/remote/Auth'
+import { AuthType, restoreSession, type StoredAuth } from './lib/remote/Auth'
 import type { Response } from './lib/remote/RequestBuilder'
 import type { Conference } from './lib/remote/Models'
 

@@ -1,4 +1,4 @@
-import { type Admin, AdminPriv } from "./Models";
+import { type Admin, AdminPriv, type User } from "./Models";
 import remote from "./Remote";
 import { useAuth, type AuthState } from "@/stores/auth";
 import type { FailResponse, Response } from "./RequestBuilder";
@@ -36,6 +36,18 @@ function restoreAdminSession(token: string) {
     }).send();
 }
 
+function restoreUserSession(token: string) {
+    return remote.post("user/info", {}, tokenHeader(token)).then((res: Response<{ data: User }>) => {
+        const auth = useAuth();
+        auth.auth = AuthType.USER;
+        auth.token = token;
+        auth.data = res.data;
+        console.log("RESTORE USER", res);
+    }).code(ApiCodes.NoAuth, (res: FailResponse) => {
+        console.warn(`Failed to restore user session "${res.message}"`);
+    }).send();
+}
+
 export function restoreSession(auth?: StoredAuth): Promise<void> | void {
     if (!auth || auth.auth == AuthType.NONE) {
         return;
@@ -50,6 +62,9 @@ export function restoreSession(auth?: StoredAuth): Promise<void> | void {
         case AuthType.ADMIN:
             return restoreAdminSession(auth.token);
             break;
+        case AuthType.USER:
+            return restoreUserSession(auth.token);
+            break;
     }
 }
 
@@ -58,10 +73,19 @@ export interface AdminCredentials {
     password: string
 }
     
-export async function loginAdmin(credentials: AdminCredentials) {
-    await remote.post("auth/admin/login", credentials).then((res: Response<{token: string, data: Admin}>) => {
+export function loginAdmin(credentials: AdminCredentials) {
+    remote.post("auth/admin/login", credentials).then((res: Response<{token: string, data: Admin}>) => {
         const auth = useAuth();
         auth.auth = AuthType.ADMIN;
+        auth.token = res.token;
+        auth.data = res.data;
+    }).send();
+}
+
+export async function registerUser(data: User) {
+    remote.post("user/register", data).then((res: Response<{ token: string, data: User }>) => {
+        const auth = useAuth();
+        auth.auth = AuthType.USER;
         auth.token = res.token;
         auth.data = res.data;
     }).send();
@@ -81,7 +105,7 @@ export function logoutAdmin() {
     }).send();
 }
 
-export function isAdmin(state: AuthState, priv?: AdminPriv): boolean {
+export function checkPriv(state: AuthState, priv?: AdminPriv): boolean {
     if (state.auth != AuthType.ADMIN) {
         return false;
     }
@@ -94,8 +118,24 @@ export function isAdmin(state: AuthState, priv?: AdminPriv): boolean {
     return true;
 }
 
+export function isAdmin(state: AuthState): boolean {
+    if (state.auth != AuthType.ADMIN) {
+        return false;
+    }
+
+    return true;
+}
+
 export function isUser(state: AuthState): boolean {
     if (state.auth != AuthType.USER) {
+        return false;
+    }
+
+    return true;
+}
+
+export function canSignUp(state: AuthState): boolean {
+    if (state.auth != AuthType.NONE) {
         return false;
     }
 

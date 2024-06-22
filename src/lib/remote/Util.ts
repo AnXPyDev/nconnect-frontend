@@ -2,7 +2,7 @@ import { remoteURL } from "@/config";
 import defaultThumbnailURL from "@/assets/images/default-thumbnail.jpg";
 
 export function getThumbnailURL(id?: number) {
-    if (id === undefined) {
+    if (id == undefined) {
         return defaultThumbnailURL;
     }
     return getResourceURL(id);

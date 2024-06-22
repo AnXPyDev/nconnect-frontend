@@ -20,7 +20,7 @@ function logout() {
 
 <template>
     <div class="admin-auth">
-        <template v-if="auth.isAdmin()">
+        <template v-if="auth.isAdmin">
             <div>
                 <i class="fa-solid fa-user-tie"></i>&nbsp;
                 {{ auth.admin!!.username }}

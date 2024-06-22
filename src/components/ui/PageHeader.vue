@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import Page from '@/components/ui/presentation/Page.vue';
 import Button from '@/components/util/Button.vue';
+import type { RouteLocationNamedRaw, RouteLocationRaw } from 'vue-router';
 
 const props = withDefaults(defineProps<{
-    origin: string
+    origin: RouteLocationRaw
     section: string
     location: string
 }>(), {
     section: "DOMOV",
-    origin: "/"
+    // @ts-expect-error
+    origin: { name: "home" } as RouteLocationRaw
 });
 
 </script>

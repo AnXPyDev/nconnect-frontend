@@ -16,6 +16,12 @@ import { useState } from './stores/state'
 import AccountView from './views/admin/AccountView.vue'
 import PageView from './views/PageView.vue'
 import PageEditorView from './views/admin/PageEditorView.vue'
+import GalleriesView from './views/GalleriesView.vue'
+import PagesView from './views/PagesView.vue'
+import SignupView from './views/user/SignupView.vue'
+import GalleryView from './views/GalleryView.vue'
+import UserLoginView from '@/views/user/LoginView.vue'
+import UserView from './views/user/UserView.vue'
 
 declare module 'vue-router' {
     interface RouteMeta {
@@ -34,7 +40,19 @@ const router = createRouter({
         { path: '/program', name: 'schedule', component: ScheduleView, meta: { title: "Program" } },
         { path: '/kontakt', name: 'contact', component: ContactView, meta: { title: "Kontakt" } },
         { path: '/speakers', name: 'speakers', component: SpeakersView, meta: { title: "Speakers" } },
-        { path: '/registracia', name: 'signup', component: SpeakersView, meta: { title: "Registrácia" } },
+        { path: '/fotogaleria', name: 'galleries', component: GalleriesView, meta: { title: "Fotogaléria" } },
+        { path: '/stranky', name: 'pages', component: PagesView, meta: { title: "Stránky" } },
+        
+        { path: '/page/:slug', name: 'page', props: true, component: PageView },
+        { path: '/gallery/:id', name: 'gallery', props: (route) => {
+            const id = parseInt(route.params['id'] as string);
+            if (Number.isNaN(id)) {
+                throw new Error("invalid gallery id");
+            }
+            return { id };
+        }, component: GalleryView },
+
+
         {
             path: '/admin', name: "admin", component: AdminDashboardView, redirect: { name: "admin/cms" },
             meta: { title: "Admin Dashboard" },
@@ -46,8 +64,12 @@ const router = createRouter({
                 { path: 'login', name: 'admin/login', component: AdminLoginView, meta: { title: "Prihlásenie" } }
             ]
         },
-        { path: '/page/:slug', name: 'page', props: true, component: PageView },
-        { path: '/admin/cms/page/:slug', name: 'admin/cms/page', props: true, component: PageEditorView, meta: { requiresAdmin: AdminPriv.EDIT } }
+        { path: '/admin/cms/page/:slug', name: 'admin/cms/page', props: true, component: PageEditorView, meta: { requiresAdmin: AdminPriv.EDIT } },
+
+
+        { path: '/login', name: "login", component: UserLoginView },
+        { path: '/registracia', name: 'signup', component: SignupView, meta: { title: "Registrácia" } },
+        { path: '/user', name: 'user', component: UserView, meta: { title: "Ja", requiresUser: true } },
     ],
     history: createWebHistory(import.meta.env.BASE_URL)
 })
@@ -75,12 +97,12 @@ export function setupRouterGuards() {
                 priv = reqAdmin;
             }
 
-            if (!auth.isAdmin(priv)) {
+            if (!auth.checkPriv(priv)) {
                 return { name: "admin/login" };
             }
         }
 
-        if (to.meta.requiresUser && auth.isUser()) {
+        if (to.meta.requiresUser && !auth.isUser) {
             return { name: "home" };
         }
 
