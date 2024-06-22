@@ -12,7 +12,7 @@ const model = defineModel<string>();
             <slot></slot>
         </template>
         <template #default>
-            <input v-model="model">
+            <input v-model="model" type="password">
         </template>
     </InputAbstract>
 </template>

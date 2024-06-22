@@ -2,7 +2,7 @@
 
 import InputAbstract from './InputAbstract.vue';
 
-const model = defineModel<string>();
+const model = defineModel<number>();
 
 </script>
 
@@ -12,7 +12,7 @@ const model = defineModel<string>();
             <slot></slot>
         </template>
         <template #default>
-            <input v-model="model">
+            <input v-model.number="model" type="number">
         </template>
     </InputAbstract>
 </template>

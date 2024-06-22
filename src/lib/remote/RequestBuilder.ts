@@ -29,7 +29,11 @@ export class ResponseHandler {
     nonzeroHandler?: GenericFailHandler;
     anyHandler?: GenericHandler;
 
-    async handle<T extends GenericResponse>(response: T) {
+    async handle(response: any) {
+        if (typeof response !== "object") {
+            response = { code: ApiCodes.Ok };
+        }
+
         if (response.code === undefined) {
             response.code = ApiCodes.Ok;
         }

@@ -4,8 +4,10 @@ import Page from './Page.vue';
 import Button from '@/components/util/Button.vue';
 import { computed } from 'vue';
 import { presentationDateFormat } from '@/lib/formats';
+import { useAuth } from '@/stores/auth';
 
 const state = useState();
+const auth = useAuth();
 
 </script>
 
@@ -20,9 +22,9 @@ const state = useState();
                 <span class="desc">{{ state.conference!!.presentation_subtitle }}</span>
                 <span class="title">{{ state.conference!!.presentation_title }}</span>
                 <div class="buttons">
-                    <Button>PROGRAM KONFERENCIE</Button> 
-                    <Button>SPEAKERS</Button> 
-                    <Button>REGISTRÁCIA</Button> 
+                    <RouterLink :to="{ name: 'schedule' }"><Button>PROGRAM KONFERENCIE</Button></RouterLink>
+                    <RouterLink :to="{ name: 'speakers' }"><Button>SPEAKERS</Button></RouterLink>
+                    <RouterLink v-if="auth.canSignUp" :to="{ name: 'signup' }"><Button>REGISTRÁCIA</Button></RouterLink>
                 </div>
             </div>
         </template>
@@ -77,7 +79,7 @@ const state = useState();
         gap: 1em;
         flex-wrap: wrap;
 
-        > .button {
+        .button {
             --padding: 1em;
             --border: solid 1px var(--clr-bg);
             --clr-active: var(--clr-bg);

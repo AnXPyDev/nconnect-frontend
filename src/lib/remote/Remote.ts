@@ -20,7 +20,7 @@ class Remote {
             Accept: "application/json",
             ...headers_
         }
-        return (await this.connection.post(endpoint, data, { headers })).data;
+        return (await this.connection.post(endpoint, data, { headers })).data ?? {};
     }
 
     private async putInternal(endpoint: string, query: string, data: unknown, headers_: object = tokenHeader()): Promise<any> {
@@ -28,7 +28,7 @@ class Remote {
             Accept: "application/json",
             ...headers_
         }
-        return (await this.connection.put(`${endpoint}?${query}`, data, { headers })).data;
+        return (await this.connection.put(`${endpoint}?${query}`, data, { headers })).data ?? {};
     }
 
     private async getInternal(endpoint: string, query: string, headers_: object = tokenHeader()): Promise<any> {

@@ -49,7 +49,8 @@ function create() {
         name: "",
         speaker_id: props.speaker_id,
         description: "",
-        long_description: ""
+        long_description: "",
+        allow_registration: true
     };
 }
 

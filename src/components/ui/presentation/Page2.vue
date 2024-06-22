@@ -19,8 +19,8 @@ const state = useState();
                 <span class="desc">{{ state.conference!!.location_name }}</span>
                 <span class="title">Vidíme sa tam</span>
                 <div class="buttons">
-                    <Button>SPONZORI</Button> 
-                    <Button>KONTAKTUJTE NÁS</Button> 
+                    <RouterLink :to="{ name: 'sponsors' }"><Button>SPONZORI</Button></RouterLink>
+                    <RouterLink :to="{ name: 'contact' }"><Button>KONTAKTUJTE NÁS</Button></RouterLink>
                 </div>
             </div>
         </template>
@@ -72,7 +72,7 @@ const state = useState();
         gap: 1em;
         flex-wrap: wrap;
 
-        > .button {
+        .button {
             --padding: 1em;
             --border: solid 1px var(--clr-bg);
             --clr-active: var(--clr-bg);

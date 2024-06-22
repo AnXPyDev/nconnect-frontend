@@ -1,37 +1,25 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import type { Timeslot } from '@/lib/remote/Models';
+import TimeslotHolder from '@/components/client/schedule/TimeslotHolder.vue';
+import { sortTimeslots } from '@/lib/client/Schedule';
+import { useAuth } from '@/stores/auth';
 import remote from '@/lib/remote/Remote';
 import type { Response } from '@/lib/remote/RequestBuilder';
-import Spinner from '@/components/util/Spinner.vue';
-import TimeslotHolder from './TimeslotHolder.vue';
-import { parseISO } from 'date-fns/parseISO';
-import { format } from 'date-fns/format';
-import { sk } from 'date-fns/locale/sk';
-import { sortTimeslots } from '@/lib/client/Schedule';
-
-const props = defineProps<{
-    stage_id: number
-}>();
 
 const loading = ref<boolean>(true);
-
-interface TimeslotWrapper {
-    start_at: Date
-    timeslot: Timeslot
-}
 
 const dates = ref<string[]>([]);
 const timeslots = ref<Record<string, Timeslot[]>>({});
 
-remote.post("stage/scheduleinfo", { id: props.stage_id }).then((res: Response<{ timeslots: Timeslot[] }>) => {
+remote.post("user/mytimeslots").then((res: Response<{ timeslots: Timeslot[] }>) => {
     const { dates: dates_, timeslots: timeslots_ } = sortTimeslots(res.timeslots);
 
     timeslots.value = timeslots_;
     dates.value = dates_;
     loading.value = false;
 }).send();
-
+    
 const openTimeslot = ref<number>();
 
 function open(id: number) {
@@ -47,9 +35,7 @@ function open(id: number) {
 <template>
 
 <div class="timeslots-list">
-    <Spinner class="spinner" v-if="loading"></Spinner>
-
-    <template v-else v-for="date in dates">
+    <template v-for="date in dates">
         <div class="date"><i class="fa-solid fa-calendar"></i>&nbsp; {{ date }}</div>
         <TimeslotHolder
             v-for="timeslot in timeslots[date]" 
@@ -69,9 +55,13 @@ function open(id: number) {
     display: flex;
     flex-direction: column;
 
+    --background: var(--clr-bg);
+    --date-fg: var(--clr-primary);
+    --date-bg: var(--clr-fg-on-primary);
+
     width: 100%;
     color: var(--clr-fg);
-    background-color: var(--clr-bg);
+    background-color: var(--background);
 
     > .date {
         text-transform: uppercase;

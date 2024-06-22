@@ -16,7 +16,6 @@ const auth = useAuth();
         <NavigationButton class="button" :to="{ name: 'pages' }">STRÁNKY</NavigationButton>
         <NavigationButton class="button" :to="{ name: 'signup' }" v-if="auth.canSignUp">REGISTRACIA</NavigationButton>
         <NavigationButton class="button" :to="{ name: 'admin' }" v-if="auth.isAdmin">ADMIN</NavigationButton>
-        <NavigationButton class="button" :to="{ name: 'user' }" v-if="auth.isUser">ME</NavigationButton>
     </div>
 </template>
 

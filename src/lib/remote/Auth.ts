@@ -74,7 +74,7 @@ export interface AdminCredentials {
 }
     
 export function loginAdmin(credentials: AdminCredentials) {
-    remote.post("auth/admin/login", credentials).then((res: Response<{token: string, data: Admin}>) => {
+    return remote.post("auth/admin/login", credentials).then((res: Response<{token: string, data: Admin}>) => {
         const auth = useAuth();
         auth.auth = AuthType.ADMIN;
         auth.token = res.token;
@@ -83,7 +83,7 @@ export function loginAdmin(credentials: AdminCredentials) {
 }
 
 export async function registerUser(data: User) {
-    remote.post("user/register", data).then((res: Response<{ token: string, data: User }>) => {
+    return remote.post("user/register", data).then((res: Response<{ token: string, data: User }>) => {
         const auth = useAuth();
         auth.auth = AuthType.USER;
         auth.token = res.token;
@@ -91,7 +91,7 @@ export async function registerUser(data: User) {
     }).send();
 }
 
-function logout() {
+export function dropAuth() {
     const auth = useAuth();
     auth.auth = AuthType.NONE;
     auth.token = undefined;
@@ -100,9 +100,13 @@ function logout() {
 
 export function logoutAdmin() {
     return remote.post("auth/admin/logout").then((res) => {
-        logout();
+        dropAuth();
         router.push({ name: "admin/login" });
     }).send();
+}
+
+export async function logoutUser() {
+    dropAuth();
 }
 
 export function checkPriv(state: AuthState, priv?: AdminPriv): boolean {

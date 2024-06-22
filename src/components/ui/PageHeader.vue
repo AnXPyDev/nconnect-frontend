@@ -9,7 +9,7 @@ const props = withDefaults(defineProps<{
     location: string
 }>(), {
     section: "DOMOV",
-    // @ts-expect-error
+    // @ts-ignore
     origin: { name: "home" } as RouteLocationRaw
 });
 

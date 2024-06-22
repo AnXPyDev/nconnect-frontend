@@ -9,5 +9,12 @@ const props = defineProps<{
 </script>
 
 <template>
-    <div v-if="content" class="page-content" v-html="content"></div>
+    <div v-if="content" class="page-content ck-content" v-html="content"></div>
 </template>
+
+<style scoped lang="scss">
+.page-content {
+    width: 100%;
+}
+
+</style>

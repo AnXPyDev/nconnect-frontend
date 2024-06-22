@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import Button from '@/components/util/Button.vue';
 import Spinner from '@/components/util/Spinner.vue';
 import Error from '@/components/util/Error.vue';
+import { ValidationError, type ConfirmationCallback, type ConfirmationResult, type ValidationCallback, type ValidationResult } from '@/lib/cms/Editor';
 
 const props = withDefaults(defineProps<{
     validate?: ValidationCallback
@@ -39,7 +40,14 @@ async function confirm() {
     }
 
     loading.value = true;
-    let result = await props.confirm();
+    let result: ValidationResult;
+    try {
+        result = await props.confirm();
+    } catch (e) {
+        if (e instanceof ValidationError) {
+            result = e.result;
+        }
+    }
     loading.value = false;
 
     if (!handleValidationResult(result)) {

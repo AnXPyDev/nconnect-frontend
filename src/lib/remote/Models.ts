@@ -13,6 +13,7 @@ export interface User {
     id?: number
     name: string
     email: string
+    timeslots: number[]
 }
 
 export enum ConferenceState {
@@ -99,15 +100,18 @@ export interface Presentation {
     long_description?: string
     image_id?: number
     capacity?: number
+    allow_registration: boolean
 }
 
-export interface Timeslot {
+export interface Timeslot<D = string> {
     id?: number
     presentation_id?: number
     presentation?: Presentation
     stage_id: number
-    start_at: string
-    end_at: string
+    start_at: D
+    end_at: D
+    remaining_capacity?: number
+    stage?: Stage
 }
 
 

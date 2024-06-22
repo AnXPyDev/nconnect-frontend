@@ -4,6 +4,8 @@ import remote from '@/lib/remote/Remote';
 import { useAuth } from '@/stores/auth';
 import Section from '@/components/cms/util/Section.vue';
 import AdminsManager from '@/components/cms/admin/AdminsManager.vue';
+import UsersManager from '@/components/cms/user/UsersManager.vue';
+import PasswordManager from '@/components/admin/PasswordManager.vue';
 
 const auth = useAuth();
 
@@ -16,6 +18,22 @@ const auth = useAuth();
                 <Section>
                     <template #title>Admins</template>
                     <AdminsManager/>
+                </Section>
+            </div>
+        </div>
+        <div class="content-container">
+            <div class="content">
+                <Section>
+                    <template #title>Change Password</template>
+                    <PasswordManager/>
+                </Section>
+            </div>
+        </div>
+        <div class="content-container">
+            <div class="content">
+                <Section>
+                    <template #title>Users</template>
+                    <UsersManager/>
                 </Section>
             </div>
         </div>

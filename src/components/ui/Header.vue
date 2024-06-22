@@ -3,6 +3,7 @@ import { useAuth } from '@/stores/auth';
 import Navigation from './Navigation.vue';
 import Button from '@/components/util/Button.vue'; 
 import { ref } from 'vue';
+import UserAuth from '@/components/user/UserAuth.vue';
 
 const auth = useAuth();
 
@@ -19,11 +20,17 @@ function togglePhoneNavigation() {
         <div class="header content-container">
             <div class="content">
                 <div class="top">
-                    <RouterLink to="/"><img src="@/assets/images/logo-with-text.svg"/></RouterLink>
+                    <RouterLink :to="{ name: 'home' }"><img src="@/assets/images/logo-with-text.svg"/></RouterLink>
+                    <div class="right">
+
+                    <UserAuth v-if="auth.isUser"></UserAuth>
                     <Button @click="togglePhoneNavigation" class="menu-button" :active="phoneNavigationActive">
                         <i class="fa-solid fa-bars"></i>
                     </Button>
+
+                    </div>
                 </div>
+
 
                 <Navigation class="navigation" />
             </div>
@@ -88,6 +95,8 @@ function togglePhoneNavigation() {
             justify-content: space-between;
             align-items: center;
 
+            gap: 2em;
+
             > .navigation {
                 @include media.phone {
                     display: none;
@@ -98,6 +107,9 @@ function togglePhoneNavigation() {
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
+                width: 100%;
+                gap: 1em;
+
                 img {
                     max-height: 2.5em;
                 }
@@ -106,13 +118,20 @@ function togglePhoneNavigation() {
                     width: 100%;
                 }
 
-                > .menu-button {
-                    font-size: 1.5em;
-                    display: none;
-                    @include media.phone {
-                        display: flex;
+                > .right {
+                    display: flex;
+                    align-items: center;
+                    gap: 1em;
+
+                    > .menu-button {
+                        font-size: 1.5em;
+                        display: none;
+                        @include media.phone {
+                            display: flex;
+                        }
                     }
                 }
+
 
             }
         }

@@ -57,7 +57,7 @@ const router = createRouter({
             path: '/admin', name: "admin", component: AdminDashboardView, redirect: { name: "admin/cms" },
             meta: { title: "Admin Dashboard" },
             children: [
-                { path: 'cms', name: 'admin/cms', component: CMSView, meta: { requiresAdmin: AdminPriv.EDIT, title: "CMS" } },
+                { path: 'cms', name: 'admin/cms', component: CMSView, meta: { requiresAdmin: AdminPriv.VIEW, title: "CMS" } },
                 { path: 'users', name: 'admin/users', component: UsersView, meta: { requiresAdmin: AdminPriv.VIEW, title: "Používatelia" } },
                 { path: 'stats', name: 'admin/stats', component: StatsView, meta: { requiresAdmin: AdminPriv.VIEW, title: "Štatistiky" } },
                 { path: 'account', name: 'admin/account', component: AccountView, meta: { requiresAdmin: true, title: "Účet" } },
@@ -69,7 +69,7 @@ const router = createRouter({
 
         { path: '/login', name: "login", component: UserLoginView },
         { path: '/registracia', name: 'signup', component: SignupView, meta: { title: "Registrácia" } },
-        { path: '/user', name: 'user', component: UserView, meta: { title: "Ja", requiresUser: true } },
+        { path: '/user', name: 'user', component: UserView, meta: { title: getUserName, requiresUser: true } },
     ],
     history: createWebHistory(import.meta.env.BASE_URL)
 })
@@ -77,6 +77,11 @@ const router = createRouter({
 function getHomeTitle() {
     const state = useState();
     return state.conference?.subtitle ?? "Domov";
+}
+
+function getUserName() {
+    const auth = useAuth();
+    return auth.user!!.name;
 }
 
 export default router;
