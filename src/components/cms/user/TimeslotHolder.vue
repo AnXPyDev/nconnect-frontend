@@ -1,19 +1,22 @@
 <script setup lang="ts">
 
-import { type Timeslot } from '@/lib/remote/Models';
+import { AdminPriv, type Timeslot, type WithID } from '@/lib/remote/Models';
 import { ref, watch } from 'vue';
 import { format } from 'date-fns';
 import TextButton from '../util/TextButton.vue';
+import { useAuth } from '@/stores/auth';
 
 const dt_fmt = "d. M. y HH:mm:ss";
 
 const props = defineProps<{
-    timeslot: Timeslot
+    timeslot: WithID<Timeslot>
 }>();
 
 const emit = defineEmits<{
     unregister: []
 }>();
+
+const auth = useAuth();
 
 </script>
 
@@ -26,7 +29,7 @@ const emit = defineEmits<{
             <div class="end"><i class="fa-solid fa-hourglass-end"></i>&nbsp; {{ format(timeslot.end_at, dt_fmt) }}</div>
             <div v-if="timeslot.presentation"><i class="fa-solid fa-presentation"></i>&nbsp; <span class="id">[{{ timeslot.presentation.id }}]</span> {{ timeslot.presentation.name }}</div>
             <div class="nopresentation" v-else><i class="fa-solid fa-presentation"></i>&nbsp; No presentation assigned</div>
-            <TextButton @click="emit('unregister')"><i class="fa-solid fa-xmark"></i></TextButton>
+            <TextButton v-if="auth.checkPriv(AdminPriv.SUPER)" @click="emit('unregister')"><i class="fa-solid fa-xmark"></i></TextButton>
         </div> 
     </div>
 </template>

@@ -1,72 +1,72 @@
 <script setup lang="ts">
 import { ref, toRaw } from 'vue';
 import remote from '@/lib/remote/Remote';
-import { type Gallery, type Resource } from '@/lib/remote/Models';
+import { AdminPriv, type Gallery, type Image, type WithID } from '@/lib/remote/Models';
 
 import Spinner from '@/components/util/Spinner.vue';
 import Button from '@/components/util/Button.vue';
 import GalleryImage from './GalleryImage.vue';
 import GalleryImageUploader from './GalleryImageUploader.vue';
 import GalleryImageEditor from './GalleryImageEditor.vue';
-import { predicateByID } from '@/lib/util/Snippets';
+import { copyEntity, deleteEntity, predicateByID, replaceEntity } from '@/lib/util/Snippets';
 import type { Response } from '@/lib/remote/RequestBuilder';
+import { throwValidation } from '@/lib/cms/Editor';
+import { useAuth } from '@/stores/auth';
 
 const loading = ref<boolean>(true);
 
 const props = defineProps<{
-    gallery: Gallery
+    gallery: WithID<Gallery>
     mutable?: boolean
     picker?: boolean
 }>();
 
 const emit = defineEmits<{
-    select: [Resource]
+    select: [WithID<Image>]
 }>();
 
-const images = ref<Resource[]>([]);
+const images = ref<WithID<Image>[]>([]);
 
-remote.post("gallery/images", { id: props.gallery.id!! }).then((res: Response<{ images: Resource[] }>) => {
+remote.post("gallery/images", { id: props.gallery.id }).then((res: Response<{ images: WithID<Image>[] }>) => {
     images.value = res.images;
     loading.value = false;
 }).send();
 
 const showUploader = ref<boolean>(false);
 
-function imagesUploaded(imgs: Resource[]) {
+function imagesUploaded(imgs: WithID<Image>[]) {
     showUploader.value = false;
     images.value.push(...imgs);
 }
 
-const toEdit = ref<Resource>();
+const toEdit = ref<Image>();
 
 function reset() {
     toEdit.value = undefined;
 }
 
-function edit(i: Resource) {
-    toEdit.value = Object.assign({}, i);
+function edit(i: Image) {
+    toEdit.value = copyEntity(i);
 }
 
 async function confirmEdit() {
-    const { resource: image } : { resource: Resource } = await remote.post("resource/edit", toRaw(toEdit).value).unwrap().send();
-    Object.assign(images.value.find(predicateByID(image.id!!))!!, image);
+    const { resource: image } : { resource: WithID<Image> } = await remote.post("resource/edit", toRaw(toEdit.value)!!).fail(throwValidation).send();
+    replaceEntity(images, image);
 }
 
 async function editDelete() {
-    // TODO
+    const resource_id = toEdit.value!!.id!!;
+    await remote.post("gallery/deleteimage", { id: props.gallery.id, resource_id }).fail(throwValidation).send(); 
+    deleteEntity(images, resource_id);
 }
 
 const selectedImages = ref<number[]>([]);
 
-function isSelected(i: Resource) {
+function isSelected(i: WithID<Image>) {
     return selectedImages.value.findIndex((v) => v == i.id) !== -1;
 }
 
-function selectImage(i: Resource) {
-    if (i.id === undefined) {
-        return;
-    }
-
+function selectImage(i: WithID<Image>) {
     if (props.picker) {
         emit('select', i);
     }
@@ -75,6 +75,8 @@ function selectImage(i: Resource) {
 const showGrid = ref<boolean>(false);
 const largeItems = ref<boolean>(false);
 const forceShowImages = ref<boolean>(false);
+
+const auth = useAuth();
 
 </script>
 
@@ -89,12 +91,12 @@ const forceShowImages = ref<boolean>(false);
             <div class="items" :class="{ grid: showGrid, large: largeItems }">
                 <GalleryImage v-for="i in images"
                     :mutable="mutable" :selectable="picker" @edit="edit(i)" 
-                    :force-show-image="forceShowImages" :resource="i"
+                    :force-show-image="forceShowImages" :image="i"
                     @select="selectImage(i)" :selected="isSelected(i)"/>
             </div>
 
             <div class="controls">
-                <template v-if="mutable">
+                <template v-if="mutable && auth.checkPriv(AdminPriv.EDIT)">
                     <Button @click="showUploader = true" :active="showUploader"><i class="fa-solid fa-plus"></i>&nbsp; ADD IMAGES</Button>
                 </template>
                 <Button @click="forceShowImages = !forceShowImages" :active="forceShowImages">
@@ -115,8 +117,8 @@ const forceShowImages = ref<boolean>(false);
             
             <GalleryImageUploader @done="imagesUploaded" v-if="showUploader" :gallery="gallery"/>
 
-            <GalleryImageEditor v-if="toEdit" v-model="toEdit" :confirm="confirmEdit" @delete_="editDelete" @done="reset">
-                Edit Image Resource [{{ toEdit.id }}]
+            <GalleryImageEditor v-if="toEdit" v-model="toEdit" :confirm="confirmEdit" :delete_="editDelete" @done="reset">
+                Edit Image Image [{{ toEdit.id }}]
             </GalleryImageEditor>
         </template>
     </div>
@@ -125,6 +127,7 @@ const forceShowImages = ref<boolean>(false);
 
 <style scoped lang="scss">
 @use '@/styles/lib/mixins';
+@use '@/styles/lib/dimens';
 
 .manager {
     @include mixins.cmsmanager;
@@ -141,8 +144,8 @@ const forceShowImages = ref<boolean>(false);
         padding: $gap;
         padding-bottom: 1em;
         
-        > .image-resource {
-            $size: calc(100% / var(--nitems) - ($gap * (var(--nitems) - 1)) / var(--nitems));
+        > .gallery-image {
+            $size: dimens.spread-percentage(var(--nitems), $gap);
             min-width: $size;
             max-width: $size;
             box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);

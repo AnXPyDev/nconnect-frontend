@@ -62,17 +62,14 @@ remote.post('organizer/index').then((res: Response<{ organizers: Organizer[] }>)
             aspect-ratio: 3/2;
 
             @include media.phone {
+                @include dimens.min-max(width, 100%);
                 aspect-ratio: 2/3;
             } 
 
             > iframe {
-                width: 100%;
-                height: 100%;
+                min-width: 100%;
+                min-height: 100%;
                 border: none;
-            }
-
-            @include media.phone {
-                @include dimens.min-max(width, 100%);
             }
         }
 

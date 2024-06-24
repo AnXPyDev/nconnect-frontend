@@ -1,31 +1,35 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import remote from '@/lib/remote/Remote';
-import { type Resource, type Gallery } from '@/lib/remote/Models';
+import { type Resource, type Gallery, type Image, type WithID, AdminPriv } from '@/lib/remote/Models';
 import { getResourceURL } from '@/lib/remote/Util';
 import GalleryImagesManager from './GalleryImagesManager.vue';
 import type { Response } from '@/lib/remote/RequestBuilder';
+import TextButton from '../util/TextButton.vue';
+import { useAuth } from '@/stores/auth';
 
 
 const props = defineProps<{
-    gallery: Gallery
+    gallery: WithID<Gallery>
     mutable?: boolean
     picker?: boolean
 }>();
 
 const emit = defineEmits<{
     edit: [],
-    select: [Resource]
+    select: [WithID<Image>]
 }>();
 
-const images = ref<Resource[]>([]);
+const images = ref<WithID<Image>[]>([]);
 
-remote.post("gallery/images", { id: props.gallery.id }).then((res: Response<{ images: Resource[] }>) => {
+remote.post("gallery/images", { id: props.gallery.id }).then((res: Response<{ images: WithID<Image>[] }>) => {
     images.value = res.images;
 }).send();
 
 const showImages = ref<boolean>(false);
 const showThumbnail = ref<boolean>(false);
+
+const auth = useAuth();
 
 </script>
 
@@ -34,10 +38,16 @@ const showThumbnail = ref<boolean>(false);
         <div class="header">
             <span class="id">[{{ gallery.id }}]</span>
             <span class="name">{{ gallery.name }}</span>
-            <i v-if="mutable" @click="$emit('edit')" class="icon-button fa-solid fa-pen"></i>
-            <i v-if="gallery.thumbnail_id" @click="showThumbnail = !showThumbnail" class="icon-button fa-solid fa-image"></i>
+            <TextButton v-if="auth.checkPriv(AdminPriv.EDIT) && mutable" @click="$emit('edit')">
+                <i class="fa-solid fa-pen"></i>
+            </TextButton>
+            <TextButton v-if="gallery.thumbnail_id" @click="showThumbnail = !showThumbnail">
+                <i   class="fa-solid fa-image"></i>
+            </TextButton>
             
-            <i @click="showImages = !showImages" class="icon-button fa-solid fa-images"></i>
+            <TextButton @click="showImages = !showImages" :active="showImages">
+                <i class="fa-solid fa-images"></i>
+            </TextButton>
 
         </div>
 

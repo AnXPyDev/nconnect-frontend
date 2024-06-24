@@ -1,10 +1,11 @@
 <script setup lang="ts">
 
-import { type Company, type SpeakerMetadata } from '@/lib/remote/Models';
+import { type Company } from '@/lib/remote/Models';
+import { type Nullable } from '@/lib/util/Snippets';
 import Link from '@/components/ui/misc/Link.vue';
 
 const props = defineProps<{
-    company?: Company
+    company: Nullable<Company>
 }>();
 
 </script>

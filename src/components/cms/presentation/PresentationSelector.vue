@@ -1,22 +1,23 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import remote from '@/lib/remote/Remote';
-import { type Presentation } from '@/lib/remote/Models';
+import { type ID, type Presentation, type WithID } from '@/lib/remote/Models';
 import type { Response } from '@/lib/remote/RequestBuilder';
+import { type Nullable } from '@/lib/util/Snippets';
 
 const props = defineProps<{
     timeslot_id?: number
 }>();
 
-const presentations = ref<Presentation[]>([]);
+const presentations = ref<WithID<Presentation>[]>([]);
 
 remote.post("presentation/available", {
     timeslot_id: props.timeslot_id
-}).then((res: Response<{ presentations: Presentation[] }>) => {
+}).then((res: Response<{ presentations: WithID<Presentation>[] }>) => {
     presentations.value = res.presentations;
 }).send();
 
-const presentation_id = defineModel<number | undefined>();
+const presentation_id = defineModel<Nullable<ID>>({ required: true });
 
 </script>
 

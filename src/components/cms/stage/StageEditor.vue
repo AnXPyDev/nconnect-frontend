@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { type Stage } from '@/lib/remote/Models';
 import Input from '@/components/util/input/Input.vue';
 import Editor from '@/components/cms/util/Editor.vue';
+import type { ConfirmationCallback } from '@/lib/cms/Editor';
 
 const props = defineProps<{
     confirm: ConfirmationCallback
@@ -11,14 +12,12 @@ const props = defineProps<{
 
 const stage = defineModel<Stage>({ required: true });
 
-const error = ref<string>();
-
 const emit = defineEmits<{
     done: []
 }>();
 
 function validate() {
-    if (stage.value?.name.length == 0) {
+    if (stage.value.name.length == 0) {
         return "Empty name";
     }
 }

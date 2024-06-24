@@ -1,20 +1,23 @@
 <script setup lang="ts">
 import Spinner from '@/components/util/Spinner.vue';
 import remote from '@/lib/remote/Remote';
-import type { Headliner } from '@/lib/remote/Models';
+import { AdminPriv, type Headliner, type WithID } from '@/lib/remote/Models';
 import { ref, toRaw } from 'vue';
 import HeadlinerHolder from './HeadlinerHolder.vue';
 import HeadlinerEditor from './HeadlinerEditor.vue';
 
 import Button from '@/components/util/Button.vue';
-import { predicateByID } from '@/lib/util/Snippets';
+import { copyEntity, deleteEntity, predicateByID, pushEntity, replaceEntity } from '@/lib/util/Snippets';
 import type { Response } from '@/lib/remote/RequestBuilder';
+import { EmptyHeadliner } from '@/lib/remote/Generators';
+import { throwValidation } from '@/lib/cms/Editor';
+import { useAuth } from '@/stores/auth';
 
 
 const loading = ref<boolean>(true);
-const headliners = ref<Headliner[]>([]);
+const headliners = ref<WithID<Headliner>[]>([]);
 
-remote.post("headliner/index").then((res: Response<{ headliners: Headliner[] }>) => {
+remote.post("headliner/index").then((res: Response<{ headliners: WithID<Headliner>[] }>) => {
     headliners.value = res.headliners;
     loading.value = false;
 }).send();
@@ -29,32 +32,31 @@ function reset() {
 
 function create() {
     reset();
-    toCreate.value = {
-        speaker_id: null,
-        stage_id: null
-    };
+    toCreate.value = EmptyHeadliner();
 }
 
 function edit(h: Headliner) {
     reset();
-    toEdit.value = Object.assign({}, h);
+    toEdit.value = copyEntity(h);
 }
 
 async function confirmEdit() {
-    const { headliner }: { headliner: Headliner } = await remote.post("headliner/edit", toRaw(toEdit.value)).unwrap().send();
-    Object.assign(headliners.value.find(predicateByID(headliner.id!!))!!, headliner);
+    const { headliner }: { headliner: WithID<Headliner> } = await remote.post("headliner/edit", toRaw(toEdit.value)).fail(throwValidation).send();
+    replaceEntity(headliners, headliner);
 }
 
 async function editDelete() {
     const id = toEdit.value!!.id!!;
-    await remote.post("headliner/delete", { id }).send();
-    headliners.value.splice(headliners.value.findIndex(predicateByID(id)), 1);
+    await remote.post("headliner/delete", { id }).fail(throwValidation).send();
+    deleteEntity(headliners, id);
 }
 
 async function confirmCreate() {
-    const { headliner }: { headliner: Headliner } = await remote.post("headliner/create", toRaw(toCreate.value)).unwrap().send();
-    headliners.value.push(headliner);
+    const { headliner }: { headliner: WithID<Headliner> } = await remote.post("headliner/create", toRaw(toCreate.value)).fail(throwValidation).send();
+    pushEntity(headliners, headliner);
 }
+
+const auth = useAuth();
 
 </script>
 
@@ -70,7 +72,7 @@ async function confirmCreate() {
             <HeadlinerHolder @edit="edit(h)" v-for="h in headliners" :headliner="h"></HeadlinerHolder>
         </div>
 
-        <Button @click="create"><i class="fa-solid fa-plus"></i>&nbsp; NEW HEADLINER</Button>
+        <Button v-if="auth.checkPriv(AdminPriv.EDIT)" @click="create"><i class="fa-solid fa-plus"></i>&nbsp; NEW HEADLINER</Button>
 
         <HeadlinerEditor v-if="toCreate" v-model="toCreate" :confirm="confirmCreate" @done="reset"></HeadlinerEditor>
         <HeadlinerEditor v-if="toEdit" v-model="toEdit" :confirm="confirmEdit" :delete_="editDelete" @done="reset"></HeadlinerEditor>

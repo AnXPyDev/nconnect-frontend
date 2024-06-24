@@ -4,8 +4,11 @@ import Navigation from './Navigation.vue';
 import Button from '@/components/util/Button.vue'; 
 import { ref } from 'vue';
 import UserAuth from '@/components/user/UserAuth.vue';
+import { useState } from '@/stores/state';
+import { Theme } from '@/lib/theme/Theme';
 
 const auth = useAuth();
+const state = useState();
 
 const phoneNavigationActive = ref<boolean>(false);
 
@@ -19,16 +22,17 @@ function togglePhoneNavigation() {
     <div class="header-container">
         <div class="header content-container">
             <div class="content">
-                <div class="top">
-                    <RouterLink :to="{ name: 'home' }"><img src="@/assets/images/logo-with-text.svg"/></RouterLink>
-                    <div class="right">
-
-                    <UserAuth v-if="auth.isUser"></UserAuth>
+                <div class="left">
+                    <RouterLink :to="{ name: 'home' }">
+                        <img v-if="state.theme == Theme.Dark" src="@/assets/images/header-logo-dark.svg"/>
+                        <img v-else src="@/assets/images/header-logo.svg"/>
+                    </RouterLink>
+                </div>
+                <div class="right">
+                    <UserAuth class="user-auth" v-if="auth.isUser"></UserAuth>
                     <Button @click="togglePhoneNavigation" class="menu-button" :active="phoneNavigationActive">
                         <i class="fa-solid fa-bars"></i>
                     </Button>
-
-                    </div>
                 </div>
 
 
@@ -95,15 +99,26 @@ function togglePhoneNavigation() {
             justify-content: space-between;
             align-items: center;
 
-            gap: 2em;
+            gap: 0.5em;
 
-            > .navigation {
-                @include media.phone {
+            @include media.phone {
+                gap: 1em;
+
+                &:has(> .right > .user-auth) {
+                    flex-direction: column;
+
+                    > .right {
+                        width: 100%;
+                        justify-content: space-between;
+                    }
+                }
+
+                > .navigation {
                     display: none;
                 }
             }
 
-            > .top {
+            > .left {
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
@@ -112,28 +127,39 @@ function togglePhoneNavigation() {
 
                 img {
                     max-height: 2.5em;
+                    @include media.small-width {
+                        max-height: 2em;
+                    }
+
                 }
 
                 @include media.phone {
                     width: 100%;
                 }
 
-                > .right {
-                    display: flex;
-                    align-items: center;
-                    gap: 1em;
-
-                    > .menu-button {
-                        font-size: 1.5em;
-                        display: none;
-                        @include media.phone {
-                            display: flex;
-                        }
-                    }
-                }
-
 
             }
+
+            > .navigation {
+                @include media.small-width {
+                    font-size: 0.8em;
+                }
+            }
+
+            > .right {
+                display: flex;
+                align-items: center;
+                gap: 1em;
+
+                > .menu-button {
+                    font-size: 1.5em;
+                    display: none;
+                    @include media.phone {
+                        display: flex;
+                    }
+                }
+            }
+
         }
     }
 }

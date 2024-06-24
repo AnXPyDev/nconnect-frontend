@@ -1,11 +1,13 @@
 <script setup lang="ts">
 
-import { type Testimonial } from '@/lib/remote/Models';
+import { AdminPriv, type Testimonial, type WithID } from '@/lib/remote/Models';
 import { getResourceURL } from '@/lib/remote/Util';
 import { ref } from 'vue';
+import TextButton from '../util/TextButton.vue';
+import { useAuth } from '@/stores/auth';
 
 const props = defineProps<{
-    testimonial: Testimonial
+    testimonial: WithID<Testimonial>
 }>();
 
 const emit = defineEmits<{
@@ -13,6 +15,8 @@ const emit = defineEmits<{
 }>();
 
 const showImage = ref<boolean>(false);
+
+const auth = useAuth();
 
 </script>
 
@@ -22,8 +26,13 @@ const showImage = ref<boolean>(false);
             <span class="id">[{{ testimonial.id }}]</span>
             <span class="author">{{ testimonial.author }}</span>
 
-            <i @click="emit('edit')" class="icon-button fa-solid fa-pen"></i>
-            <i v-if="testimonial.image_id" @click="showImage = !showImage" class="icon-button fa-solid fa-image"></i>
+            <TextButton v-if="auth.checkPriv(AdminPriv.EDIT)" @click="emit('edit')" class="icon-button">
+                <i class="fa-solid fa-pen"></i>
+            </TextButton>
+
+            <TextButton class="icon-button" v-if="testimonial.image_id" @click="showImage = !showImage" :active="showImage">
+                <i class="fa-solid fa-image"></i>
+            </TextButton>
         </div>
         <div class="details">
             <div v-if="showImage && testimonial.image_id"class="image">

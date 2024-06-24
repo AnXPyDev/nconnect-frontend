@@ -23,6 +23,7 @@ type ExceptionHandler = (exception: unknown) => HandlerResult;
 type GenericHandler = Handler<GenericResponse>;
 type GenericFailHandler = FailHandler<FailResponse>;
 
+type Modifier = (rh: ResponseHandler) => void;
 
 export class ResponseHandler {
     handlers: Map<ApiCodes, GenericHandler> = new Map();
@@ -75,8 +76,13 @@ export class ResponseHandler {
         return this;
     }
 
-    code<T, C extends ApiCodes>(code: C, handler: Handler<GenericResponse<T, C>>) {
+    code<T, C extends ApiCodes>(code: C, handler: Handler<FailResponse<T, C>>) {
         this.handlers.set(code, handler as GenericHandler);
+        return this;
+    }
+
+    apply(mod: Modifier) {
+        mod(this);
         return this;
     }
 }
@@ -123,7 +129,7 @@ export default class RequestBuilder {
         });
     }
     
-    code<T, C extends ApiCodes>(code: C, handler: Handler<GenericResponse<T, C>>) {
+    code<T, C extends ApiCodes>(code: C, handler: Handler<FailResponse<T, C>>) {
         this.responseHandler.code(code, handler);
         return this;
     }
@@ -134,6 +140,11 @@ export default class RequestBuilder {
     }
 
     unwrap() {
+        return this;
+    }
+
+    apply(mod: Modifier) {
+        this.responseHandler.apply(mod);
         return this;
     }
 

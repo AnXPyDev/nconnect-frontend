@@ -1,9 +1,24 @@
+@use 'lib/dimens';
+@use 'lib/media';
+
 $align: 2rem;
+$align-phone: 1rem;
 $time-col-width: 15rem;
+$time-col-width-phone: 8rem;
 
 @mixin time-col {
-    max-width: $time-col-width;
-    min-width: $time-col-width;
+    @include dimens.min-max(width, $time-col-width);
+    @include media.phone {
+        @include dimens.min-max(width, $time-col-width-phone);
+    }
+}
+
+@mixin align {
+    padding-left: $align;
+    @include media.phone {
+        padding-left: $align-phone;
+    }
+
 }
 
 $row-height: 4rem;

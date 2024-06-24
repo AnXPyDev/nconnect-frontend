@@ -19,7 +19,6 @@ const emit = defineEmits<{
         </div>
         <div class="info-overlay">
             <div class="controls">
-                <i class="icon-button fa-solid fa-pen"></i>
                 <i @click="emit('remove')" class="icon-button fa-solid fa-xmark"></i>
             </div>
             <span class="name">{{ image.name }}</span>

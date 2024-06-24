@@ -4,8 +4,8 @@ import Button from '@/components/util/Button.vue';
 import type { RouteLocationNamedRaw, RouteLocationRaw } from 'vue-router';
 
 const props = withDefaults(defineProps<{
-    origin: RouteLocationRaw
-    section: string
+    origin?: RouteLocationRaw
+    section?: string
     location: string
 }>(), {
     section: "DOMOV",

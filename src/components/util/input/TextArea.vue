@@ -1,7 +1,7 @@
-
 <script setup lang="ts">
+import { nullableStringModel, type Nullable } from '@/lib/util/Snippets';
 
-const model = defineModel<string>();
+const out = defineModel<Nullable<string>>({ required: true });
 
 </script>
 
@@ -11,7 +11,7 @@ const model = defineModel<string>();
         <div class="label">
             <slot></slot>
         </div>
-        <textarea v-model="model"></textarea>
+        <textarea v-model="out"></textarea>
     </div>
 
 </template>

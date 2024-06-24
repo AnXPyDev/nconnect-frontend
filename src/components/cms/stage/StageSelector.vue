@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import remote from '@/lib/remote/Remote';
-import { type Stage } from '@/lib/remote/Models';
+import { type ID, type Stage, type WithID } from '@/lib/remote/Models';
 import type { Response } from '@/lib/remote/RequestBuilder';
+import type { Nullable } from '@/lib/util/Snippets';
 
-const stages = ref<Stage[]>([]);
+const stages = ref<WithID<Stage>[]>([]);
 
-remote.post("stage/index", {}).then((res: Response<{ stages: Stage[] }>) => {
+remote.post("stage/index", {}).then((res: Response<{ stages: WithID<Stage>[] }>) => {
     stages.value = res.stages;
 }).send();
 
-const stage_id = defineModel<number | undefined>();
+const stage_id = defineModel<Nullable<ID>>();
 
 </script>
 

@@ -7,6 +7,7 @@ import TextArea from '@/components/util/input/TextArea.vue';
 import Input from '@/components/util/input/Input.vue';
 import ImageResourceSelector from '@/components/cms/gallery/ImageResourceSelector.vue';
 import ContactEditor from '@/components/cms/contact/ContactEditor.vue';
+import type { ConfirmationCallback } from '@/lib/cms/Editor';
 
 const props = defineProps<{
     confirm: ConfirmationCallback
@@ -21,7 +22,7 @@ const emit = defineEmits<{
 
 
 function validate() {
-    if (speaker.value!!.name.length == 0) {
+    if (speaker.value.name.length == 0) {
         return "Name empty";
     }
 
@@ -37,7 +38,7 @@ watch(company, (value) => {
     if (value.name) {
         speaker.value.company = company.value;
     } else {
-        speaker.value.company = undefined;
+        speaker.value.company = null;
     }
 }, { deep: true });
 
@@ -52,7 +53,7 @@ watch(company, (value) => {
             <Input v-model="speaker.name">Name</Input>
             <Input v-model="speaker.subtitle">Subtitle</Input>
             <TextArea v-model="speaker.description">Description</TextArea>
-            <ImageResourceSelector v-model="speaker.image_id">Image</ImageResourceSelector>
+            <ImageResourceSelector allow-none v-model="speaker.image_id">Image</ImageResourceSelector>
             <Input v-model="company.name">Company Name</Input>
             <Input v-model="company.link">Company Link</Input>
             <ContactEditor v-model="speaker.contact">Contact</ContactEditor>

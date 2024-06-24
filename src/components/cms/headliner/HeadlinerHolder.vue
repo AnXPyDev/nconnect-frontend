@@ -1,15 +1,18 @@
 <script setup lang="ts">
-import type { Headliner } from '@/lib/remote/Models';
+import { AdminPriv, type Headliner, type WithID } from '@/lib/remote/Models';
+import TextButton from '../util/TextButton.vue';
+import { useAuth } from '@/stores/auth';
 
 
 const props = defineProps<{
-    headliner: Headliner
+    headliner: WithID<Headliner>
 }>();
 
 const emit = defineEmits<{
     edit: []
 }>();
 
+const auth = useAuth();
 
 </script>
 
@@ -28,7 +31,9 @@ const emit = defineEmits<{
                 <span class="id">[{{ headliner.stage.id }}]</span>
                 <span class="name">{{ headliner.stage.name }}</span>
             </template>
-            <i class="icon-button fa-solid fa-pen" @click="emit('edit')"></i>
+            <TextButton v-if="auth.checkPriv(AdminPriv.EDIT)" @click="emit('edit')" class="icon-button">
+                <i class="fa-solid fa-pen" ></i>
+            </TextButton>
         </div>
     </div>
 </template>

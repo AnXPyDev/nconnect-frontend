@@ -1,20 +1,24 @@
 <script setup lang="ts">
 
 import { ref } from 'vue';
-import { type Organizer } from '@/lib/remote/Models';
+import { AdminPriv, type Organizer, type WithID } from '@/lib/remote/Models';
 import { getResourceURL } from '@/lib/remote/Util';
 
 import ContactHolder from '@/components/cms/contact/ContactHolder.vue';
+import { useAuth } from '@/stores/auth';
+import TextButton from '../util/TextButton.vue';
 
 const props = defineProps<{
-    organizer: Organizer
+    organizer: WithID<Organizer>
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
     edit: []
 }>();
 
 const showImage = ref<boolean>(false);
+
+const auth = useAuth();
 
 </script>
 
@@ -26,9 +30,13 @@ const showImage = ref<boolean>(false);
             <span class="name">{{ organizer.name }}</span>
             <span class="role">{{ organizer.role }}</span>
             
-            <i @click="$emit('edit')" class="icon-button fa-solid fa-pen"></i>
+            <TextButton v-if="auth.checkPriv(AdminPriv.EDIT)" @click="emit('edit')" class="icon-button">
+                <i  class="fa-solid fa-pen"></i>
+            </TextButton>
 
-            <i v-if="organizer.image_id" @click="showImage = !showImage" class="icon-button fa-solid fa-image"></i>
+            <TextButton v-if="organizer.image_id" @click="showImage = !showImage" :active="showImage" class="icon-button">
+                <i class="fa-solid fa-image"></i>
+            </TextButton>
         </div>
 
         <div class="details">

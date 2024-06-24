@@ -72,7 +72,7 @@ function open(id: number) {
         border-bottom: 1px solid var(--clr-bg-2);
         padding-left: schedule-table.$align;
         color: var(--clr-primary);
-        background-color: var(--clr-bg-1);
+        background-color: var(--clr-bg-alt);
     }
 
     > .timeslot {

@@ -2,20 +2,25 @@
 
 import { ref, toRaw } from 'vue';
 import remote from '@/lib/remote/Remote';
-import { type Speaker } from '@/lib/remote/Models';
+import { AdminPriv, type Speaker, type WithID } from '@/lib/remote/Models';
 import SpeakerEditor from './SpeakerEditor.vue';
 import SpeakerHolder from './SpeakerHolder.vue';
 import Button from '@/components/util/Button.vue';
 import Spinner from '@/components/util/Spinner.vue';
-import { predicateByID } from '@/lib/util/Snippets';
+import { copyEntity, deleteEntity, ensureObjects, predicateByID, pushEntity, replaceEntity } from '@/lib/util/Snippets';
 import type { Response } from '@/lib/remote/RequestBuilder';
+import { EmptySpeaker } from '@/lib/remote/Generators';
+import { throwValidation } from '@/lib/cms/Editor';
+import { useAuth } from '@/stores/auth';
 
-const speakers = ref<Speaker[]>([]);
+const speakers = ref<WithID<Speaker>[]>([]);
 
 const loading = ref<boolean>(true);
 
-remote.post("speaker/index").then((response: Response<{ speakers: Speaker[] }>) => {
-    speakers.value = response.speakers;
+const ensure = ensureObjects<WithID<Speaker>>("contact");
+
+remote.post("speaker/index").then((response: Response<{ speakers: WithID<Speaker>[] }>) => {
+    speakers.value = response.speakers.map(ensure);
     loading.value = false;
 }).send();
 
@@ -29,33 +34,33 @@ function reset() {
 
 function create() {
     reset();
-    toCreate.value = { 
-        name: "",
-        description: "",
-        contact: {}
-    };
+    toCreate.value = EmptySpeaker();
 }
 
 function edit(speaker: Speaker) {
     reset();
-    toEdit.value = structuredClone(toRaw(speaker));
+    toEdit.value = copyEntity(speaker);
 }
 
 async function editConfirm() {
-    const { speaker }: { speaker: Speaker } = await remote.post("speaker/edit", toRaw(toEdit.value)!!).unwrap().send();
-    Object.assign(speakers.value.find(predicateByID(speaker.id!!))!!, speaker);
+    const { speaker }: { speaker: WithID<Speaker> } = await remote.post("speaker/edit", toRaw(toEdit.value)!!).fail(throwValidation).send();
+    ensure(speaker);
+    replaceEntity(speakers, speaker);
 }
 
 async function editDelete() {
     const id = toEdit.value!!.id!!;
-    await remote.post("speaker/delete", { id }).send();
-    speakers.value.splice(speakers.value.findIndex(predicateByID(id)), 1);
+    await remote.post("speaker/delete", { id }).fail(throwValidation).send();
+    deleteEntity(speakers, id);
 }
 
 async function createConfirm() {
-    const { speaker }: { speaker: Speaker } = await remote.post("speaker/create", toRaw(toCreate.value)!!).unwrap().send();
-    speakers.value.push(speaker);
+    const { speaker }: { speaker: WithID<Speaker> } = await remote.post("speaker/create", toRaw(toCreate.value)!!).fail(throwValidation).send();
+    ensure(speaker);
+    pushEntity(speakers, speaker);
 }
+
+const auth = useAuth();
 
 </script>
 
@@ -70,7 +75,7 @@ async function createConfirm() {
                 <SpeakerHolder v-for="speaker in speakers" :speaker="speaker" :key="speaker.id" @edit="edit(speaker)"/>
             </div>
 
-            <Button @click="create"><i class="fa-solid fa-plus"></i>&nbsp; NEW SPEAKER</Button>
+            <Button v-if="auth.checkPriv(AdminPriv.EDIT)" @click="create"><i class="fa-solid fa-plus"></i>&nbsp; NEW SPEAKER</Button>
 
             <SpeakerEditor v-if="toEdit" v-model="toEdit" :confirm="editConfirm" :delete_="editDelete" @done="reset">
                 Edit Speaker [{{ toEdit.id }}]

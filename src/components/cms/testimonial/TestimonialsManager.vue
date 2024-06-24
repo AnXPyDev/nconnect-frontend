@@ -3,17 +3,20 @@
 import { ref, toRaw } from 'vue';
 import TestimonialHolder from './TestimonialHolder.vue';
 import TestimonialEditor from './TestimonialEditor.vue';
-import type { Testimonial } from '@/lib/remote/Models';
+import { AdminPriv, type Testimonial, type WithID } from '@/lib/remote/Models';
 import remote from '@/lib/remote/Remote';
 import Button from '@/components/util/Button.vue';
-import { predicateByID } from '@/lib/util/Snippets';
+import { copyEntity, deleteEntity, predicateByID, pushEntity, replaceEntity } from '@/lib/util/Snippets';
 import type { Response } from '@/lib/remote/RequestBuilder';
 import Spinner from '@/components/util/Spinner.vue';
+import { EmptyTestimonial } from '@/lib/remote/Generators';
+import { throwValidation } from '@/lib/cms/Editor';
+import { useAuth } from '@/stores/auth';
 
-const testimonials = ref<Testimonial[]>([]);
+const testimonials = ref<WithID<Testimonial>[]>([]);
 const loading = ref<boolean>(true);
 
-remote.post('testimonial/index').then((res: Response<{ testimonials: Testimonial[] }>) => {
+remote.post('testimonial/index').then((res: Response<{ testimonials: WithID<Testimonial>[] }>) => {
     testimonials.value = res.testimonials;
     loading.value = false;
 }).send();
@@ -28,32 +31,31 @@ function reset() {
 
 function edit(t: Testimonial) {
     reset();
-    toEdit.value = Object.assign({}, t);
+    toEdit.value = copyEntity(t);
 }
 
 function create() {
     reset();
-    toCreate.value = {
-        author: "",
-        description: ""
-    };
+    toCreate.value = EmptyTestimonial();
 }
 
 async function createConfirm() {
-    const { testimonial }: { testimonial: Testimonial } = await remote.post("testimonial/create", toRaw(toCreate.value)!!).unwrap().send();
-    testimonials.value.push(testimonial);
+    const { testimonial }: { testimonial: WithID<Testimonial> } = await remote.post("testimonial/create", toRaw(toCreate.value)!!).fail(throwValidation).send();
+    pushEntity(testimonials, testimonial);
 }
 
 async function editConfirm() {
-    const { testimonial }: { testimonial: Testimonial } = await remote.post("testimonial/edit", toRaw(toEdit.value)!!).unwrap().send();
-    Object.assign(testimonials.value.find(predicateByID(testimonial.id!!))!!, testimonial);
+    const { testimonial }: { testimonial: WithID<Testimonial> } = await remote.post("testimonial/edit", toRaw(toEdit.value)!!).fail(throwValidation).send();
+    replaceEntity(testimonials, testimonial);
 }
 
 async function editDelete() {
     const id = toEdit.value!!.id!!;
-    await remote.post("testimonial/delete", { id }).send();
-    testimonials.value.splice(testimonials.value.findIndex(predicateByID(id)), 1);
+    await remote.post("testimonial/delete", { id }).fail(throwValidation).send();
+    deleteEntity(testimonials, id);
 }
+
+const auth = useAuth();
 
 </script>
 
@@ -67,7 +69,7 @@ async function editDelete() {
                 <TestimonialHolder v-for="t in testimonials" :testimonial="t" @edit="edit(t)"/>
             </div>
 
-            <Button @click="create"><i class="fa-solid fa-plus"></i>&nbsp; NEW TESTIMONIAL</Button>
+            <Button v-if="auth.checkPriv(AdminPriv.EDIT)" @click="create"><i class="fa-solid fa-plus"></i>&nbsp; NEW TESTIMONIAL</Button>
 
             <TestimonialEditor v-if="toCreate" v-model="toCreate" :confirm="createConfirm" @done="reset">
                 Create Testimonial

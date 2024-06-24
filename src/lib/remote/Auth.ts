@@ -88,6 +88,7 @@ export async function registerUser(data: User) {
         auth.auth = AuthType.USER;
         auth.token = res.token;
         auth.data = res.data;
+        auth.data.timeslots = [];
     }).send();
 }
 

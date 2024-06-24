@@ -44,6 +44,7 @@ import { appName } from '@/config'
 import { AuthType, restoreSession, type StoredAuth } from './lib/remote/Auth'
 import type { Response } from './lib/remote/RequestBuilder'
 import type { Conference } from './lib/remote/Models'
+import { Theme, setTheme } from './lib/theme/Theme'
 
 const init_promise = new Promise(async (resolve, reject) => {
     await remote.post('conference/get').then((res: Response<{ conference: Conference }>) => {
@@ -57,6 +58,8 @@ const removeInitGuard = router.beforeEach(async (to, from) => {
     await init_promise;
     removeInitGuard();
 });
+
+setTheme(Theme.Light);
 
 setupRouterGuards();
 

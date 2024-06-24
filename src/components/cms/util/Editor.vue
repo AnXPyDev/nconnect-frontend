@@ -4,6 +4,8 @@ import Button from '@/components/util/Button.vue';
 import Spinner from '@/components/util/Spinner.vue';
 import Error from '@/components/util/Error.vue';
 import { ValidationError, type ConfirmationCallback, type ConfirmationResult, type ValidationCallback, type ValidationResult } from '@/lib/cms/Editor';
+import Overlay from '@/components/util/Overlay.vue';
+import ConfirmDialog from '@/components/util/ConfirmDialog.vue';
 
 const props = withDefaults(defineProps<{
     validate?: ValidationCallback
@@ -58,8 +60,16 @@ async function confirm() {
 }
 
 async function delete_() {
+    askDelete.value = false;
     loading.value = true;
-    let result = await props.delete_!!();
+    let result: ValidationResult;
+    try {
+        result = await props.delete_!!();
+    } catch (e) {
+        if (e instanceof ValidationError) {
+            result = e.result;
+        }
+    }
     loading.value = false;
 
     if (!handleValidationResult(result)) {
@@ -73,24 +83,29 @@ function cancel() {
     emit('done');
 }
 
+const askDelete = ref(false);
+
 </script>
 
 <template>
-    <div class="editor">
-        <div class="title">
-            <slot name="title"></slot>
+    <Overlay>
+        <div class="editor">
+            <div class="title">
+                <slot name="title"></slot>
+            </div>
+            <div class="items">
+                <slot name="items"></slot>
+            </div>
+            <div class="controls">
+                <Button :enabled="!loading" @click="confirm"><i class="fa-solid fa-check"></i>&nbsp; CONFIRM</Button>
+                <Button :enabled="!loading" @click="cancel"><i class="fa-solid fa-xmark"></i>&nbsp; CANCEL</Button>
+                <Button :enabled="!loading" class="delete" v-if="props.delete_" @click="askDelete = true"><i class="fa-solid fa-trash"></i>&nbsp; DELETE</Button>
+            </div>
+            <Error :error="error"></Error>
+            <Spinner v-if="loading"></Spinner>
         </div>
-        <div class="items">
-            <slot name="items"></slot>
-        </div>
-        <div class="controls">
-            <Button :enabled="!loading" @click="confirm"><i class="fa-solid fa-check"></i>&nbsp; CONFIRM</Button>
-            <Button :enabled="!loading" @click="cancel"><i class="fa-solid fa-xmark"></i>&nbsp; CANCEL</Button>
-            <Button :enabled="!loading" class="delete" v-if="props.delete_" @click="delete_"><i class="fa-solid fa-trash"></i>&nbsp; DELETE</Button>
-        </div>
-        <Error :error="error"></Error>
-        <Spinner v-if="loading"></Spinner>
-    </div>
+        <ConfirmDialog v-if="askDelete" @yes="delete_" @no="askDelete = false" yes-label="DELETE" no-label="CANCEL">Are you sure you want to delete this entity?</ConfirmDialog>
+    </Overlay>
 </template>
 
 <style scoped lang="scss">
@@ -99,11 +114,20 @@ function cancel() {
 .editor {
     @include mixins.cmspanel;
 
+    background-color: var(--clr-bg);
     display: flex;
     flex-direction: column;
     padding: 0.5em;
+    
+    min-width: 800px;
 
     gap: 0.5em;
+
+    > .title {
+        color: var(--clr-primary);
+        font-size: 1.2em;
+        font-weight: 900;
+    }
 
     > .controls {
         display: flex;
@@ -119,6 +143,10 @@ function cancel() {
         flex-direction: column;
         align-items: start;
         gap: 0.5em;
+
+        > * {
+            width: 100%;
+        }
     }
 }
 </style>

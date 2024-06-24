@@ -13,10 +13,8 @@ const auth = useAuth();
         <div class="content">
             <div class="header">
                 <div v-if="auth.isAdmin" class="nav">
-                    <NavigationButton to="/admin/cms">CONTENT</NavigationButton>
-                    <NavigationButton to="/admin/users">USERS</NavigationButton>
-                    <NavigationButton to="/admin/stats">STATS</NavigationButton>
-                    <NavigationButton to="/admin/account">ACCOUNT</NavigationButton>
+                    <NavigationButton :to="{ name: 'admin/cms'}">CONTENT</NavigationButton>
+                    <NavigationButton :to="{ name: 'admin/users'}">USERS</NavigationButton>
                 </div>
                 <div></div>
                 <AdminAuth></AdminAuth>

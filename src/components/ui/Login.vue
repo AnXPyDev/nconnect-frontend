@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import Button from '@/components/util/Button.vue';
 import Spinner from '@/components/util/Spinner.vue';
 import Error from '@/components/util/Error.vue';
+import type { ConfirmationResult, ValidationResult } from '@/lib/cms/Editor';
 
 type Output<T> = (username: string, password: string) => T;
 

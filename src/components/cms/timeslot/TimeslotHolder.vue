@@ -1,20 +1,25 @@
 <script setup lang="ts">
 
-import { type Presentation, type Timeslot } from '@/lib/remote/Models';
-import { ref, watch } from 'vue';
-import remote from '@/lib/remote/Remote';
+import { AdminPriv, type Timeslot, type WithID } from '@/lib/remote/Models';
+import { ref } from 'vue';
 import { format } from 'date-fns';
-import type { Response } from '@/lib/remote/RequestBuilder';
+import { useAuth } from '@/stores/auth';
+import TextButton from '../util/TextButton.vue';
+import UsersManager from './UsersManager.vue';
 
 const dt_fmt = "d. M. y HH:mm:ss";
 
+const auth = useAuth();
+
 const props = defineProps<{
-    timeslot: Timeslot
+    timeslot: WithID<Timeslot>
 }>();
 
 const emit = defineEmits<{
     edit: []
 }>();
+
+const showUsers = ref(false);
 
 </script>
 
@@ -27,8 +32,14 @@ const emit = defineEmits<{
             <div class="end"><i class="fa-solid fa-hourglass-end"></i>&nbsp; {{ format(timeslot.end_at, dt_fmt) }}</div>
             <div v-if="timeslot.presentation"><i class="fa-solid fa-presentation"></i>&nbsp; <span class="id">[{{ timeslot.presentation.id }}]</span> {{ timeslot.presentation.name }}</div>
             <div class="nopresentation" v-else><i class="fa-solid fa-presentation"></i>&nbsp; No presentation assigned</div>
-            <i @click="emit('edit')" class="icon-button fa-solid fa-pen"></i>
-        </div> 
+            <TextButton v-if="auth.checkPriv(AdminPriv.EDIT)" @click="emit('edit')" class="icon-button">
+                <i class="fa-solid fa-pen"></i>
+            </TextButton>
+            <TextButton @click="showUsers = !showUsers" :active="showUsers" class="icon-button">
+                <i class="fa-solid fa-users"></i>
+            </TextButton>
+        </div>
+        <UsersManager v-if="showUsers" :timeslot_id="timeslot.id!!"></UsersManager>
     </div>
 </template>
 
@@ -53,13 +64,6 @@ const emit = defineEmits<{
 
         > .nopresentation {
             opacity: 75%;
-        }
-
-        > .icon-button {
-            cursor: pointer;
-            &:hover {
-                color: var(--clr-primary);
-            }
         }
     }
 }

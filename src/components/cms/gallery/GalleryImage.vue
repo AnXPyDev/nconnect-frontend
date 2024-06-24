@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import type { Resource } from '@/lib/remote/Models';
+import { AdminPriv, type Image, type WithID } from '@/lib/remote/Models';
 import { getResourceURL } from '@/lib/remote/Util';
+import { useAuth } from '@/stores/auth';
 import { ref } from 'vue';
 
 const props = defineProps<{
-    resource: Resource
+    image: WithID<Image>
     selected?: boolean
     selectable?: boolean
     forceShowImage?: boolean
@@ -18,26 +19,27 @@ const emit = defineEmits<{
 
 
 const showImage = ref<boolean>(false);
+const auth = useAuth();
 
 </script>
 
 <template>
-    <div class="image-resource" :class="{ selectable, selected }" @click="emit('select')">
+    <div class="gallery-image" :class="{ selectable, selected }" @click="emit('select')">
         <div v-if="forceShowImage || showImage" class="image">
-            <img :src="getResourceURL(resource.id!!)"/>
+            <img :src="getResourceURL(image.id)"/>
         </div>
 
         <div class="header">
             <div class="info">
-                <span class="id">[{{ resource.id }}]</span>
-                <span class="name">{{ resource.name }}</span>
+                <span class="id">[{{ image.id }}]</span>
+                <span class="name">{{ image.name }}</span>
             </div>
             <div class="controls">
                 <span v-if="!forceShowImage" @click="showImage = !showImage" class="icon-button">
                     <i v-if="showImage" class="fa-solid fa-eye-slash"></i>
                     <i v-else class="fa-solid fa-eye"></i>
                 </span>
-                <template v-if="mutable">
+                <template v-if="auth.checkPriv(AdminPriv.EDIT) && mutable">
                     <i @click="emit('edit')" class="icon-button fa-solid fa-pen"></i>
                 </template>
             </div>
@@ -49,7 +51,7 @@ const showImage = ref<boolean>(false);
 
 @use '@/styles/lib/mixins';
 
-.image-resource {
+.gallery-image {
     background-color: var(--clr-primary);
     color: var(--clr-fg-on-primary);
     overflow: hidden;

@@ -2,10 +2,19 @@
 @import 'lib/fonts.scss';
 
 :root {
-    @include colors.theme(colors.$clr-light);
     font-size: 14px;
     font-family: 'Lato', sans-serif;
     color: var(--clr-fg);
+    @include colors.prefixed-theme(light, colors.$clr-light);
+    @include colors.prefixed-theme(dark, colors.$clr-dark);
+}
+
+:root.theme-light {
+    @include colors.theme(colors.$clr-light);
+}
+
+:root.theme-dark {
+    @include colors.theme(colors.$clr-dark);
 }
 
 * {
@@ -17,6 +26,7 @@ html, body, #app {
     padding: 0;
     width: 100%;
     height: 100%;
+    overflow-x: hidden;
 }
 
 body {

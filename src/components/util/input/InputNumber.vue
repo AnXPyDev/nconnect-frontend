@@ -1,8 +1,9 @@
 <script setup lang="ts">
 
+import type { Nullable } from '@/lib/util/Snippets';
 import InputAbstract from './InputAbstract.vue';
 
-const model = defineModel<number>();
+const model = defineModel<Nullable<number>>();
 
 </script>
 

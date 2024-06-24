@@ -16,7 +16,6 @@ import ConfirmDialog from './components/util/ConfirmDialog.vue';
         <div class="top">
             <InfoBar />
             <Header />
-
             <RouterView></RouterView>
         </div>
         <div class="bottom">
@@ -33,8 +32,13 @@ import ConfirmDialog from './components/util/ConfirmDialog.vue';
 .fullscreen {
     display: flex;
     flex-direction: column;
-    min-height: 100%;
     justify-content: space-between;
+    min-height: 100%;
+
+    > .top {
+        padding-bottom: 4rem;
+    }
+
 }
 
 </style>

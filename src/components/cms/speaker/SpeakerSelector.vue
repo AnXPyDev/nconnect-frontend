@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import remote from '@/lib/remote/Remote';
-import { type Presentation, type Speaker } from '@/lib/remote/Models';
+import { type ID, type Speaker, type WithID } from '@/lib/remote/Models';
 import type { Response } from '@/lib/remote/RequestBuilder';
+import type { Nullable } from '@/lib/util/Snippets';
 
-const speakers = ref<Speaker[]>([]);
+const speakers = ref<WithID<Speaker>[]>([]);
 
-remote.post("speaker/index", {}).then((res: Response<{ speakers: Speaker[] }>) => {
+remote.post("speaker/index", {}).then((res: Response<{ speakers: WithID<Speaker>[] }>) => {
     speakers.value = res.speakers;
 }).send();
 
-const speaker_id = defineModel<number | undefined>();
+const speaker_id = defineModel<Nullable<ID>>({ required: true });
 
 </script>
 

@@ -2,20 +2,23 @@
 
 import { ref, toRaw } from 'vue';
 import remote from '@/lib/remote/Remote';
-import { type Page } from '@/lib/remote/Models';
+import { AdminPriv, type Page, type WithID } from '@/lib/remote/Models';
 import PageEditor from './PageEditor.vue';
 import PageHolder from './PageHolder.vue';
 import Button from '@/components/util/Button.vue';
 import Spinner from '@/components/util/Spinner.vue';
-import { predicateByID } from '@/lib/util/Snippets';
+import { copyEntity, deleteEntity, predicateByID, pushEntity, replaceEntity } from '@/lib/util/Snippets';
 import type { Response } from '@/lib/remote/RequestBuilder';
 import router from '@/Router';
+import { EmptyPage } from '@/lib/remote/Generators';
+import { throwValidation } from '@/lib/cms/Editor';
+import { useAuth } from '@/stores/auth';
 
-const pages = ref<Page[]>([]);
+const pages = ref<WithID<Page>[]>([]);
 
 const loading = ref<boolean>(true);
 
-remote.post("resource/pages").then((response: Response<{ pages: Page[] }>) => {
+remote.post("resource/pages").then((response: Response<{ pages: WithID<Page>[] }>) => {
     pages.value = response.pages;
     loading.value = false;
 }).send();
@@ -30,35 +33,28 @@ function reset() {
 
 function create() {
     reset();
-    toCreate.value = { 
-        name: "",
-        type: "page",
-        metadata: {
-            slug: "",
-            showHeader: true
-        }
-    };
+    toCreate.value = EmptyPage();
 }
 
 function edit(page: Page) {
     reset();
-    toEdit.value = structuredClone(toRaw(page));
+    toEdit.value = copyEntity(page);
 }
 
 async function editConfirm() {
-    const { resource: page }: { resource: Page } = await remote.post("resource/edit", toRaw(toEdit.value)!!).unwrap().send();
-    Object.assign(pages.value.find(predicateByID(page.id!!))!!, page);
+    const { resource: page }: { resource: WithID<Page> } = await remote.post("resource/edit", toRaw(toEdit.value)!!).fail(throwValidation).send();
+    replaceEntity(pages, page);
 }
 
 async function editDelete() {
     const id = toEdit.value!!.id!!;
-    await remote.post("resource/delete", { id }).send();
-    pages.value.splice(pages.value.findIndex(predicateByID(id)), 1);
+    await remote.post("resource/delete", { id }).fail(throwValidation).send();
+    deleteEntity(pages, id);
 }
 
 async function createConfirm() {
-    const { resource: page }: { resource: Page } = await remote.post("resource/create", toRaw(toCreate.value)!!).unwrap().send();
-    pages.value.push(page);
+    const { resource: page }: { resource: WithID<Page> } = await remote.post("resource/create", toRaw(toCreate.value)!!).fail(throwValidation).send();
+    pushEntity(pages, page)
 }
 
 function editContent(page: Page) {
@@ -68,6 +64,8 @@ function editContent(page: Page) {
 function show(page: Page) {
     router.push({ name: "page", params: { slug: page.metadata.slug } });
 }
+
+const auth = useAuth();
 
 </script>
 
@@ -82,7 +80,7 @@ function show(page: Page) {
                 <PageHolder v-for="page in pages" :page="page" :key="page.id" @show="show(page)" @edit="edit(page)" @edit-content="editContent(page)"/>
             </div>
 
-            <Button @click="create"><i class="fa-solid fa-plus"></i>&nbsp; NEW PAGE</Button>
+            <Button v-if="auth.checkPriv(AdminPriv.EDIT)" @click="create"><i class="fa-solid fa-plus"></i>&nbsp; NEW PAGE</Button>
 
             <PageEditor v-if="toEdit" v-model="toEdit" :confirm="editConfirm" :delete_="editDelete" @done="reset">
                 Edit page [{{ toEdit.id }}]

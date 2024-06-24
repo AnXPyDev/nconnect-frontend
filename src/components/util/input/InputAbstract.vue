@@ -13,7 +13,7 @@
 
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 
 .input {
     --min-input-width: 0;
@@ -22,8 +22,10 @@
     align-items: center;
     gap: 0.5em;
 
-    > input, select {
+    input, select {
         min-width: var(--min-input-width);
+        max-width: 100%;
+        width: fit-content;
     }
 
 }

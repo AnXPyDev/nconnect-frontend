@@ -1,27 +1,27 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '@/views/HomeView.vue'
-import CMSView from '@/views/admin/CMSView.vue'
-import SponsorsView from '@/views/SponsorsView.vue'
-import ScheduleView from '@/views/ScheduleView.vue'
-import ContactView from '@/views/ContactView.vue'
-import SpeakersView from '@/views/SpeakersView.vue'
-import AdminLoginView from '@/views/admin/LoginView.vue'
-import AdminDashboardView from '@/views/admin/DashboardView.vue'
-import UsersView from '@/views/admin/UsersView.vue'
-import StatsView from '@/views/admin/StatsView.vue'
 import { useAuth } from '@/stores/auth'
 import { appName } from '@/config'
 import { AdminPriv } from './lib/remote/Models'
 import { useState } from './stores/state'
-import AccountView from './views/admin/AccountView.vue'
-import PageView from './views/PageView.vue'
-import PageEditorView from './views/admin/PageEditorView.vue'
-import GalleriesView from './views/GalleriesView.vue'
-import PagesView from './views/PagesView.vue'
-import SignupView from './views/user/SignupView.vue'
-import GalleryView from './views/GalleryView.vue'
-import UserLoginView from '@/views/user/LoginView.vue'
-import UserView from './views/user/UserView.vue'
+
+
+const HomeView  = import('@/views/HomeView.vue');
+const CMSView  = import('@/views/admin/CMSView.vue');
+const SponsorsView  = import('@/views/SponsorsView.vue');
+const ScheduleView  = import('@/views/ScheduleView.vue');
+const ContactView  = import('@/views/ContactView.vue');
+const SpeakersView  = import('@/views/SpeakersView.vue');
+const AdminLoginView  = import('@/views/admin/LoginView.vue');
+const AdminDashboardView  = import('@/views/admin/DashboardView.vue');
+const UsersView  = import('@/views/admin/UsersView.vue');
+const PageView  = import('./views/PageView.vue');
+const PageEditorView  = import('./views/admin/PageEditorView.vue');
+const GalleriesView  = import('./views/GalleriesView.vue');
+const PagesView  = import('./views/PagesView.vue');
+const SignupView  = import('./views/user/SignupView.vue');
+const GalleryView  = import('./views/GalleryView.vue');
+const UserLoginView  = import('@/views/user/LoginView.vue');
+const UserView = import('./views/user/UserView.vue');
 
 declare module 'vue-router' {
     interface RouteMeta {
@@ -30,8 +30,6 @@ declare module 'vue-router' {
         title?: string | (() => string | undefined)
     }
 }
-
-// TODO lazy loading
 
 const router = createRouter({
     routes: [
@@ -57,10 +55,8 @@ const router = createRouter({
             path: '/admin', name: "admin", component: AdminDashboardView, redirect: { name: "admin/cms" },
             meta: { title: "Admin Dashboard" },
             children: [
-                { path: 'cms', name: 'admin/cms', component: CMSView, meta: { requiresAdmin: AdminPriv.VIEW, title: "CMS" } },
+                { path: 'content', name: 'admin/cms', component: CMSView, meta: { requiresAdmin: AdminPriv.VIEW, title: "Obsah" } },
                 { path: 'users', name: 'admin/users', component: UsersView, meta: { requiresAdmin: AdminPriv.VIEW, title: "Používatelia" } },
-                { path: 'stats', name: 'admin/stats', component: StatsView, meta: { requiresAdmin: AdminPriv.VIEW, title: "Štatistiky" } },
-                { path: 'account', name: 'admin/account', component: AccountView, meta: { requiresAdmin: true, title: "Účet" } },
                 { path: 'login', name: 'admin/login', component: AdminLoginView, meta: { title: "Prihlásenie" } }
             ]
         },

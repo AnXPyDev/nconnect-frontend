@@ -1,14 +1,12 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import { AdminPriv, type Admin, type Stage } from '@/lib/remote/Models';
 
 import Editor from '@/components/cms/util/Editor.vue';
-import TextArea from '@/components/util/input/TextArea.vue';
 import Input from '@/components/util/input/Input.vue';
-import ImageResourceSelector from '@/components/cms/gallery/ImageResourceSelector.vue';
-import ContactEditor from '@/components/cms/contact/ContactEditor.vue';
 import InputPassword from '@/components/util/input/InputPassword.vue';
 import InputAbstract from '@/components/util/input/InputAbstract.vue';
+import type { ConfirmationCallback } from '@/lib/cms/Editor';
 
 const props = defineProps<{
     confirm: ConfirmationCallback
@@ -53,7 +51,7 @@ function validate() {
         <template #items>
             <template v-if="!privOnly">
                 <Input v-model="admin.username">Username</Input>
-                <InputPassword v-model="admin.password">Password</InputPassword>
+                <InputPassword v-model="admin.password!!">Password</InputPassword>
                 <InputPassword v-model="password2">Repeat Password</InputPassword>
             </template>
             <InputAbstract>

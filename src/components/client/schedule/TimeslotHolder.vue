@@ -6,10 +6,8 @@ import { computed, ref } from 'vue';
 import CompanyLink from '@/components/client/speaker/CompanyLink.vue';
 import SpeakerShowcase from '../speaker/SpeakerShowcase.vue';
 import { useAuth } from '@/stores/auth';
-import TimeslotEditor from '@/components/cms/timeslot/TimeslotEditor.vue';
 import Button from '@/components/util/Button.vue';
 import remote from '@/lib/remote/Remote';
-import { predicateByID } from '@/lib/util/Snippets';
 import { ApiCodes } from '@/lib/remote/Codes';
 import type { FailResponse } from '@/lib/remote/RequestBuilder';
 
@@ -57,7 +55,7 @@ const error = ref<string>();
 
 function register() {
     remote.post("user/registertimeslot", { id: props.timeslot.id }).then((res) => {
-        auth.user!!.timeslots.push(props.timeslot.id!!);
+        auth.user!!.timeslots!!.push(props.timeslot.id!!);
         props.timeslot.remaining_capacity!! -= 1;
     }).code(ApiCodes.Overlap, (res: FailResponse<{ overlap: Timeslot }>) => {
         error.value = `Už ste v tomto časovom okne prihlásený na prednášku "${ res.overlap.presentation?.name }" !`;
@@ -68,7 +66,7 @@ function register() {
 
 function unregister() {
     remote.post("user/unregistertimeslot", { id: props.timeslot.id }).then((res) => {
-        auth.user!!.timeslots.splice(auth.user!!.timeslots.findIndex((id) => id === props.timeslot.id), 1);
+        auth.user!!.timeslots!!.splice(auth.user!!.timeslots!!.findIndex((id) => id === props.timeslot.id), 1);
         props.timeslot.remaining_capacity!! += 1;
     }).send();
 }
@@ -84,9 +82,6 @@ function unregister() {
             </div>
             <div class="name align">
                 {{ timeslot.presentation?.name }}
-            </div>
-            <div v-if="isRegistered" class="registration">
-                <i class="fa-solid fa-check"></i>
             </div>
         </div>
         <div v-if="timeslot.presentation" class="presentation">
@@ -132,6 +127,8 @@ function unregister() {
 <style scoped lang="scss">
 
 @use '@/styles/schedule-table';
+@use '@/styles/lib/media';
+@use '@/styles/lib/dimens';
 
 .timeslot {
     display: flex;
@@ -144,7 +141,8 @@ function unregister() {
         font-weight: 900;
         display: flex;
         align-items: center;
-        height: schedule-table.$row-height;
+        min-height: schedule-table.$row-height;
+        padding-block: 1em;
         border-bottom: 1px solid var(--clr-bg-2);
         transition: 0.5s all ease;
 
@@ -155,7 +153,7 @@ function unregister() {
         }
 
         > div.align {
-            padding-left: schedule-table.$align;
+            @include schedule-table.align;
         }
 
         > .time {
@@ -179,8 +177,12 @@ function unregister() {
             overflow: hidden;
             display: flex;
 
+            @include media.phone {
+                flex-direction: column;
+            }
+
             > div {
-                padding-left: schedule-table.$align;
+                @include schedule-table.align;
             }
 
             > .left {
@@ -190,6 +192,15 @@ function unregister() {
                     width: 100%;
                     aspect-ratio: 3/4;
                     object-fit: cover;
+                }
+
+                @include media.phone {
+                    padding-left: 0;
+                    padding-inline: 4em;
+                    display: flex;
+                    justify-content: center;
+                    @include dimens.min-max(width, 100%);
+                    padding-bottom: 1em;
                 }
             }
 

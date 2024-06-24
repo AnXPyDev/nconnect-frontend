@@ -7,6 +7,7 @@ import TextArea from '@/components/util/input/TextArea.vue';
 import Input from '@/components/util/input/Input.vue';
 import ImageResourceSelector from '@/components/cms/gallery/ImageResourceSelector.vue';
 import ContactEditor from '@/components/cms/contact/ContactEditor.vue';
+import type { ConfirmationCallback } from '@/lib/cms/Editor';
 
 const props = defineProps<{
     confirm: ConfirmationCallback
@@ -37,10 +38,10 @@ function validate() {
 
 <template>
     <Editor @done="emit('done')" v-bind="{ validate, confirm, delete_ }">
-        <template v-slot:title>
+        <template #title>
             <slot></slot>
         </template>
-        <template v-slot:items>
+        <template #items>
             <Input v-model="organizer.name">Name</Input>
             <Input v-model="organizer.role">Role</Input>
             <ImageResourceSelector v-model="organizer.image_id">Image</ImageResourceSelector>

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { type Contact } from '@/lib/remote/Models';
-import TextArea from '@/components/util/input/TextArea.vue';
 import { ref } from 'vue';
 import Button from '@/components/util/Button.vue';
 import Input from '@/components/util/input/Input.vue';
+import TextButton from '../util/TextButton.vue';
 
 const contact = defineModel<Contact>({ required: true });
 
@@ -31,12 +31,14 @@ function add() {
         <div class="items">
             <div class="item" v-for="_, key in contact">
                 <Input v-model="contact[key]">{{ key }}</Input>
-                <i @click="remove(key)" class="icon-button fa-solid fa-xmark"></i>
+                <TextButton @click="remove(key)">
+                    <i class="fa-solid fa-xmark"></i>
+                </TextButton>
             </div>
         </div>
 
         <div class="newkey">
-            <Input v-model="newKey">Link for</Input>
+            <Input two-way v-model="newKey">Link for</Input>
             <Button @click="add"><i class="fa-solid fa-plus"></i>&nbsp; ADD LINK</Button>
         </div>
     </div>
@@ -63,14 +65,6 @@ function add() {
             width: 100%;
             align-items: center;
             gap: 0.5em;
-
-            > .icon-button {
-                cursor: pointer;
-                font-size: 1.2em;
-                &:hover {
-                    color: var(--clr-primary);
-                }
-            }
         }
     }
 

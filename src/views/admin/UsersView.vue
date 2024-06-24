@@ -45,7 +45,7 @@ const auth = useAuth();
     > .content-container {
         padding-block: 1em;
         &:nth-child(odd) {
-            background-color: var(--clr-bg-1);
+            background-color: var(--clr-bg-alt);
         }
     }
 }

@@ -1,19 +1,30 @@
+import { type Nullable } from '@/lib/util/Snippets';
+
+export type ID = number;
+export const InvalidID: ID = NaN;
+
+export interface GenericModel {
+    id?: ID
+};
+
+export type WithID<T extends GenericModel> = Omit<T, 'id'> & { id: ID };
+
 export enum AdminPriv {
     VIEW, EDIT, SUPER
 };
 
 export interface Admin {
-    id?: number
+    id?: ID
     username: string
     priv: AdminPriv
     password?: string
 }
 
 export interface User {
-    id?: number
+    id?: ID
     name: string
     email: string
-    timeslots: number[]
+    timeslots?: number[]
 }
 
 export enum ConferenceState {
@@ -44,29 +55,28 @@ export interface Conference {
 }
 
 export interface Resource<M = object> {
-    id?: number
+    id?: ID
     name: string
     type: string
     metadata: M
-    size?: number
+    size: Nullable<number>
 }
 
 export type ImageMetadata = undefined;
 export type Image = Resource<ImageMetadata>;
 
 export interface Gallery {
-    id?: number
-    thumbnail_id?: number
+    id?: ID
     name: string
-    description?: string
+    description: Nullable<string>
     public: boolean
+    thumbnail_id: Nullable<ID>
 }
 
 export interface Stage {
-    id?: number
+    id?: ID
     name: string
 }
-
 
 export interface Company {
     name: string,
@@ -74,72 +84,77 @@ export interface Company {
 }
 
 export interface Speaker {
-    id?: number
+    id?: ID
     name: string
-    description?: string
-    subtitle?: string
-    company?: Company
+    description: Nullable<string>
+    subtitle: Nullable<string>
+    company: Nullable<Company>
     contact: Contact
-    image_id?: number
+    image_id: Nullable<ID>
 }
 
 export interface Headliner {
-    id?: number;
-    stage_id: number | null;
-    speaker_id: number | null;
+    id?: ID;
+    stage_id: ID;
+    speaker_id: ID;
     stage?: Stage;
     speaker?: Speaker;
 }
 
 export interface Presentation {
-    id?: number
-    speaker_id?: number
-    speaker?: Speaker
+    id?: ID
     name: string
-    description?: string
-    long_description?: string
-    image_id?: number
-    capacity?: number
+    description: Nullable<string>
+    long_description: Nullable<string>
+    image_id: Nullable<ID>
+    capacity: Nullable<number>
     allow_registration: boolean
+    generic: boolean
+    
+    speaker_id: Nullable<ID>
+    speaker?: Speaker
 }
 
-export interface Timeslot<D = string> {
-    id?: number
-    presentation_id?: number
-    presentation?: Presentation
-    stage_id: number
-    start_at: D
-    end_at: D
-    remaining_capacity?: number
+export interface Timeslot {
+    id?: ID
+    start_at: string
+    end_at: string
+    
+    stage_id: ID
     stage?: Stage
+
+    presentation_id: Nullable<ID>
+    presentation?: Presentation
+    
+    remaining_capacity?: number
 }
 
 
 export interface Testimonial {
-    id?: number
+    id?: ID
     author: string
     description: string
-    image_id?: number
+    image_id: Nullable<ID>
 }
 
 export interface Sponsor {
     id?: number
     name: string
-    description?: string
+    description: Nullable<string>
     contact: Contact
-    image_id?: number
+    image_id: Nullable<ID>
 }
 
 export interface Organizer {
-    id?: number
+    id?: ID
     name: string
     role: string
     contact: Contact
-    image_id?: number
+    image_id: Nullable<ID>
 }
 
 export interface Qna {
-    id?: number
+    id?: ID
     question: string
     answer: string
 };

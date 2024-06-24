@@ -1,6 +1,14 @@
+<script setup lang="ts">
+
+const props = defineProps<{
+    active?: boolean
+}>();
+
+</script>
+
 <template>
 
-    <span class="text-button">
+    <span class="text-button" :class="{ active }">
         <slot></slot>
     </span>
 

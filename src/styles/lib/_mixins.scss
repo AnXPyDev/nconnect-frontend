@@ -44,14 +44,6 @@
             opacity: 75%;
             font-size: 0.75em;
         }
-
-        > .icon-button {
-            cursor: pointer;
-
-            &:hover {
-                color: var(--clr-primary);
-            }
-        }
     }
 
     > .details {

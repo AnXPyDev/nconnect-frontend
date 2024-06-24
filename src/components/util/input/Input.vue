@@ -1,8 +1,9 @@
 <script setup lang="ts">
 
+import { type Nullable } from '@/lib/util/Snippets';
 import InputAbstract from './InputAbstract.vue';
 
-const model = defineModel<string>();
+const out = defineModel<Nullable<string>>({ required: true });
 
 </script>
 
@@ -12,7 +13,7 @@ const model = defineModel<string>();
             <slot></slot>
         </template>
         <template #default>
-            <input v-model="model">
+            <input v-model="out">
         </template>
     </InputAbstract>
 </template>

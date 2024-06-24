@@ -1,23 +1,24 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import remote from '@/lib/remote/Remote';
-import type { Gallery, Resource } from '@/lib/remote/Models';
+import type { Gallery, ID, Image, Resource, WithID } from '@/lib/remote/Models';
 
 import GalleryHolder from './GalleryHolder.vue';
 import Spinner from '@/components/util/Spinner.vue';
 import type { Response } from '@/lib/remote/RequestBuilder';
+import type { Nullable } from '@/lib/util/Snippets';
 
-const resource_id = defineModel<number | undefined>();
+const resource_id = defineModel<Nullable<ID>>();
 
 const loading = ref<boolean>(true);
 
 const emit = defineEmits<{
-    select: [Resource]
+    select: [WithID<Image>]
 }>();
 
-const galleries = ref<Gallery[]>([]);
+const galleries = ref<WithID<Gallery>[]>([]);
 
-remote.post("gallery/index").then((response: Response<{ galleries: Gallery[] }>) => {
+remote.post("gallery/index").then((response: Response<{ galleries: WithID<Gallery>[] }>) => {
     galleries.value = response.galleries;
     loading.value = false;
 }).send();

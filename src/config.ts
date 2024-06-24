@@ -1,2 +1,2 @@
-export const remoteURL = "http://127.0.0.1:8000/api/";
-export const appName = "nConnect";
+export const remoteURL = import.meta.env.VITE_API_URL;
+export const appName = import.meta.env.VITE_APP_NAME;

@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import type { Resource } from '@/lib/remote/Models';
+import { type ID, type Image, type Resource, type WithID } from '@/lib/remote/Models';
 import ImagePickerOverlay from './ImagePickerOverlay.vue';
 import { getResourceURL } from '@/lib/remote/Util';
 import { ref } from 'vue';
 import Button from '@/components/util/Button.vue';
+import { type Nullable } from '@/lib/util/Snippets';
 
 
 const props = defineProps<{
     allowNone?: boolean
 }>();
 
-const resource_id = defineModel<number | undefined>();
+const resource_id = defineModel<Nullable<ID>>({ required: true });
 
 const pickerOpen = ref<boolean>(false);
 
@@ -22,13 +23,13 @@ function closePicker() {
     pickerOpen.value = false;
 }
 
-function select(resource: Resource) {
+function select(resource: WithID<Image>) {
     resource_id.value = resource.id;
     closePicker(); 
 }
 
 function setNone() {
-    resource_id.value = undefined;
+    resource_id.value = null;
 }
 
 

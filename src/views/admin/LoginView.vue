@@ -29,7 +29,7 @@ async function confirm(username: string, password: string) {
             return await handler.handle(e.response);
         }
     }
-    router.push("/admin/cms");
+    router.push({ name: "admin/cms" });
 }
 
 </script>

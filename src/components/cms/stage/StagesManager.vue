@@ -1,21 +1,24 @@
 <script setup lang="ts">
 import remote from '@/lib/remote/Remote';
-import { type Stage } from '@/lib/remote/Models';
+import { AdminPriv, type Stage, type WithID } from '@/lib/remote/Models';
 import { ref, toRaw } from 'vue';
 
 import StageEditor from './StageEditor.vue';
 import StageHolder from './StageHolder.vue';
 
 import Button from '@/components/util/Button.vue';
-import { predicateByID } from '@/lib/util/Snippets';
+import { copyEntity, deleteEntity, predicateByID, pushEntity, replaceEntity } from '@/lib/util/Snippets';
 import type { Response } from '@/lib/remote/RequestBuilder';
 import Spinner from '@/components/util/Spinner.vue';
+import { EmptyStage } from '@/lib/remote/Generators';
+import { throwValidation } from '@/lib/cms/Editor';
+import { useAuth } from '@/stores/auth';
 
 
-const stages = ref<Stage[]>([]);
+const stages = ref<WithID<Stage>[]>([]);
 const loading = ref<boolean>(true);
 
-remote.post("stage/index").then((response: Response<{ stages: Stage[] }>) => {
+remote.post("stage/index").then((response: Response<{ stages: WithID<Stage>[] }>) => {
     stages.value = response.stages;
     loading.value = false;
 }).send();
@@ -30,30 +33,32 @@ function reset() {
 
 function edit(stage: Stage) {
     reset();
-    toEdit.value = Object.assign({}, stage);
+    toEdit.value = copyEntity(stage);
 }
 
 function create() {
     reset();
-    toCreate.value = { name: "" };
+    toCreate.value = EmptyStage();
 }
 
 async function editConfirm() {
-    const { stage }: { stage: Stage } = await remote.post("stage/edit", toRaw(toEdit.value)!!).unwrap().send();
-    Object.assign(stages.value.find(predicateByID(stage.id!!))!!, stage);
+    const { stage }: { stage: WithID<Stage> } = await remote.post("stage/edit", toRaw(toEdit.value)!!).fail(throwValidation).send();
+    replaceEntity(stages, stage)
 }
 
 async function editDelete() {
     const id = toEdit.value!!.id!!;
-    await remote.post("stage/delete", { id }).send();
-    stages.value.splice(stages.value.findIndex(predicateByID(id)), 1);
+    await remote.post("stage/delete", { id }).fail(throwValidation).send();
+    deleteEntity(stages, id);
 }
 
 
 async function createConfirm() {
-    const { stage }: { stage: Stage } = await remote.post("stage/create", toRaw(toCreate.value)!!).unwrap().send();
-    stages.value.push(stage);
+    const { stage }: { stage: Stage } = await remote.post("stage/create", toRaw(toCreate.value)!!).fail(throwValidation).send();
+    pushEntity(stages, stage);
 }
+
+const auth = useAuth();
 
 </script>
 
@@ -67,7 +72,7 @@ async function createConfirm() {
                 <StageHolder v-for="stage in stages" :stage="stage" :key="stage.id" @edit="edit(stage)"></StageHolder>
             </div>
 
-            <Button @click="create" :active="!!toCreate" :enabled="!toCreate"><i class="fa-solid fa-plus"></i>&nbsp; NEW STAGE</Button>
+            <Button v-if="auth.checkPriv(AdminPriv.EDIT)" @click="create" :active="!!toCreate" :enabled="!toCreate"><i class="fa-solid fa-plus"></i>&nbsp; NEW STAGE</Button>
 
             <StageEditor v-if="toEdit" v-model="toEdit" :confirm="editConfirm" :delete_="editDelete" @done="reset">
                 Edit Stage [{{ toEdit.id }}]

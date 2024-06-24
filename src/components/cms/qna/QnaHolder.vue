@@ -1,17 +1,21 @@
 <script setup lang="ts">
 
 import { ref } from 'vue';
-import { type Qna } from '@/lib/remote/Models';
+import { AdminPriv, type Qna, type WithID } from '@/lib/remote/Models';
+import { useAuth } from '@/stores/auth';
+import TextButton from '../util/TextButton.vue';
 
 const props = defineProps<{
-    qna: Qna
+    qna: WithID<Qna>
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
     edit: []
 }>();
 
 const showImage = ref<boolean>(false);
+
+const auth = useAuth();
 
 </script>
 
@@ -21,8 +25,9 @@ const showImage = ref<boolean>(false);
         <div class="header">
             <span class="id">[{{ qna.id }}]</span>
             <span class="question">{{ qna.question }}</span>
-            
-            <i @click="$emit('edit')" class="icon-button fa-solid fa-pen"></i>
+            <TextButton class="icon-button" v-if="auth.checkPriv(AdminPriv.EDIT)" @click="emit('edit')">
+                <i class="fa-solid fa-pen"></i>
+            </TextButton>
         </div>
 
         <div class="details">

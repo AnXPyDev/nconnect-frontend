@@ -44,7 +44,7 @@ const auth = useAuth();
     flex-direction: column;
     justify-content: center;
     height: 100%;
-    color: var(--clr-fg-inv);
+    color: var(--clr-light-fg-inv);
     align-items: start;
     gap: 1em;
 
@@ -63,7 +63,7 @@ const auth = useAuth();
         font-size: 3em;
         font-weight: 300;
 
-        @include media.phone { font-size: 2em; }
+        @include media.phone { font-size: 1.75em; }
     }
 
     > .title {
@@ -71,7 +71,7 @@ const auth = useAuth();
         font-weight: 900;
         text-transform: none;
 
-        @include media.phone { font-size: 4em; }
+        @include media.phone { font-size: 3em; }
     }
 
     > .buttons {

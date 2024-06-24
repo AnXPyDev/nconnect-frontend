@@ -50,7 +50,7 @@ remote.post("stage/index").then((res: Response<{ stages: Stage[] }>) => {
     > .stage {
         width: 100%;
         height: schedule-table.$row-height;
-        padding-left: schedule-table.$align;
+        @include schedule-table.align;
         display: flex;
         justify-content: center;
         flex-direction: column;

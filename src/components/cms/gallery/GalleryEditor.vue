@@ -5,6 +5,8 @@ import Editor from '@/components/cms/util/Editor.vue';
 import TextArea from '@/components/util/input/TextArea.vue';
 import Input from '@/components/util/input/Input.vue';
 import Toggle from '@/components/util/input/Toggle.vue';
+import type { ConfirmationCallback } from '@/lib/cms/Editor';
+import TextAreaNullable from '@/components/util/input/TextAreaNullable.vue';
 
 const props = defineProps<{
     confirm: ConfirmationCallback
@@ -36,7 +38,7 @@ function validate() {
         <template v-slot:items>
             <Input v-model="gallery.name">Name</Input>
             <Toggle v-model="gallery.public">Public</Toggle>
-            <TextArea v-model="gallery.description">Description</TextArea>
+            <TextAreaNullable v-model="gallery.description">Description</TextAreaNullable>
             <ImageResourceSelector v-model="gallery.thumbnail_id" allow-none>Thumbnail</ImageResourceSelector>
         </template>
     </Editor>

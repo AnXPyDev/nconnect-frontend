@@ -1,23 +1,27 @@
 <script setup lang="ts">
 
 import { ref } from 'vue';
-import { type Speaker } from '@/lib/remote/Models';
+import { AdminPriv, type Speaker, type WithID } from '@/lib/remote/Models';
 import { getResourceURL } from '@/lib/remote/Util';
 
 import PresentationsManager from '@/components/cms/presentation/PresentationsManager.vue';
 import ContactHolder from '@/components/cms/contact/ContactHolder.vue';
+import { useAuth } from '@/stores/auth';
+import TextButton from '../util/TextButton.vue';
 
 const props = defineProps<{
-    speaker: Speaker
+    speaker: WithID<Speaker>
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
     edit: []
 }>();
 
 const showPresentations = ref<boolean>(false);
 const showImage = ref<boolean>(false);
 const showMetadata = ref<boolean>(false);
+
+const auth = useAuth();
 
 </script>
 
@@ -27,13 +31,23 @@ const showMetadata = ref<boolean>(false);
         <div class="header">
             <span class="id">[{{ speaker.id }}]</span>
             <span class="name">{{ speaker.name }}</span>
+
+            <TextButton class="icon-button" v-if="auth.checkPriv(AdminPriv.EDIT)" @click="emit('edit')">
+                <i class="fa-solid fa-pen"></i>
+            </TextButton>
+
+            <TextButton class="icon-button" @click="showPresentations = !showPresentations" :active="showPresentations">
+                <i class="fa-solid fa-presentation"></i>
+            </TextButton>
+            <TextButton class="icon-button" @click="showMetadata = !showMetadata" :active="showMetadata">
+                <i class="fa-solid fa-circle-info"></i>
+            </TextButton>
+            <TextButton class="icon-button" v-if="speaker.image_id" @click="showImage = !showImage" :active="showImage">
+                <i class="fa-solid fa-image"></i>
+            </TextButton>
             
-            <i @click="$emit('edit')" class="icon-button fa-solid fa-pen"></i>
 
-            <i @click="showPresentations = !showPresentations" class="icon-button fa-solid fa-presentation"></i>
-            <i @click="showMetadata = !showMetadata" class="icon-button fa-solid fa-circle-info"></i>
 
-            <i v-if="speaker.image_id" @click="showImage = !showImage" class="icon-button fa-solid fa-image"></i>
         </div>
 
         <div class="details">

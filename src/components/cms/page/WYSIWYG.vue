@@ -1,8 +1,13 @@
 <script setup lang="ts">
 
-import CKEditor from '@ckeditor/ckeditor5-vue';
-import DocumentEditor from '@ckeditor/ckeditor5-build-decoupled-document';
+import Spinner from '@/components/util/Spinner.vue';
 import { ref } from 'vue';
+
+const loading = ref(true);
+
+
+let CKEditor: typeof import('@ckeditor/ckeditor5-vue').default;
+let DocumentEditor: typeof import('@ckeditor/ckeditor5-build-decoupled-document').default;
 
 const content = defineModel<string>({ required: true });
 
@@ -16,10 +21,17 @@ function onEditorReady(editor: any) {
     );
 }
 
+(async () => {
+    CKEditor = (await import('@ckeditor/ckeditor5-vue')).default;
+    DocumentEditor = (await import('@ckeditor/ckeditor5-build-decoupled-document')).default;
+    loading.value = false;
+})();
+
 </script>
 
 <template>
-    <div class="root">
+    <Spinner v-if="loading"></Spinner>
+    <div v-else class="root">
         <CKEditor.component class="editor" v-model="content" :editor="DocumentEditor" @ready="onEditorReady"></CKEditor.component>
     </div>
 </template>

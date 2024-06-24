@@ -24,9 +24,39 @@ $clr-light: (
     fg-on-error: #000000,
 );
 
+$clr-dark: (
+    bg: #000000,
+    bg-1: #222222,
+    bg-2: #444444,
+
+    bg-inv: #FFFFFF,
+    bg-inv-1: #DDDDDD,
+
+    bg-alt: #111122,
+    
+
+    primary: #02b4cb,
+    primary-1: #8be4ff,
+
+    error: #EF3E36,
+    fg: #CCCCCC,
+    fg-1: #BBBBBB,
+    fg-strong: #FFFFFF,
+    fg-inv: #000000,
+    fg-on-primary: #000000,
+    fg-on-error: #000000,
+);
+
+
 
 @mixin theme($theme) {
     @each $name, $value in $theme {
         --clr-#{$name}: #{$value};
+    }
+}
+
+@mixin prefixed-theme($prefix, $theme) {
+    @each $name, $value in $theme {
+        --clr-#{$prefix}-#{$name}: #{$value};
     }
 }

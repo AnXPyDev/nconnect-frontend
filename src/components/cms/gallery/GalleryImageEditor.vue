@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { type Resource } from '@/lib/remote/Models';
+import { type Image } from '@/lib/remote/Models';
 import Editor from '@/components/cms/util/Editor.vue';
 import Input from '@/components/util/input/Input.vue';
 import { getResourceURL } from '@/lib/remote/Util';
 import Button from '@/components/util/Button.vue';
 import { pickFiles, type ImageUploaderFile } from '@/lib/cms/ImageUploader';
 import remote from '@/lib/remote/Remote';
+import { throwValidation, type ConfirmationCallback } from '@/lib/cms/Editor';
 
 const props = withDefaults(defineProps<{
     confirm?: ConfirmationCallback
@@ -15,7 +16,7 @@ const props = withDefaults(defineProps<{
     confirm: () => true
 });
 
-const resource = defineModel<Resource>({ required: true });
+const resource = defineModel<Image>({ required: true });
 
 const error = ref<string>();
 
@@ -41,7 +42,7 @@ async function confirm() {
         return;
     }
 
-    await remote.put("resource/upload", { id: resource.value.id!!, extension: newImage.extension }, newImage.blob).send();
+    await remote.put("resource/upload", { id: resource.value.id!!, extension: newImage.extension }, newImage.blob).fail(throwValidation).send();
 }
 
 
@@ -67,8 +68,8 @@ async function chooseImage() {
             <Input class="name" v-model="resource.name">Name</Input>
             <div class="image">
                 <img :src="imageURL"/>
+                <Button @click="chooseImage"><i class="fa-solid fa-arrow-up-from-bracket"></i>&nbsp; UPDATE IMAGE</Button>
             </div>
-            <Button @click="chooseImage"><i class="fa-solid fa-arrow-up-from-bracket"></i>&nbsp; UPDATE IMAGE</Button>
         </template>
     </Editor>
 </template>
@@ -79,7 +80,10 @@ async function chooseImage() {
 }
 
 .image {
+    width: auto !important;
     display: flex;
+    flex-direction: column;
+    align-items: start;
     > img {
         max-width: min(100%, 10em);
     }

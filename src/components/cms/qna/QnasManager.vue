@@ -2,19 +2,22 @@
 
 import { ref, toRaw } from 'vue';
 import remote from '@/lib/remote/Remote';
-import { type Qna } from '@/lib/remote/Models';
+import { AdminPriv, type Qna, type WithID } from '@/lib/remote/Models';
 import QnaEditor from './QnaEditor.vue';
 import QnaHolder from './QnaHolder.vue';
 import Button from '@/components/util/Button.vue';
 import Spinner from '@/components/util/Spinner.vue';
-import { predicateByID } from '@/lib/util/Snippets';
+import { copyEntity, deleteEntity, predicateByID, pushEntity, replaceEntity } from '@/lib/util/Snippets';
 import type { Response } from '@/lib/remote/RequestBuilder';
+import { EmptyQna } from '@/lib/remote/Generators';
+import { throwValidation } from '@/lib/cms/Editor';
+import { useAuth } from '@/stores/auth';
 
-const qnas = ref<Qna[]>([]);
+const qnas = ref<WithID<Qna>[]>([]);
 
 const loading = ref<boolean>(true);
 
-remote.post("qna/index").then((response: Response<{ qnas: Qna[] }>) => {
+remote.post("qna/index").then((response: Response<{ qnas: WithID<Qna>[] }>) => {
     qnas.value = response.qnas;
     loading.value = false;
 }).send();
@@ -29,32 +32,32 @@ function reset() {
 
 function create() {
     reset();
-    toCreate.value = { 
-        question: "",
-        answer: ""
-    };
+    toCreate.value = EmptyQna();
 }
 
 function edit(qna: Qna) {
     reset();
-    toEdit.value = structuredClone(toRaw(qna));
+    toEdit.value = copyEntity(qna);
 }
 
 async function editConfirm() {
-    const { qna }: { qna: Qna } = await remote.post("qna/edit", toRaw(toEdit.value)!!).unwrap().send();
-    Object.assign(qnas.value.find(predicateByID(qna.id!!))!!, qna);
+    const { qna }: { qna: WithID<Qna> } = await remote.post("qna/edit", toRaw(toEdit.value)!!).fail(throwValidation).send();
+    console.log(qna, qnas);
+    replaceEntity(qnas, qna);
 }
 
 async function editDelete() {
     const id = toEdit.value!!.id!!;
-    await remote.post("qna/delete", { id }).send();
-    qnas.value.splice(qnas.value.findIndex(predicateByID(id)), 1);
+    await remote.post("qna/delete", { id }).fail(throwValidation).send();
+    deleteEntity(qnas, id);
 }
 
 async function createConfirm() {
-    const { qna }: { qna: Qna } = await remote.post("qna/create", toRaw(toCreate.value)!!).unwrap().send();
-    qnas.value.push(qna);
+    const { qna }: { qna: WithID<Qna> } = await remote.post("qna/create", toRaw(toCreate.value)!!).fail(throwValidation).send();
+    pushEntity(qnas, qna);
 }
+
+const auth = useAuth();
 
 </script>
 
@@ -69,7 +72,7 @@ async function createConfirm() {
                 <QnaHolder v-for="qna in qnas" :qna="qna" :key="qna.id" @edit="edit(qna)"/>
             </div>
 
-            <Button @click="create"><i class="fa-solid fa-plus"></i>&nbsp; NEW QNA</Button>
+            <Button v-if="auth.checkPriv(AdminPriv.EDIT)" @click="create"><i class="fa-solid fa-plus"></i>&nbsp; NEW QNA</Button>
 
             <QnaEditor v-if="toEdit" v-model="toEdit" :confirm="editConfirm" :delete_="editDelete" @done="reset">
                 Edit QnA [{{ toEdit.id }}]

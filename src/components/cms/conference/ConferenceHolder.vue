@@ -1,10 +1,6 @@
 <script setup lang="ts">
 
-import { ref } from 'vue';
 import { type Conference } from '@/lib/remote/Models';
-import { getResourceURL } from '@/lib/remote/Util';
-
-import ContactHolder from '@/components/cms/contact/ContactHolder.vue';
 
 const props = defineProps<{
     conference: Conference

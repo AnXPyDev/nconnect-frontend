@@ -4,10 +4,11 @@ import Editor from '@/components/cms/util/Editor.vue';
 import Input from '@/components/util/input/Input.vue';
 import TextArea from '@/components/util/input/TextArea.vue';
 import ImageResourceSelector from '@/components/cms/gallery/ImageResourceSelector.vue';
+import type { ConfirmationCallback } from '@/lib/cms/Editor';
 
 
 const props = defineProps<{
-    confirm: ConfirmationCallback,
+    confirm: ConfirmationCallback
     delete_?: ConfirmationCallback
 }>();
 

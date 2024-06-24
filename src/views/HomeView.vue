@@ -80,7 +80,7 @@ remote.post("sponsor/index").then((res: Response<{ sponsors: Sponsor[] }>) => {
     }
 
     &:nth-child(odd) {
-        background-color: var(--clr-bg-1);
+        background-color: var(--clr-bg-alt);
     }
 
     padding-block: dimens.$section-padding;

@@ -28,7 +28,7 @@ const showcase = ref(false);
 
     <div class="right">
         <div class="stage">{{ headliner.stage.name }}</div>
-        <div class="name">{{ headliner.speaker.name }}</div>
+        <div @click="showcase=true" class="name">{{ headliner.speaker.name }}</div>
         <div class="description">
             {{ headliner.speaker.description }}
         </div>
@@ -66,6 +66,11 @@ const showcase = ref(false);
             font-size: 1.5em;
             font-weight: 700;
             color: var(--clr-primary);
+            cursor: pointer;
+
+            &:hover {
+                text-decoration: underline;
+            }
         }
 
         > .description {

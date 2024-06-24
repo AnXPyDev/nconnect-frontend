@@ -1,3 +1,5 @@
+import type { FailResponse } from "../remote/RequestBuilder";
+
 export type ValidationResult = boolean | string | undefined | void;
 export type ValidationCallback = () => ValidationResult;
 
@@ -11,4 +13,12 @@ export class ValidationError extends Error {
         super();
         this.result = result;
     }
+}
+
+export function throwValidation(res: FailResponse) {
+    if (!res.message) {
+        console.error("REQUEST FAILED", res);
+    }
+
+    throw new ValidationError(res.message ?? "Unknown error");
 }

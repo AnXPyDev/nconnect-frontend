@@ -1,17 +1,21 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import type { Stage } from '@/lib/remote/Models';
+import { AdminPriv, type Stage, type WithID } from '@/lib/remote/Models';
 import TimeslotsManager from '@/components/cms/timeslot/TimeslotsManager.vue';
+import TextButton from '../util/TextButton.vue';
+import { useAuth } from '@/stores/auth';
 
 const props = defineProps<{
-    stage: Stage 
+    stage: WithID<Stage>
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
     edit: []
 }>();
 
 const showTimeslots = ref<boolean>(false);
+
+const auth = useAuth();
 
 </script>
 
@@ -21,10 +25,13 @@ const showTimeslots = ref<boolean>(false);
             <span class="id">[{{ stage.id }}]</span>
             <span class="name">{{ stage.name }}</span>
 
-            <i @click="$emit('edit')" class="icon-button fa-solid fa-pen"></i>
+            <TextButton v-if="auth.checkPriv(AdminPriv.EDIT)" @click="emit('edit')" class="icon-button">
+                <i class="fa-solid fa-pen"></i>
+            </TextButton>
 
-            <i @click="showTimeslots = !showTimeslots" class="icon-button fa-solid fa-clock"></i>
-
+            <TextButton @click="showTimeslots = !showTimeslots" :active="showTimeslots" class="icon-button">
+                <i class="fa-solid fa-clock"></i>
+            </TextButton>
 
         </div>
 

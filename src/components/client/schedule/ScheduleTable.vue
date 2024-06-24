@@ -77,7 +77,7 @@ const selectedStage = ref<number>();
             align-items: center;
             font-weight: 900;
             > div {
-                padding-left: schedule-table.$align;
+                @include schedule-table.align;
             }
         }
     }

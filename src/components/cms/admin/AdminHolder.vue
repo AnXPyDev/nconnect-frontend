@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { AdminPriv, type Admin } from '@/lib/remote/Models';
-import TextButton from '../util/TextButton.vue';
+import { AdminPriv, type Admin, type WithID } from '@/lib/remote/Models';
+import TextButton from '@/components/cms/util/TextButton.vue';
 
 
 const props = defineProps<{
-    admin: Admin
+    admin: WithID<Admin>
 }>();
 
 const emit = defineEmits<{

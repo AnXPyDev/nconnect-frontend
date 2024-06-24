@@ -15,7 +15,7 @@ import ContactSection from '@/components/ui/ContactSection.vue';
 <style scoped lang="scss">
 
 .contact-section {
-    background-color: var(--clr-bg-1);
+    background-color: var(--clr-bg-alt);
 }
 
 </style>

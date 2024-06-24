@@ -40,7 +40,7 @@ const state = useState();
     flex-direction: column;
     justify-content: center;
     height: 100%;
-    color: var(--clr-fg-inv);
+    color: var(--clr-light-fg-inv);
     align-items: center;
     gap: 1em;
     text-align: center;
@@ -58,13 +58,13 @@ const state = useState();
     > .desc {
         font-size: 3em;
         font-weight: 300;
-        @include media.phone { font-size: 2em; }
+        @include media.phone { font-size: 1.75em; }
     }
 
     > .title {
         font-size: 6em;
         font-weight: 900;
-        @include media.phone { font-size: 4em; }
+        @include media.phone { font-size: 3em; }
     }
 
     > .buttons {
@@ -74,8 +74,8 @@ const state = useState();
 
         .button {
             --padding: 1em;
-            --border: solid 1px var(--clr-bg);
-            --clr-active: var(--clr-bg);
+            --border: solid 1px var(--clr-light-fg-inv);
+            --clr-active: var(--clr-light-fg-inv);
             --clr-fg-active: var(--clr-primary);
         }
     }

@@ -4,6 +4,7 @@ import { type Qna } from '@/lib/remote/Models';
 import Editor from '@/components/cms/util/Editor.vue';
 import TextArea from '@/components/util/input/TextArea.vue';
 import Input from '@/components/util/input/Input.vue';
+import type { ConfirmationCallback } from '@/lib/cms/Editor';
 
 const props = defineProps<{
     confirm: ConfirmationCallback

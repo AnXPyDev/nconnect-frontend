@@ -1,20 +1,24 @@
 <script setup lang="ts">
 
 import { ref } from 'vue';
-import { type Sponsor } from '@/lib/remote/Models';
+import { AdminPriv, type Sponsor, type WithID } from '@/lib/remote/Models';
 import { getResourceURL } from '@/lib/remote/Util';
 
 import ContactHolder from '@/components/cms/contact/ContactHolder.vue';
+import TextButton from '../util/TextButton.vue';
+import { useAuth } from '@/stores/auth';
 
 const props = defineProps<{
-    sponsor: Sponsor
+    sponsor: WithID<Sponsor>
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
     edit: []
 }>();
 
 const showImage = ref<boolean>(false);
+
+const auth = useAuth();
 
 </script>
 
@@ -25,9 +29,13 @@ const showImage = ref<boolean>(false);
             <span class="id">[{{ sponsor.id }}]</span>
             <span class="name">{{ sponsor.name }}</span>
             
-            <i @click="$emit('edit')" class="icon-button fa-solid fa-pen"></i>
+            <TextButton v-if="auth.checkPriv(AdminPriv.EDIT)" @click="emit('edit')" class="icon-button">
+                <i class="fa-solid fa-pen"></i>
+            </TextButton>
 
-            <i v-if="sponsor.image_id" @click="showImage = !showImage" class="icon-button fa-solid fa-image"></i>
+            <TextButton class="icon-button" v-if="sponsor.image_id" @click="showImage = !showImage" :active="showImage">
+                <i class="fa-solid fa-image"></i>
+            </TextButton>
         </div>
 
         <div class="details">

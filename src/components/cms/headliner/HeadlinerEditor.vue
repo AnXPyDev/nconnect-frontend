@@ -4,6 +4,7 @@ import { type Headliner } from '@/lib/remote/Models';
 import Editor from '@/components/cms/util/Editor.vue';
 import SpeakerSelector from '@/components/cms/speaker/SpeakerSelector.vue';
 import StageSelector from '@/components/cms/stage/StageSelector.vue';
+import type { ConfirmationResult } from '@/lib/cms/Editor';
 
 const props = defineProps<{
     confirm: () => ConfirmationResult
@@ -30,10 +31,10 @@ function validate() {
 
 <template>
     <Editor v-bind="{ confirm, delete_, validate }" @done="emit('done')">
-        <template v-slot:title>
+        <template #title>
             <slot></slot>
         </template>
-        <template v-slot:items>
+        <template #items>
             <SpeakerSelector v-model="headliner.speaker_id">Speaker</SpeakerSelector>
             <StageSelector v-model="headliner.stage_id">Stage</StageSelector>
         </template>

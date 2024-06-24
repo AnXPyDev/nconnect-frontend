@@ -1,22 +1,19 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import type { Resource } from '@/lib/remote/Models';
+import type { Image, Resource, WithID } from '@/lib/remote/Models';
 
 import ImageBrowser from './ImageBrowser.vue';
 import Overlay from '@/components/util/Overlay.vue';
 import Button from '@/components/util/Button.vue';
 
-const props = defineProps<{
-}>();
-
 const emit = defineEmits<{
-    select: [Resource],
+    select: [WithID<Image>],
     cancel: []
 }>();
 
-const image = ref<Resource>();
+const image = ref<WithID<Image>>();
 
-function select(i: Resource) {
+function select(i: WithID<Image>) {
     image.value = i;
 }
 
@@ -79,7 +76,7 @@ function cancel() {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        background-color: var(--clr-bg-1);
+        background-color: var(--clr-bg-alt);
         padding: 1em;
 
         > .controls {
@@ -87,6 +84,10 @@ function cancel() {
         }
 
         > .info {
+            background-color: var(--clr-primary);
+            color: var(--clr-fg-on-primary);
+            padding: 0.5em;
+
             display: flex;
             align-items: center;
             gap: 0.5em;

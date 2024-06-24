@@ -1,6 +1,5 @@
 <script setup lang="ts">
 
-import type { Sponsor } from '@/lib/remote/Models';
 import OrganizerCard from './OrganizerCard.vue';
 import { type Organizer } from '@/lib/remote/Models';
 

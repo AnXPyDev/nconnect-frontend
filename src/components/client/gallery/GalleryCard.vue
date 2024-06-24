@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import type { Gallery } from '@/lib/remote/Models';
-import { getResourceURL, getThumbnailURL } from '@/lib/remote/Util';
-import ContactIcons from '@/components/client/util/ContactIcons.vue';
-import { ref } from 'vue';
+import { getThumbnailURL } from '@/lib/remote/Util';
 
 
 const props = defineProps<{

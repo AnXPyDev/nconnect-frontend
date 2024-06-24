@@ -17,7 +17,7 @@ const state = useState();
     <div class="footer content-container">
         <div class="content">
             <div class="section">
-                <RouterLink to="/"><img class="logo" src="@/assets/images/nconnect-text-white.svg"/></RouterLink>
+                <RouterLink to="/"><img class="logo" src="@/assets/images/footer-logo.svg"/></RouterLink>
                 <span>{{ state.conference?.subtitle ?? defaultSubtitle }}</span>
                 <ContactIcons class="links" :ignore="['phone', 'email']" :contact="state.conference?.contact ?? defaultContact"></ContactIcons>
             </div>

@@ -1,21 +1,24 @@
 <script setup lang="ts">
 
 import remote from '@/lib/remote/Remote';
-import { type Presentation } from '@/lib/remote/Models';
+import { AdminPriv, type Presentation, type WithID } from '@/lib/remote/Models';
 import { ref, toRaw } from 'vue';
 import PresentationHolder from './PresentationHolder.vue';
 import PresentationEditor from './PresentationEditor.vue';
 import Button from '@/components/util/Button.vue';
-import { predicateByID } from '@/lib/util/Snippets';
+import { copyEntity, deleteEntity, predicateByID, pushEntity, replaceEntity } from '@/lib/util/Snippets';
 import type { Response } from '@/lib/remote/RequestBuilder';
 import Spinner from '@/components/util/Spinner.vue';
+import { EmptyPresentation } from '@/lib/remote/Generators';
+import { throwValidation } from '@/lib/cms/Editor';
+import { useAuth } from '@/stores/auth';
 
 const props = defineProps<{
     speaker_id?: number
 }>();
 
 
-const presentations = ref<Presentation[]>([]);
+const presentations = ref<WithID<Presentation>[]>([]);
 const loading = ref<boolean>(true);
 
 let endpoint = 'speaker/presentations';
@@ -25,7 +28,7 @@ if (!props.speaker_id) {
 
 
 
-remote.post(endpoint, { id: props.speaker_id }).then((res: Response<{ presentations: Presentation[] }>) => {
+remote.post(endpoint, { id: props.speaker_id }).then((res: Response<{ presentations: WithID<Presentation>[] }>) => {
     presentations.value = res.presentations;
     loading.value = false;
 }).send();
@@ -40,39 +43,35 @@ function reset() {
 
 function edit(presentation: Presentation) {
     reset();
-    toEdit.value = Object.assign({}, presentation);
+    toEdit.value = copyEntity(presentation);
 }
 
 function create() {
     reset();
-    toCreate.value = {
-        name: "",
-        speaker_id: props.speaker_id,
-        description: "",
-        long_description: "",
-        allow_registration: true
-    };
+    toCreate.value = EmptyPresentation(props.speaker_id);
 }
 
 async function createConfirm() {
-    const { presentation }: { presentation: Presentation } = await remote.post("presentation/create", toRaw(toCreate.value)!!).unwrap().send();
-    presentations.value.push(presentation);
+    const { presentation }: { presentation: WithID<Presentation> } = await remote.post("presentation/create", toRaw(toCreate.value)!!).fail(throwValidation).send();
+    pushEntity(presentations, presentation)
 }
 
 async function editConfirm() {
-    const { presentation }: { presentation: Presentation } = await remote.post("presentation/edit", toRaw(toEdit.value)!!).unwrap().send();
+    const { presentation }: { presentation: WithID<Presentation> } = await remote.post("presentation/edit", toRaw(toEdit.value)!!).fail(throwValidation).send();
     if (presentation.speaker_id != props.speaker_id) {
-        presentations.value.splice(presentations.value.findIndex(predicateByID(presentation.id!!))!!, 1);
+        deleteEntity(presentations, presentation.id);
     } else {
-        Object.assign(presentations.value.find(predicateByID(presentation.id!!))!!, presentation);
+        replaceEntity(presentations, presentation);
     }
 }
 
 async function editDelete() {
     const id = toEdit.value!!.id!!;
-    await remote.post("presentation/delete", { id }).send();
-    presentations.value.splice(presentations.value.findIndex(predicateByID(id)), 1)
+    await remote.post("presentation/delete", { id }).fail(throwValidation).send();
+    deleteEntity(presentations, id);
 }
+
+const auth = useAuth();
 
 </script>
 
@@ -85,7 +84,7 @@ async function editDelete() {
             <div class="items">
                 <PresentationHolder v-for="p in presentations" :key="p.id" :presentation="p" @edit="edit(p)"/>
             </div>
-            <Button @click="create"><i class="fa-solid fa-plus"></i>&nbsp; NEW PRESENTATION</Button>
+            <Button v-if="auth.checkPriv(AdminPriv.EDIT)" @click="create"><i class="fa-solid fa-plus"></i>&nbsp; NEW PRESENTATION</Button>
             <PresentationEditor v-if="toCreate" v-model="toCreate" :confirm="createConfirm" @done="reset" >
                 Create Presentation
             </PresentationEditor>

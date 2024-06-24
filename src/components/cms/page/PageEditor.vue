@@ -4,6 +4,7 @@ import { type Page } from '@/lib/remote/Models';
 import Editor from '@/components/cms/util/Editor.vue';
 import Input from '@/components/util/input/Input.vue';
 import Toggle from '@/components/util/input/Toggle.vue';
+import type { ConfirmationCallback } from '@/lib/cms/Editor';
 
 const props = defineProps<{
     confirm: ConfirmationCallback
@@ -19,11 +20,11 @@ const emit = defineEmits<{
 
 function validate() {
     if (!page.value.name) {
-        return "Question empty";
+        return "Name empty";
     }
     
     if (!page.value.metadata.slug) {
-        return "Answer empty";
+        return "Slug empty";
     }
 
     return true;

@@ -90,7 +90,7 @@ import PagesManager from '@/components/cms/page/PagesManager.vue';
     .sections-container {
         > .section {
             &:nth-child(odd) {
-                background-color: var(--clr-bg-1);
+                background-color: var(--clr-bg-alt);
             }
 
             padding-block: 1em;

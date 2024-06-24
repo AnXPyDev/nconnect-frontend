@@ -5,6 +5,7 @@ import Input from '@/components/util/input/Input.vue';
 import Editor from '@/components/cms/util/Editor.vue';
 import PresentationSelector from '@/components/cms/presentation/PresentationSelector.vue';
 import { format, formatISO, parse, parseISO } from 'date-fns';
+import type { ConfirmationResult } from '@/lib/cms/Editor';
 
 const props = defineProps<{
     confirm: () => ConfirmationResult
@@ -52,15 +53,7 @@ function validate() {
         timeslot.value.start_at = start.toISOString();
         timeslot.value.end_at = end.toISOString();
     } catch (e) {
-        console.error(e);
         return "Invalid date time format";
-    }
-
-    console.log(timeslot.value);
-
-
-    if (!timeslot.value.presentation_id) {
-        timeslot.value.presentation_id = undefined; 
     }
 
     return true;

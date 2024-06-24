@@ -151,7 +151,7 @@ function cancel() {
 }
 
 .page-editor, .page-preview {
-    background-color: var(--clr-bg-1);
+    background-color: var(--clr-bg-alt);
 }
 
 

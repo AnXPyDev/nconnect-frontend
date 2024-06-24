@@ -80,9 +80,10 @@ function open(id: number) {
         align-items: center;
         height: calc(schedule-table.$row-height * 0.75);
         border-bottom: 1px solid var(--clr-bg-2);
-        padding-left: schedule-table.$align;
         color: var(--clr-primary);
         background-color: var(--clr-bg-1);
+
+        @include schedule-table.align;
     }
 
     > .timeslot {

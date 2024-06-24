@@ -2,20 +2,24 @@
 
 import { ref, toRaw } from 'vue';
 import remote from '@/lib/remote/Remote';
-import { type Gallery } from '@/lib/remote/Models';
+import { AdminPriv, type Gallery, type WithID } from '@/lib/remote/Models';
 
 import Button from '@/components/util/Button.vue';
 import GalleryEditor from './GalleryEditor.vue';
 import GalleryHolder from './GalleryHolder.vue';
-import { predicateByID } from '@/lib/util/Snippets';
+import { copyEntity, deleteEntity, predicateByID, pushEntity, replaceEntity } from '@/lib/util/Snippets';
 import type { Response } from '@/lib/remote/RequestBuilder';
 import Spinner from '@/components/util/Spinner.vue';
+import { EmptyGallery } from '@/lib/remote/Generators';
+import { throwValidation } from '@/lib/cms/Editor';
+import AdminAuth from '@/components/admin/AdminAuth.vue';
+import { useAuth } from '@/stores/auth';
 
 const loading = ref<boolean>(true);
 
-const galleries = ref<Gallery[]>([]);
+const galleries = ref<WithID<Gallery>[]>([]);
 
-remote.post("gallery/index").then((response: Response<{ galleries: Gallery[] }>) => {
+remote.post("gallery/index").then((response: Response<{ galleries: WithID<Gallery>[] }>) => {
     galleries.value = response.galleries;
     loading.value = false;
 }).send();
@@ -30,33 +34,34 @@ function reset() {
 
 function create() {
     reset();
-    toCreate.value = { 
-        name: "",
-        description: "",
-        public: false
-    };
+    toCreate.value = EmptyGallery();
 }
 
 function edit(gallery: Gallery) {
     reset();
-    toEdit.value = Object.assign({}, gallery);
+    toEdit.value = copyEntity(gallery);
 }
 
 async function editConfirm() {
-    const { gallery }: { gallery: Gallery } = await remote.post("gallery/edit", toRaw(toEdit.value)!!).unwrap().send();
-    Object.assign(galleries.value.find(predicateByID(gallery.id!!))!!, gallery);;
+    const { gallery }: { gallery: WithID<Gallery> } = await remote.post("gallery/edit", toRaw(toEdit.value)!!).fail(throwValidation).send();
+
+    replaceEntity(galleries, gallery);
 }
 
 async function editDelete() {
     const id = toEdit.value!!.id!!;
-    await remote.post("gallery/delete", { id }).send();
-    galleries.value.splice(galleries.value.findIndex(predicateByID(id)), 1);
+    await remote.post("gallery/delete", { id }).fail(throwValidation).send();
+
+    deleteEntity(galleries, id);
 }
 
 async function createConfirm() {
-    const { gallery }: { gallery: Gallery } = await remote.post("gallery/create", toRaw(toCreate.value)!!).unwrap().send();
-    galleries.value.push(gallery);
+    const { gallery }: { gallery: WithID<Gallery> } = await remote.post("gallery/create", toRaw(toCreate.value)!!).fail(throwValidation).send();
+
+    pushEntity(galleries, gallery);
 }
+
+const auth = useAuth();
 
 </script>
 
@@ -69,10 +74,12 @@ async function createConfirm() {
             <div class="items">
                 <GalleryHolder v-for="g in galleries" mutable :gallery="g" :key="g.id" @edit="edit(g)"/>
             </div>
-            <Button @click="create"><i class="fa-solid fa-plus"></i>&nbsp; NEW GALLERY</Button>
+            <Button v-if="auth.checkPriv(AdminPriv.EDIT)" @click="create"><i class="fa-solid fa-plus"></i>&nbsp; NEW GALLERY</Button>
+
             <GalleryEditor v-if="toEdit" v-model="toEdit" @done="reset" :confirm="editConfirm" :delete_="editDelete" >
                 Edit Gallery [{{ toEdit.id }}]
             </GalleryEditor>
+
             <GalleryEditor v-if="toCreate" v-model="toCreate" @done="reset" :confirm="createConfirm">
                 Create Gallery
             </GalleryEditor>

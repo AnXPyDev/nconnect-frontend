@@ -13,7 +13,6 @@
   "dependencies": {
     "@ckeditor/ckeditor5-alignment": "^41.4.2",
     "@ckeditor/ckeditor5-basic-styles": "^41.4.2",
-    "@ckeditor/ckeditor5-build-classic": "^41.4.2",
     "@ckeditor/ckeditor5-build-decoupled-document": "^41.4.2",
     "@ckeditor/ckeditor5-font": "^41.4.2",
     "@ckeditor/ckeditor5-paragraph": "^41.4.2",
@@ -23,7 +22,6 @@
     "axios": "^1.6.8",
     "date-fns": "^3.6.0",
     "pinia": "^2.1.7",
-    "quill": "^2.0.2",
     "sanitize-html": "^2.13.0",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"

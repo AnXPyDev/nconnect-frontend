@@ -36,6 +36,7 @@ const props = defineProps<{
 
 <style scoped lang="scss">
     .sponsor-card {
+        background-color: white;
         $pad: 0.5rem;
         $align: calc(4 * $pad);
         $sidew: 2rem;
@@ -72,6 +73,7 @@ const props = defineProps<{
             }
 
             > .image {
+                padding: 1em;
                 > img {
                     width: 100%;
                     height: 100%;

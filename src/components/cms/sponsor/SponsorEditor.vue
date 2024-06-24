@@ -1,19 +1,20 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { type Speaker, type Stage } from '@/lib/remote/Models';
+import { type Speaker, type Sponsor, type Stage } from '@/lib/remote/Models';
 
 import Editor from '@/components/cms/util/Editor.vue';
-import TextArea from '@/components/util/input/TextArea.vue';
 import Input from '@/components/util/input/Input.vue';
 import ImageResourceSelector from '@/components/cms/gallery/ImageResourceSelector.vue';
 import ContactEditor from '@/components/cms/contact/ContactEditor.vue';
+import type { ConfirmationCallback } from '@/lib/cms/Editor';
+import TextAreaNullable from '@/components/util/input/TextAreaNullable.vue';
 
 const props = defineProps<{
     confirm: ConfirmationCallback
     delete_?: ConfirmationCallback
 }>();
 
-const speaker = defineModel<Speaker>({ required: true });
+const sponsor = defineModel<Sponsor>({ required: true });
 
 const emit = defineEmits<{
     done: []
@@ -21,7 +22,7 @@ const emit = defineEmits<{
 
 
 function validate() {
-    if (speaker.value!!.name.length == 0) {
+    if (sponsor.value.name.length == 0) {
         return "Name empty";
     }
 
@@ -37,10 +38,10 @@ function validate() {
             <slot></slot>
         </template>
         <template v-slot:items>
-            <Input v-model="speaker.name">Name</Input>
-            <TextArea v-model="speaker.description">Description</TextArea>
-            <ImageResourceSelector v-model="speaker.image_id">Image</ImageResourceSelector>
-            <ContactEditor v-model="speaker.contact">Contact</ContactEditor>
+            <Input v-model="sponsor.name">Name</Input>
+            <TextAreaNullable v-model="sponsor.description">Description</TextAreaNullable>
+            <ImageResourceSelector allow-none v-model="sponsor.image_id">Image</ImageResourceSelector>
+            <ContactEditor v-model="sponsor.contact">Contact</ContactEditor>
         </template>
     </Editor>
 </template>

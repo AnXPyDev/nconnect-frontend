@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { type Conference } from '@/lib/remote/Models';
+import { ConferenceState, type Conference } from '@/lib/remote/Models';
 
 import Editor from '@/components/cms/util/Editor.vue';
 import TextArea from '@/components/util/input/TextArea.vue';
 import Input from '@/components/util/input/Input.vue';
 import ContactEditor from '@/components/cms/contact/ContactEditor.vue';
+import type { ConfirmationCallback } from '@/lib/cms/Editor';
 
 const props = defineProps<{
     confirm: ConfirmationCallback
@@ -19,9 +20,9 @@ const emit = defineEmits<{
 
 
 function validate() {
+    // TODO Conference validation
     return true;
 }
-
 
 </script>
 
@@ -34,8 +35,8 @@ function validate() {
             <div class="select">
                 <div class="label">State</div>
                 <select v-model.number="conference.state">
-                    <option value="0">Preparing</option>
-                    <option value="1">Ongoing</option>
+                    <option :value="ConferenceState.PREPARING">Preparing</option>
+                    <option :value="ConferenceState.ONGOING">Ongoing</option>
                 </select>
             </div>
             <Input v-model="conference.date">Date</Input>

@@ -1,20 +1,21 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { getFilesFromDrop, pickFiles, type ImageUploaderFile } from '@/lib/cms/ImageUploader';
-import { type Gallery, type Resource } from '@/lib/remote/Models';
+import { type Gallery, type Image, type Resource, type WithID } from '@/lib/remote/Models';
 
 import Button from '@/components/util/Button.vue';
 import GalleryImageUploaderPreview from './GalleryImageUploaderPreview.vue';
 import remote from '@/lib/remote/Remote';
 import type { Response } from '@/lib/remote/RequestBuilder';
+import Spinner from '@/components/util/Spinner.vue';
 
 
 const props = defineProps<{
-    gallery: Gallery
+    gallery: WithID<Gallery>
 }>();
 
 const emit = defineEmits<{
-    done: [Resource[]]
+    done: [WithID<Image>[]]
 }>();
 
 const images = ref<ImageUploaderFile[]>([]);
@@ -22,21 +23,20 @@ const uploading = ref<boolean>(false);
 const completed = ref<number>(0);
 
 async function confirm() {
-    const resources: Resource[] = [];
+    const uploaded: WithID<Image>[] = [];
 
     uploading.value = true;
    
     for (const i of images.value) {
-        await remote.post("gallery/createimage", { id: props.gallery.id!!, name: i.name }).then(async (res: Response<{ image: Resource }>) => {
-            console.log(res.image);
-            await remote.put("resource/upload", { id: res.image.id!!, extension: i.extension }, i.blob).send();
-            resources.push(res.image);
-        }).send();
+        const { image }: Response<{ image: WithID<Image> }> = await remote.post("gallery/createimage", { id: props.gallery.id, name: i.name }).send();
+        await remote.put("resource/upload", { id: image.id, extension: i.extension }, i.blob).send();
+        uploaded.push(image);
+        completed.value++;
     }     
 
     uploading.value = false;
 
-    emit('done', resources);
+    emit('done', uploaded);
 }
 
 function addImages(list: ImageUploaderFile[]) {
@@ -78,6 +78,11 @@ function allowDrop(event: any) {
             <Button @click="confirm"><i class="fa-solid fa-check"></i>&nbsp; CONFIRM</Button>
             <Button @click="emit('done', [])"><i class="fa-solid fa-xmark"></i>&nbsp; CANCEL</Button>
         </div>
+
+        <div v-if="uploading" class="progress">
+            <Spinner></Spinner>
+            <span>PROGRESS: {{ completed }}/{{ images.length }}</span>
+        </div>
     </div>
 </template>
 
@@ -95,6 +100,11 @@ function allowDrop(event: any) {
 
     > .controls {
         display: flex;
+    }
+
+    > .progress {
+        display: flex;
+        align-items: center;
     }
 
     > .images {
@@ -117,7 +127,7 @@ function allowDrop(event: any) {
         > .droptext {
             display: flex;
             width: 100%;
-            min-height: 100%;
+            height: 5em;
             align-items: center;
             justify-content: center;
         }

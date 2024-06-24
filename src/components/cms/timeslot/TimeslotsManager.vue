@@ -1,27 +1,30 @@
 <script setup lang="ts">
 import remote from '@/lib/remote/Remote';
-import type { Timeslot } from '@/lib/remote/Models';
+import { AdminPriv, type Timeslot, type WithID } from '@/lib/remote/Models';
 import { ref, toRaw } from 'vue';
 import Button from '@/components/util/Button.vue';
 
 import TimeslotEditor from './TimeslotEditor.vue';
 import TimeslotHolder from './TimeslotHolder.vue';
-import { predicateByID } from '@/lib/util/Snippets';
-import { RequestFailedError, ResponseHandler, type FailResponse, type Response } from '@/lib/remote/RequestBuilder';
+import { copyEntity, deleteEntity, predicateByID, pushEntity, replaceEntity } from '@/lib/util/Snippets';
+import RequestBuilder, { RequestFailedError, ResponseHandler, type FailResponse, type Response } from '@/lib/remote/RequestBuilder';
 import { ApiCodes } from '@/lib/remote/Codes';
 import Spinner from '@/components/util/Spinner.vue';
 import { formatISO } from 'date-fns';
+import { EmptyTimeslot } from '@/lib/remote/Generators';
+import { ValidationError, throwValidation } from '@/lib/cms/Editor';
+import { useAuth } from '@/stores/auth';
 
 
 const props = defineProps<{
     stage_id: number
 }>();
 
-const timeslots = ref<Timeslot[]>([]);
+const timeslots = ref<WithID<Timeslot>[]>([]);
 
 const loading = ref<boolean>(true);
 
-remote.post("stage/timeslots", { id: props.stage_id }).then((res: Response<{ timeslots: Timeslot[] }>) => {
+remote.post("stage/timeslots", { id: props.stage_id }).then((res: Response<{ timeslots: WithID<Timeslot>[] }>) => {
     timeslots.value = res.timeslots;
     loading.value = false;
 }).send();
@@ -36,54 +39,41 @@ function reset() {
 
 function create() {
     reset();
-    toCreate.value = {
-        stage_id: props.stage_id,
-        start_at: formatISO(Date.now()),
-        end_at: formatISO(Date.now()),
-        presentation_id: undefined
-    };
+    toCreate.value = EmptyTimeslot(props.stage_id);
 }
 
 function edit(ts: Timeslot) {
     reset();
-    toEdit.value = Object.assign({}, ts);
+    toEdit.value = copyEntity(ts);
 }
 
 async function editDelete() {
-    const ts = toRaw(toEdit.value)!!;
     const id = toEdit.value!!.id!!;
-    await remote.post("timeslot/delete", { id }).send();
-    timeslots.value.splice(timeslots.value.findIndex(predicateByID(id)), 1);
+    await remote.post("timeslot/delete", { id }).fail(throwValidation).send();
+    deleteEntity(timeslots, id);
 }
 
-const errorHandler = new ResponseHandler()
-    .code(ApiCodes.Occupied, (res: FailResponse) => "OCCUPIED")
-    .code(ApiCodes.Overlap, (res: FailResponse) => "OVERLAP")
-;
+function addHandlers(rh: ResponseHandler) {
+    return rh.code(ApiCodes.Occupied, (res) => {
+        throw new ValidationError("Presentation already assigned to another slot");
+    })
+    .code(ApiCodes.Overlap, (res: FailResponse<{ overlaps: WithID<Timeslot>[] }>) => {
+        const ids = res.overlaps.map((v) => v.id);
+        throw new ValidationError(`Ovelap with slots ${ids}`);
+    });
+};
 
 async function editConfirm() {
-    try {
-        const { timeslot }: Response<{ timeslot: Timeslot }> = await remote.post("timeslot/edit", toRaw(toEdit.value)!!).send();
-        Object.assign(timeslots.value.find(predicateByID(timeslot.id!!))!!, timeslot);
-    } catch (e) {
-        if (!(e instanceof RequestFailedError)) {
-            throw e;
-        }
-        return await errorHandler.handle(e.response);
-    }
+    const { timeslot }: Response<{ timeslot: WithID<Timeslot> }> = await remote.post("timeslot/edit", toRaw(toEdit.value)!!).fail(throwValidation).apply(addHandlers).send();
+    replaceEntity(timeslots, timeslot);
 }
 
 async function createConfirm() {
-    try {
-        const { timeslot }: Response<{ timeslot: Timeslot }> = await remote.post("timeslot/create", toRaw(toCreate.value)!!).send();
-        timeslots.value.push(timeslot);
-    } catch (e) {
-        if (!(e instanceof RequestFailedError)) {
-            throw e;
-        }
-        return await errorHandler.handle(e.response);
-    }
+    const { timeslot }: Response<{ timeslot: WithID<Timeslot> }> = await remote.post("timeslot/create", toRaw(toCreate.value)!!).fail(throwValidation).apply(addHandlers).send();
+    pushEntity(timeslots, timeslot);
 }
+
+const auth = useAuth();
 
 </script>
 
@@ -97,7 +87,7 @@ async function createConfirm() {
             <div class="items">
                 <TimeslotHolder v-for="timeslot in timeslots" :key="timeslot.id" :timeslot="timeslot" @edit="edit(timeslot)"/>
             </div>
-            <Button @click="create"><i class="fa-solid fa-plus"></i>&nbsp; NEW TIMESLOT</Button>
+            <Button v-if="auth.checkPriv(AdminPriv.EDIT)" @click="create"><i class="fa-solid fa-plus"></i>&nbsp; NEW TIMESLOT</Button>
             <TimeslotEditor v-if="toEdit" v-model="toEdit" :confirm="editConfirm" :delete_="editDelete" @done="reset">
                 Edit timeslot [{{ toEdit.id }}]
             </TimeslotEditor>

@@ -1,10 +1,13 @@
 <script setup lang="ts">
 
 import { ref } from 'vue';
-import { type Page } from '@/lib/remote/Models';
+import { type Page, type WithID } from '@/lib/remote/Models';
+import AdminAuth from '@/components/admin/AdminAuth.vue';
+import { useAuth } from '@/stores/auth';
+import TextButton from '../util/TextButton.vue';
 
 const props = defineProps<{
-    page: Page
+    page: WithID<Page>
 }>();
 
 const emit = defineEmits<{
@@ -14,6 +17,8 @@ const emit = defineEmits<{
 }>();
 
 const showImage = ref<boolean>(false);
+
+const auth = useAuth();
 
 </script>
 
@@ -25,9 +30,17 @@ const showImage = ref<boolean>(false);
             <span class="name">{{ page.name }}</span>
             <span class="slug">page/{{ page.metadata.slug }}</span>
             
-            <i @click="emit('edit')" class="icon-button fa-solid fa-pen"></i>
-            <i @click="emit('editContent')" class="icon-button fa-solid fa-file-pen"></i>
-            <i @click="emit('show')" class="icon-button fa-solid fa-eye"></i>
+            <template v-if="auth.checkPriv(AdminAuth.EDIT)">
+                <TextButton class="icon-button" @click="emit('edit')">
+                    <i class="fa-solid fa-pen"></i>
+                </TextButton>
+                <TextButton @click="emit('editContent')">
+                    <i class="fa-solid fa-file-pen"></i>
+                </TextButton>
+            </template>
+            <TextButton @click="emit('show')" class="icon-button">
+                <i class="fa-solid fa-eye"></i>
+            </TextButton>
         </div>
     </div>
 

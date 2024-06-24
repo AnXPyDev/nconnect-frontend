@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Speaker } from '@/lib/remote/Models';
-import { getResourceURL, getThumbnailURL } from '@/lib/remote/Util';
+import { getThumbnailURL } from '@/lib/remote/Util';
 import ContactIcons from '@/components/client/util/ContactIcons.vue';
 import CompanyLink from './CompanyLink.vue';
 import SpeakerShowcase from './SpeakerShowcase.vue';
@@ -36,7 +36,7 @@ const showcase = ref(false);
                 <ContactIcons class="links" :contact="speaker.contact" />
             </div>
         </div>
-        <div class="bottom">
+        <div @click="showcase=true" class="bottom">
             <span class="name">{{ speaker.name }}</span>
         </div>
 
@@ -61,6 +61,12 @@ const showcase = ref(false);
             font-weight: 900;
             padding: 1.5em;
             padding-left: $align;
+                
+            cursor: pointer;
+
+            &:hover {
+                text-decoration: underline;
+            }
 
             > .name {
                 text-transform: uppercase;

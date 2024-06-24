@@ -9,6 +9,7 @@ import remote from '@/lib/remote/Remote';
 import { RequestFailedError, ResponseHandler, type Response } from '@/lib/remote/RequestBuilder';
 import { AxiosError } from 'axios';
 import { ref } from 'vue';
+import '@/styles/lib/ckeditor-content.css';
 
 enum Errors {
     NOTFOUND, EMPTY, UNKNOWN
