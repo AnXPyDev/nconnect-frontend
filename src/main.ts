@@ -50,6 +50,7 @@ const init_promise = new Promise(async (resolve, reject) => {
     await remote.post('conference/get').then((res: Response<{ conference: Conference }>) => {
         state.conference = res.conference;
     }).send();
+
     await restoreSession(storedAuth);
     resolve(true);
 });

@@ -5,23 +5,23 @@ import { AdminPriv } from './lib/remote/Models'
 import { useState } from './stores/state'
 
 
-const HomeView  = import('@/views/HomeView.vue');
-const CMSView  = import('@/views/admin/CMSView.vue');
-const SponsorsView  = import('@/views/SponsorsView.vue');
-const ScheduleView  = import('@/views/ScheduleView.vue');
-const ContactView  = import('@/views/ContactView.vue');
-const SpeakersView  = import('@/views/SpeakersView.vue');
-const AdminLoginView  = import('@/views/admin/LoginView.vue');
-const AdminDashboardView  = import('@/views/admin/DashboardView.vue');
-const UsersView  = import('@/views/admin/UsersView.vue');
-const PageView  = import('./views/PageView.vue');
-const PageEditorView  = import('./views/admin/PageEditorView.vue');
-const GalleriesView  = import('./views/GalleriesView.vue');
-const PagesView  = import('./views/PagesView.vue');
-const SignupView  = import('./views/user/SignupView.vue');
-const GalleryView  = import('./views/GalleryView.vue');
-const UserLoginView  = import('@/views/user/LoginView.vue');
-const UserView = import('./views/user/UserView.vue');
+const HomeView = () => import('@/views/HomeView.vue');
+const CMSView = () => import('@/views/admin/CMSView.vue');
+const SponsorsView = () => import('@/views/SponsorsView.vue');
+const ScheduleView = () => import('@/views/ScheduleView.vue');
+const ContactView = () => import('@/views/ContactView.vue');
+const SpeakersView = () => import('@/views/SpeakersView.vue');
+const AdminLoginView = () => import('@/views/admin/LoginView.vue');
+const AdminDashboardView = () => import('@/views/admin/DashboardView.vue');
+const UsersView = () => import('@/views/admin/UsersView.vue');
+const PageView = () => import('./views/PageView.vue');
+const PageEditorView = () => import('./views/admin/PageEditorView.vue');
+const GalleriesView = () => import('./views/GalleriesView.vue');
+const PagesView = () => import('./views/PagesView.vue');
+const SignupView = () => import('./views/user/SignupView.vue');
+const GalleryView = () => import('./views/GalleryView.vue');
+const UserLoginView = () => import('@/views/user/LoginView.vue');
+const UserView = () => import('./views/user/UserView.vue');
 
 declare module 'vue-router' {
     interface RouteMeta {
